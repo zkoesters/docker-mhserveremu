@@ -9,7 +9,7 @@ BACKUP_INTERVAL_MINUTES=${BACKUP_INTERVAL_MINUTES:=15}
 LOAD_ALL_PROTOTYPES=${LOAD_ALL_PROTOTYPES:=false}
 USE_EQUIPMENT_SLOT_TABLE_CACHE=${USE_EQUIPMENT_SLOT_TABLE_CACHE:=false}
 
-cp /usr/share/mhserveremu/Config.ini.tmpl /usr/share/mhserveremu/Config.ini
+cp /usr/share/mhserveremu/Config.ini.template /usr/share/mhserveremu/Config.ini
 sed -i 's/%%FRONTEND_BIND_IP%%/'"$FRONTEND_BIND_IP"'/g; s/%%FRONTEND_PUBLIC_ADDRESS%%/'"$FRONTEND_PUBLIC_ADDRESS"'/g; s/%%USE_JSON_DB_MANAGER%%/'"$USE_JSON_DB_MANAGER"'/g; s/%%MAX_BACKUP_NUMBER%%/'"$MAX_BACKUP_NUMBER"'/g; s/%%BACKUP_INTERVAL_MINUTES%%/'"$BACKUP_INTERVAL_MINUTES"'/g; s/%%LOAD_ALL_PROTOTYPES%%/'"$LOAD_ALL_PROTOTYPES"'/g; s/%%USE_EQUIPMENT_SLOT_TABLE_CACHE%%/'"$USE_EQUIPMENT_SLOT_TABLE_CACHE"'/g;' "/usr/share/mhserveremu/Config.ini"
 
 exec "$@"
