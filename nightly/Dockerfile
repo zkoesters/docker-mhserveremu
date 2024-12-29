@@ -20,7 +20,7 @@ RUN set -eux \
     \
     && mkdir /data
 
-COPY Config.ini.tmpl /usr/share/mhserveremu/Config.ini.template
+COPY Config.ini.template /usr/share/mhserveremu/Config.ini.template
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY start-server /usr/local/bin/
 
