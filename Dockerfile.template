@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0.404-bookworm-slim AS mhserveremu
+FROM mcr.microsoft.com/dotnet/sdk:9.0.101-bookworm-slim AS mhserveremu
 
 WORKDIR /tmp/MHServerEmu
 
