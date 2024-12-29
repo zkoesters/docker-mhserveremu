@@ -1,0 +1,33 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0.404-bookworm-slim AS mhserveremu
+
+WORKDIR /tmp/MHServerEmu
+
+RUN set -eux \
+    \
+    && git clone --depth 1 --branch 0.4.0 https://github.com/Crypto137/MHServerEmu.git /tmp/MHServerEmu \
+    && dotnet build -c Release -o /mhserveremu MHServerEmu.sln
+
+COPY Calligraphy.sip /mhserveremu/Data/Game/Calligraphy.sip
+COPY mu_cdata.sip /mhserveremu/Data/Game/mu_cdata.sip
+
+FROM mcr.microsoft.com/dotnet/runtime:8.0.11-bookworm-slim
+
+COPY --from=mhserveremu ["/mhserveremu", "/usr/share/mhserveremu"]
+
+RUN set -eux \
+    \
+    && ln -s /usr/share/mhserveremu/MHServerEmu /usr/bin/MHServerEmu \
+    \
+    && mkdir /data
+
+COPY Config.ini.tmpl /usr/share/mhserveremu/Config.ini.template
+COPY docker-entrypoint.sh /usr/local/bin/
+COPY start-server /usr/local/bin/
+
+EXPOSE 8080/tcp 4306/tcp 4306/udp
+
+VOLUME ["/data"]
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["start-server"]
