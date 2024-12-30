@@ -28,7 +28,7 @@ jobs:
         uses: AnimMouse/setup-rclone@e4c62ff5f942e489edceaffb563832d970253322 # v1.10.1
         with:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
-        run: |
+      - run: |
           rclone copy r2:private-dependencies/Calligraphy.sip ${{ github.workspace }}
           rclone copy r2:private-dependencies/mu_cdata.sip ${{ github.workspace }}
       - name: Set up QEMU
