@@ -12,13 +12,13 @@ COPY mu_cdata.sip /mhserveremu/Data/Game/mu_cdata.sip
 
 FROM mcr.microsoft.com/dotnet/runtime:8.0.11-bookworm-slim
 
-COPY --from=mhserveremu ["/mhserveremu", "/usr/share/mhserveremu"]
+COPY --from=mhserveremu --chown=$APP_UID:$APP_UID ["/mhserveremu", "/usr/share/mhserveremu"]
 
 RUN set -eux \
     \
     && ln -s /usr/share/mhserveremu/MHServerEmu /usr/bin/MHServerEmu \
     \
-    && mkdir /data
+    && install -d -o "$APP_UID" -g "$APP_UID" /data
 
 COPY Config.ini.template /usr/share/mhserveremu/Config.ini.template
 COPY docker-entrypoint.sh /usr/local/bin/
@@ -27,6 +27,8 @@ COPY start-server /usr/local/bin/
 EXPOSE 8080/tcp 4306/tcp 4306/udp
 
 VOLUME ["/data"]
+
+USER $APP_UID
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

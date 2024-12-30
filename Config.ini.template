@@ -31,7 +31,7 @@ FileMaxLevel=5
 ;                Can be an IP address (e.g. 192.168.1.2) or a URL (e.g. fes2.marvelheroes.com).
 
 BindIP=%%FRONTEND_BIND_IP%%
-Port=4306
+Port=%%FRONTEND_PORT%%
 PublicAddress=%%FRONTEND_PUBLIC_ADDRESS%%
 
 [Auth]
@@ -39,8 +39,8 @@ PublicAddress=%%FRONTEND_PUBLIC_ADDRESS%%
 ;         Port: Port for the auth server to listen on.
 ; EnableWebApi: Enables custom web API endpoints.
 
-Address=localhost
-Port=8080
+Address=%%AUTH_ADDRESS%%
+Port=%%AUTH_PORT%%
 EnableWebApi=true
 
 [PlayerManager]

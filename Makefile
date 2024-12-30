@@ -9,9 +9,9 @@ OFFIMG_LOCAL_CLONE=$(HOME)/official-images
 OFFIMG_REPO_URL=https://github.com/docker-library/official-images.git
 
 ifdef VERSION
-    VERSIONS=$(VERSION)
+	VERSIONS=$(VERSION)
 else
-    VERSIONS = $(foreach df,$(wildcard */Dockerfile),$(df:%/Dockerfile=%))
+	VERSIONS = $(foreach df,$(wildcard */Dockerfile),$(df:%/Dockerfile=%))
 endif
 
 build: $(foreach version,$(VERSIONS),build-$(version))
@@ -40,4 +40,4 @@ $(foreach version,$(VERSIONS),$(eval $(call test-version,$(version))))
 
 .PHONY: build all test-prepare test \
 		$(foreach version,$(VERSIONS),build-$(version)) \
-        $(foreach version,$(VERSIONS),test-$(version)) \
+		$(foreach version,$(VERSIONS),test-$(version)) \
