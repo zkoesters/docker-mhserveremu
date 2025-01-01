@@ -197,3 +197,5 @@ bh_unicode_properties.cache
 # https://packagecontrol.io/packages/sublime-github
 GitHub.sublime-settings
 
+Calligraphy.sip
+mu_cdata.sip

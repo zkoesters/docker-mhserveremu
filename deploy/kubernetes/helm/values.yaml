@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/common-3.5.1/charts/library/common/values.schema.json
+
+defaultPodOptions:
+  securityContext:
+    runAsUser: 1654
+    runAsGroup: 1654
+    fsGroup: 1654
+    fsGroupChangePolicy: "OnRootMismatch"
+
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          repository: docker.io/zkoesters/mhserveremu
+          tag: 0.4.0
+        env:
+          - name: FRONTEND_BIND_IP
+            value: "0.0.0.0"
+          - name: FRONTEND_BIND_IP
+            value: "0.0.0.0"
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 4Gi
+
+service:
+  main:
+    type: LoadBalancer
+    controller: main
+    ports:
+      frontend-tcp:
+        protocol: TCP
+        port: 4306
+      frontend-udp:
+        protocol: UDP
+        port: 4306
+      auth:
+        protocol: TCP
+        port: 8080
+
+persistence:
+  data:
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 1Gi
+    advancedMounts:
+      main:
+        main:
+          - path: /data
