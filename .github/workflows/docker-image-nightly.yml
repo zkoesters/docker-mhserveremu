@@ -4,6 +4,8 @@ on:
     branches: [ "main" ]
     paths:
       - "**/Dockerfile"
+  schedule:
+    - cron: '15 7 * * *'
   workflow_dispatch:
 env:
   IMAGE_NAME: zkoesters/mhserveremu
@@ -19,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - version: '0.4.0'
+          - version: 'nightly'
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

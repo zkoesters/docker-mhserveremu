@@ -1,0 +1,15 @@
+volumes:
+    mhserveremu-data:
+services:
+  mhserveremu:
+    image: zkoesters/mhserveremu:0.4.0
+    environment:
+      FRONTEND_BIND_IP: 0.0.0.0
+      AUTH_ADDRESS: mhserveremu
+    ports:
+      - "8080:8080/tcp"
+      - "4306:4306/tcp"
+      - "4306:4306/udp"
+    volumes:
+      - mhserveremu-data:/data
+    restart: unless-stopped
