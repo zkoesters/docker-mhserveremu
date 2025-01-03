@@ -18,8 +18,8 @@ controllers:
         env:
           - name: FRONTEND_BIND_IP
             value: "0.0.0.0"
-          - name: FRONTEND_BIND_IP
-            value: "0.0.0.0"
+          - name: AUTH_ADDRESS
+            value: "*"
         resources:
           requests:
             cpu: 2000m
