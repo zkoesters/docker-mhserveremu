@@ -4,11 +4,21 @@ set -e
 image="$1"
 
 export FRONTEND_BIND_IP='0.0.0.0'
+export AUTH_ADDRESS='*'
 
 cname="mhserveremu-container-$RANDOM-$RANDOM"
 vname="mhserveremu-data-$RANDOM-$RANDOM"
-cid="$(docker run -d -e FRONTEND_BIND_IP -v $vname:/data --name "$cname" "$image")"
+cid="$(docker run -d -e FRONTEND_BIND_IP -e AUTH_ADDRESS -v $vname:/data --name "$cname" "$image")"
 trap "docker rm -vf $cid > /dev/null && docker volume rm -f $vname > /dev/null" EXIT
+
+docker_curl() {
+  docker run --rm -i \
+    --link "$cname":mhserveremu \
+    --entrypoint curl \
+    "curlimages/curl:8.11.1" \
+    --silent --show-error --fail --output /dev/null --write-out "%{http_code}" \
+    "$@"
+}
 
 docker_sqlite3() {
   docker run --rm -i \
@@ -20,14 +30,27 @@ docker_sqlite3() {
 }
 
 tries=10
-while ! echo 'SELECT 1;' | docker_sqlite3 &> /dev/null; do
+while ! docker_curl "http://mhserveremu:8080/ServerStatus?outputFormat=Json" &> /dev/null; do
 	(( tries-- ))
 	if [ $tries -le 0 ]; then
-		echo >&2 'sqlite db failed to accept connections in a reasonable amount of time!'
-		echo 'SELECT 1;' | docker_sqlite3 # to hopefully get a useful error message
+		echo >&2 'server failed to accept connections in a reasonable amount of time!'
+		docker_curl "http://mhserveremu:8080/ServerStatus?outputFormat=Json" # to hopefully get a useful error message
 		false
 	fi
 	sleep 2
 done
 
-[ "$(echo 'SELECT PlayerName FROM main.Account WHERE PlayerName = '\'Player1\''' | docker_sqlite3)" = Player1 ]
+[ "$(docker_curl "http://mhserveremu:8080/ServerStatus?outputFormat=Json")" = 200 ]
+
+tries=10
+while ! echo docker_sqlite3 "SELECT 1;" &> /dev/null; do
+	(( tries-- ))
+	if [ $tries -le 0 ]; then
+		echo >&2 'sqlite db failed to accept connections in a reasonable amount of time!'
+		echo docker_sqlite3 "SELECT 1;"
+		false
+	fi
+	sleep 2
+done
+
+[ "$(docker_sqlite3 "SELECT PlayerName FROM main.Account WHERE PlayerName = 'Player1';")" = Player1 ]
