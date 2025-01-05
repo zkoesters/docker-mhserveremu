@@ -7,13 +7,16 @@ export FRONTEND_BIND_IP='0.0.0.0'
 export AUTH_ADDRESS='*'
 
 cname="mhserveremu-container-$RANDOM-$RANDOM"
+nname="mhserveremu-network-$RANDOM-$RANDOM"
 vname="mhserveremu-data-$RANDOM-$RANDOM"
-cid="$(docker run -d -e FRONTEND_BIND_IP -e AUTH_ADDRESS -v $vname:/data --name "$cname" "$image")"
-trap "docker rm -vf $cid > /dev/null && docker volume rm -f $vname > /dev/null" EXIT
+docker volume create "$vname"
+nid="$(docker network create "$nname")"
+cid="$(docker run -d --network "$nname" -e FRONTEND_BIND_IP -e AUTH_ADDRESS -v $vname:/data --name "$cname" "$image")"
+trap "docker rm -vf $cid > /dev/null && docker volume rm -f $vname > /dev/null && docker network rm -f $nid" EXIT
 
 docker_curl() {
   docker run --rm -i \
-    --link "$cname":mhserveremu \
+    --network "$nname" \
     --entrypoint curl \
     "curlimages/curl:8.11.1" \
     --silent --show-error --fail --output /dev/null --write-out "%{http_code}" \
@@ -30,20 +33,20 @@ docker_sqlite3() {
 }
 
 tries=10
-while ! docker_curl "http://mhserveremu:8080/ServerStatus?outputFormat=Json" &> /dev/null; do
+while ! docker_curl "http://$cname:8080/ServerStatus?outputFormat=Json" &> /dev/null; do
 	(( tries-- ))
 	if [ $tries -le 0 ]; then
 		echo >&2 'server failed to accept connections in a reasonable amount of time!'
-		docker_curl "http://mhserveremu:8080/ServerStatus?outputFormat=Json" # to hopefully get a useful error message
+		docker_curl "http://$cname:8080/ServerStatus?outputFormat=Json" # to hopefully get a useful error message
 		false
 	fi
 	sleep 2
 done
 
-[ "$(docker_curl "http://mhserveremu:8080/ServerStatus?outputFormat=Json")" = 200 ]
+[ "$(docker_curl "http://$cname:8080/ServerStatus?outputFormat=Json")" = 200 ]
 
 tries=10
-while ! echo docker_sqlite3 "SELECT 1;" &> /dev/null; do
+while ! docker_sqlite3 "SELECT 1;" &> /dev/null; do
 	(( tries-- ))
 	if [ $tries -le 0 ]; then
 		echo >&2 'sqlite db failed to accept connections in a reasonable amount of time!'
