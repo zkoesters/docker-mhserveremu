@@ -5,13 +5,15 @@ WORKDIR /tmp/MHServerEmu
 RUN set -eux \
     \
     && git clone --depth 1 --branch master https://github.com/Crypto137/MHServerEmu.git /tmp/MHServerEmu \
-    && dotnet build -c Release -o /mhserveremu MHServerEmu.sln
+    && dotnet restore MHServerEmu.sln \
+    && dotnet build MHServerEmu.sln --no-restore --configuration Release \
+    && dotnet test MHServerEmu.sln --no-build --no-restore --configuration Release
 
-COPY ["Calligraphy.sip","mu_cdata.sip","/mhserveremu/Data/Game/"]
+COPY ["Calligraphy.sip","mu_cdata.sip","/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0/Data/Game/"]
 
 FROM mcr.microsoft.com/dotnet/runtime:8.0.11-bookworm-slim
 
-COPY --from=build-stage --chown=$APP_UID:$APP_UID ["/mhserveremu", "/usr/share/mhserveremu"]
+COPY --from=build-stage --chown=$APP_UID:$APP_UID ["/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0", "/usr/share/mhserveremu"]
 
 RUN apt-get update \
     && apt-cache showpkg sqlite3 \
