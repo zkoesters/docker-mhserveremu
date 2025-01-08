@@ -67,7 +67,7 @@ SimulateQueue=false
 QueuePlaceInLine=2023
 QueueNumberOfPlayersInLine=9001
 ShowNewsOnLogin=false
-NewsUrl=http://localhost/news
+NewsUrl=%%NEWS_URL%%
 
 [SQLiteDBManager]
 ;              FileName: Name of the SQLite database file to use relative to the server's Data directory.
@@ -158,11 +158,13 @@ OrbisTrophiesEnabled=true
 ;     RegionUnvisitedThresholdMS: The amount of time in milliseconds a region needs to remain unvisited to be eligible for cleanup.
 ; DisableMovementPowerChargeCost: Disables charge costs for movement powers to imitate pre-BUE behavior.
 ;           DisableInstancedLoot: Makes loot free-for-all, Diablo 2 style.
+;        LootSpawnGridCellRadius: Affects the spacing of loot that drops [16-128].
 
 RegionCleanupIntervalMS=300000
 RegionUnvisitedThresholdMS=300000
 DisableMovementPowerChargeCost=false
 DisableInstancedLoot=false
+LootSpawnGridCellRadius=20
 
 [Billing]
 ;            CurrencyBalance: The amount of Gs to display in the UI.
@@ -180,11 +182,11 @@ DisableInstancedLoot=false
 CurrencyBalance=9000
 ApplyCatalogPatch=true
 OverrideStoreUrls=true
-StoreHomePageUrl=http://localhost/store
-StoreHomeBannerPageUrl=http://localhost/store/images/banner.png
-StoreHeroesBannerPageUrl=http://localhost/store/images/banner.png
-StoreCostumesBannerPageUrl=http://localhost/store/images/banner.png
-StoreBoostsBannerPageUrl=http://localhost/store/images/banner.png
-StoreChestsBannerPageUrl=http://localhost/store/images/banner.png
-StoreSpecialsBannerPageUrl=http://localhost/store/images/banner.png
-StoreRealMoneyUrl=http://localhost/store/gs-bundles.html
+StoreHomePageUrl=%%STORE_HOME_PAGE_URL%%
+StoreHomeBannerPageUrl=%%STORE_HOME_BANNER_PAGE_URL%%
+StoreHeroesBannerPageUrl=%%STORE_HEROES_BANNER_PAGE_URL%%
+StoreCostumesBannerPageUrl=%%STORE_COSTUMES_BANNER_PAGE_URL%%
+StoreBoostsBannerPageUrl=%%STORE_BOOSTS_BANNER_PAGE_URL%%
+StoreChestsBannerPageUrl=%%STORE_CHESTS_BANNER_PAGE_URL%%
+StoreSpecialsBannerPageUrl=%%STORE_SPECIALS_BANNER_PAGE_URL%%
+StoreRealMoneyUrl=%%STORE_REAL_MONEY_URL%%
