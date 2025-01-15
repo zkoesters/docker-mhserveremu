@@ -87,7 +87,7 @@ BackupIntervalMinutes=%%BACKUP_INTERVAL_MINUTES%%
 ;          Password: PostgreSQL user password.
 
 Host=%%POSTGRESQL_HOST%%
-Port=&&POSTGRESQL_PORT%%
+Port=%%POSTGRESQL_PORT%%
 Database=%%POSTGRESQL_DATABASE%%
 User=%%POSTGRESQL_USER%%
 Password=%%POSTGRESQL_PASSWORD%%
