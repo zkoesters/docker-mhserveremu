@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0.404-bookworm-slim AS build-stage
+FROM mcr.microsoft.com/dotnet/sdk:9.0.102-bookworm-slim AS build-stage
 
 WORKDIR /tmp/MHServerEmu
 
