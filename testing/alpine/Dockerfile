@@ -33,7 +33,7 @@ RUN set -eux \
     \
     && install -d -o "$APP_UID" -g "$APP_UID" /data
 
-COPY nightly/Config.ini.template /usr/share/mhserveremu/Config.ini.template
+COPY testing/Config.ini.template /usr/share/mhserveremu/Config.ini.template
 COPY ["docker-entrypoint.sh", "start-server", "/usr/local/bin/"]
 
 VOLUME ["/data"]
