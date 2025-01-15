@@ -26,6 +26,7 @@ RUN set -eux \
     && apk add --no-cache \
         bash \
         sqlite \
+        vim \
     \
     && ln -s /usr/share/mhserveremu/MHServerEmu /usr/bin/MHServerEmu \
     \

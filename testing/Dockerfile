@@ -4,7 +4,7 @@ WORKDIR /tmp/MHServerEmu
 
 RUN set -eux \
     \
-    && git clone --depth 1 --branch 0.4.0 https://github.com/Crypto137/MHServerEmu.git /tmp/MHServerEmu \
+    && git clone --depth 1 --branch feature/postges-support-and-fluentmigrator https://github.com/zkoesters/MHServerEmu.git /tmp/MHServerEmu \
     && dotnet restore MHServerEmu.sln \
     && dotnet build MHServerEmu.sln --no-restore --configuration Release \
     && dotnet test MHServerEmu.sln --no-build --no-restore --configuration Release
@@ -16,8 +16,9 @@ FROM mcr.microsoft.com/dotnet/runtime:8.0.11-bookworm-slim
 COPY --from=build-stage --chown=$APP_UID:$APP_UID ["/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0", "/usr/share/mhserveremu"]
 
 RUN apt-get update \
-    && apt-cache showpkg sqlite3 vim \
+    && apt-cache showpkg postgresql-client sqlite3 vim \
     && apt-get install -y --no-install-recommends \
+        postgresql-client \
         sqlite3 \
         vim \
     && rm -rf /var/lib/apt/lists/* \
@@ -26,7 +27,7 @@ RUN apt-get update \
     \
     && install -d -o "$APP_UID" -g "$APP_UID" /data
 
-COPY 0.4.0/Config.ini.template /usr/share/mhserveremu/Config.ini.template
+COPY nightly/Config.ini.template /usr/share/mhserveremu/Config.ini.template
 COPY ["docker-entrypoint.sh", "start-server", "/usr/local/bin/"]
 
 VOLUME ["/data"]
