@@ -16,9 +16,10 @@ FROM mcr.microsoft.com/dotnet/runtime:8.0.11-bookworm-slim
 COPY --from=build-stage --chown=$APP_UID:$APP_UID ["/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0", "/usr/share/mhserveremu"]
 
 RUN apt-get update \
-    && apt-cache showpkg sqlite3 \
+    && apt-cache showpkg sqlite3 vim \
     && apt-get install -y --no-install-recommends \
         sqlite3 \
+        vim \
     && rm -rf /var/lib/apt/lists/* \
     \
     && ln -s /usr/share/mhserveremu/MHServerEmu /usr/bin/MHServerEmu \
