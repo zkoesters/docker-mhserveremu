@@ -22,25 +22,25 @@ Recommended version for the new users: `zkoesters/mhserveremu:0.4.0`
 
 ## Configuration
 
-| Environment Variable           | Default                                  |
-|--------------------------------|------------------------------------------|
-| FRONTEND_BIND_IP               | 127.0.0.1                                |
-| FRONTEND_PORT                  | 4306                                     |
-| FRONTEND_PUBLIC_ADDRESS        | 127.0.0.1                                |
-| AUTH_ADDRESS                   | localhost                                |
-| AUTH_PORT                      | 8080                                     |
-| NEWS_URL                       | http://localhost/news                    |
-| USE_JSON_DB_MANAGER            | false                                    |
-| MAX_BACKUP_NUMBER              | 5                                        |
-| BACKUP_INTERVAL_MINUTES        | 15                                       |
-| LOAD_ALL_PROTOTYPES            | false                                    |
-| USE_EQUIPMENT_SLOT_TABLE_CACHE | false                                    |
-| NEWS_URL                       | http://localhost/store                   |
-| STORE_HOME_BANNER_PAGE_URL     | http://localhost/store/images/banner.png |
-| STORE_HOME_BANNER_PAGE_URL     | http://localhost/store/images/banner.png |
-| STORE_HEROES_BANNER_PAGE_URL   | http://localhost/store/images/banner.png |
-| STORE_COSTUMES_BANNER_PAGE_URL | http://localhost/store/images/banner.png |
-| STORE_BOOSTS_BANNER_PAGE_URL   | http://localhost/store/images/banner.png |
-| STORE_CHESTS_BANNER_PAGE_URL   | http://localhost/store/images/banner.png |
-| STORE_SPECIALS_BANNER_PAGE_URL | http://localhost/store/images/banner.png |
-| STORE_REAL_MONEY_URL           | http://localhost/store/gs-bundles.html   |
+| Environment Variable             | Default                                    |
+|----------------------------------|--------------------------------------------|
+| `FRONTEND_BIND_IP`               | `127.0.0.1 `                               |
+| `FRONTEND_PORT`                  | `4306`                                     |
+| `FRONTEND_PUBLIC_ADDRESS`        | `127.0.0.1`                                |
+| `AUTH_ADDRESS`                   | `localhost`                                |
+| `AUTH_PORT`                      | `8080`                                     |
+| `NEWS_URL`                       | `http://localhost/news`                    |
+| `USE_JSON_DB_MANAGER`            | `false`                                    |
+| `MAX_BACKUP_NUMBER`              | `5`                                        |
+| `BACKUP_INTERVAL_MINUTES`        | `15`                                       |
+| `LOAD_ALL_PROTOTYPES`            | `false`                                    |
+| `USE_EQUIPMENT_SLOT_TABLE_CACHE` | `false`                                    |
+| `NEWS_URL`                       | `http://localhost/store`                   |
+| `STORE_HOME_BANNER_PAGE_URL`     | `http://localhost/store/images/banner.png` |
+| `STORE_HOME_BANNER_PAGE_URL`     | `http://localhost/store/images/banner.png` |
+| `STORE_HEROES_BANNER_PAGE_URL`   | `http://localhost/store/images/banner.png` |
+| `STORE_COSTUMES_BANNER_PAGE_URL` | `http://localhost/store/images/banner.png` |
+| `STORE_BOOSTS_BANNER_PAGE_URL`   | `http://localhost/store/images/banner.png` |
+| `STORE_CHESTS_BANNER_PAGE_URL`   | `http://localhost/store/images/banner.png` |
+| `STORE_SPECIALS_BANNER_PAGE_URL` | `http://localhost/store/images/banner.png` |
+| `STORE_REAL_MONEY_URL`           | `http://localhost/store/gs-bundles.html`   |
