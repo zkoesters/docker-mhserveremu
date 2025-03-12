@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0.404-alpine3.20 AS build-stage
+FROM mcr.microsoft.com/dotnet/sdk:9.0.201-alpine3.20 AS build-stage
 
 ADD https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download/1.0.118.0/SQLite.Interop-1.0.118.0-alpine.3.20.zip /tmp/SQLite.Interop.zip
 
@@ -17,7 +17,7 @@ RUN set -eux \
 
 COPY ["Calligraphy.sip","mu_cdata.sip","/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0/Data/Game/"]
 
-FROM mcr.microsoft.com/dotnet/runtime:8.0.11-alpine3.20
+FROM mcr.microsoft.com/dotnet/runtime:9.0.3-alpine3.20
 
 COPY --from=build-stage --chown=$APP_UID:$APP_UID ["/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0", "/usr/share/mhserveremu"]
 
