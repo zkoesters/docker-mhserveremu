@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Set up rclone
-        uses: AnimMouse/setup-rclone@e4c62ff5f942e489edceaffb563832d970253322 # v1.10.1
+        uses: AnimMouse/setup-rclone@e4c62ff5f942e489edceaffb563832d970253322 # v1.10.2
         with:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
       - name: Download necessary files
