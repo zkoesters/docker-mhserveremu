@@ -2,7 +2,7 @@ volumes:
     mhserveremu-data:
 services:
   mhserveremu:
-    image: zkoesters/mhserveremu:0.4.0
+    image: zkoesters/mhserveremu:0.5.0
     environment:
       FRONTEND_BIND_IP: "0.0.0.0"
       AUTH_ADDRESS: "*"
