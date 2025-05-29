@@ -156,7 +156,7 @@ OrbisTrophiesEnabled=true
 RegionCleanupIntervalMS=300000
 RegionUnvisitedThresholdMS=300000
 DisableMovementPowerChargeCost=false
-DisableInstancedLoot=false
+DisableInstancedLoot=%%DISABLE_INSTANCED_LOOT%%
 
 [Billing]
 ;            CurrencyBalance: The amount of Gs to display in the UI.
@@ -171,7 +171,7 @@ DisableInstancedLoot=false
 ; StoreSpecialsBannerPageUrl: URL for the top banner displayed when the Specials tab is selected.
 ;          StoreRealMoneyUrl: URL for the page displayed in the add G window.
 
-CurrencyBalance=9000
+CurrencyBalance=%%GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS%%
 ApplyCatalogPatch=true
 OverrideStoreUrls=true
 StoreHomePageUrl=%%STORE_HOME_PAGE_URL%%

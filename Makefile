@@ -1,7 +1,7 @@
 REPO_NAME  ?= zkoesters
 IMAGE_NAME ?= mhserveremu
 
-LATEST_VERSION=0.4.0
+LATEST_VERSION=0.6.0
 do_default=true
 do_alpine=true
 
@@ -37,13 +37,13 @@ all: build test
 define build-version
 build-$1:
 ifeq ($(do_default),true)
-	$(DOCKER) build --pull -t $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1) -f $1/Dockerfile .
-	$(DOCKER) images          $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1)
+	$(DOCKER) build --pull --no-cache -t $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1) -f $1/Dockerfile .
+	$(DOCKER) images                     $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1)
 endif
 ifeq ($(do_alpine),true)
 ifneq ("$(wildcard $1/alpine)","")
-	$(DOCKER) build --pull -t $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1)-alpine -f $1/alpine/Dockerfile .
-	$(DOCKER) images          $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1)-alpine
+	$(DOCKER) build --pull --no-cache -t $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1)-alpine -f $1/alpine/Dockerfile .
+	$(DOCKER) images                     $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1)-alpine
 endif
 endif
 endef

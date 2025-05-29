@@ -6,7 +6,7 @@ WORKDIR /tmp/MHServerEmu
 
 RUN set -eux \
     \
-    && git clone --depth 1 --branch feature/postges-support-and-fluentmigrator https://github.com/zkoesters/MHServerEmu.git /tmp/MHServerEmu \
+    && git clone --depth 1 --branch 0.6.0 https://github.com/Crypto137/MHServerEmu.git /tmp/MHServerEmu \
     \
     && unzip -p /tmp/SQLite.Interop.zip runtimes/alpine.3.20-x64/native/SQLite.Interop.dll \
         > /tmp/MHServerEmu/src/MHServerEmu.DatabaseAccess/Interop/linux-x64/SQLite.Interop.dll \
@@ -25,7 +25,6 @@ RUN set -eux \
     \
     && apk add --no-cache \
         bash \
-        postgresql16-client \
         sqlite \
         vim \
     \
@@ -33,7 +32,7 @@ RUN set -eux \
     \
     && install -d -o "$APP_UID" -g "$APP_UID" /data
 
-COPY testing/Config.ini.template /usr/share/mhserveremu/Config.ini.template
+COPY 0.6.0/Config.ini.template /usr/share/mhserveremu/Config.ini.template
 COPY ["docker-entrypoint.sh", "start-server", "/usr/local/bin/"]
 
 VOLUME ["/data"]

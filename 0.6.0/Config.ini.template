@@ -56,24 +56,26 @@ Port=%%AUTH_PORT%%
 EnableWebApi=true
 
 [PlayerManager]
-;           DBManagerBackend: Which backend to use for DB storage. Valid values: sqlite, json, postgresql
+;           UseJsonDBManager: Switches to JSON-based backend for saving player data.
 ;                             NOTE: JSON backend supports only a single account / user.
-;         IgnoreSessionToken: Disables session validation so that multiple Linux clients can log in (DO NOT USE THIS ON PUBLIC SERVERS).
 ; AllowClientVersionMismatch: Allows clients that do not match the server's version of the game to connect.
 ;              SimulateQueue: Simulates putting clients into a queue instead of logging them in normally (for testing only).
 ;           QueuePlaceInLine: Place in line to show when SimulateQueue is enabled.
 ; QueueNumberOfPlayersInLine: Number of players to show when SimulateQueue is enabled.
 ;            ShowNewsOnLogin: Requests the client to open the news windows after logging in.
 ;                    NewsUrl: News URL for the client's news window.
+;          GameInstanceCount: The number of game instances to create and maintain. This is a temporary setting that will be removed in the future.
+;         PlayerCountDivisor: The size of a player count chunk used for load balancing game instances.
 
-DBManagerBackend=%%DB_MANAGER_BACKEND%%
-IgnoreSessionToken=false
+UseJsonDBManager=%%USE_JSON_DB_MANAGER%%
 AllowClientVersionMismatch=false
 SimulateQueue=false
 QueuePlaceInLine=2023
 QueueNumberOfPlayersInLine=9001
 ShowNewsOnLogin=false
 NewsUrl=%%NEWS_URL%%
+GameInstanceCount=1
+PlayerCountDivisor=50
 
 [SQLiteDBManager]
 ;              FileName: Name of the SQLite database file to use relative to the server's Data directory.
@@ -84,19 +86,6 @@ NewsUrl=%%NEWS_URL%%
 FileName=/data/Account.db
 MaxBackupNumber=%%MAX_BACKUP_NUMBER%%
 BackupIntervalMinutes=%%BACKUP_INTERVAL_MINUTES%%
-
-[PostgreSQLDBManager]
-;     Host: PostgreSQL server host.
-;     Port: PostgreSQL server port.
-; Database: PostgreSQL database name.
-;     User: PostgreSQL user name.
-; Password: PostgreSQL user password.
-
-Host=%%POSTGRESQL_HOST%%
-Port=%%POSTGRESQL_PORT%%
-Database=%%POSTGRESQL_DATABASE%%
-User=%%POSTGRESQL_USER%%
-Password=%%POSTGRESQL_PASSWORD%%
 
 [JsonDBManager]
 ;              FileName: Name of the JSON save file to use relative to the server's Data directory
@@ -123,9 +112,11 @@ MotdPrestigeLevel=6
 [GameData]
 ;          LoadAllPrototypes: Preloads all prototypes on server start. Makes server start slower, but removes lag spikes during the game when data is loaded for the first time.
 ; UseEquipmentSlotTableCache: Enables caching for the EquipmentSlotTable. Makes server start slower if not used with LoadAllPrototypes.
+;         EnablePatchManager: Enables Prototype Patch Manager. Fixes mission bugs and prototype errors.
 
 LoadAllPrototypes=%%LOAD_ALL_PROTOTYPES%%
 UseEquipmentSlotTableCache=%%USE_EQUIPMENT_SLOT_TABLE_CACHE%%
+EnablePatchManager=true
 
 [GameOptions]
 ; NOTE: These options are sent from the server to the client and affect the UI in many cases.
@@ -159,7 +150,7 @@ MultiSpecRewardsEnabled=true
 GiftingEnabled=true
 CharacterSelectV2Enabled=true
 CommunityNewsV2Enabled=true
-LeaderboardsEnabled=true
+LeaderboardsEnabled=false
 NewPlayerExperienceEnabled=true
 MissionTrackerV2Enabled=true
 GiftingAccountAgeInDaysRequired=7
@@ -173,32 +164,48 @@ IsDifficultySliderEnabled=true
 OrbisTrophiesEnabled=true
 
 [CustomGameOptions]
-;        RegionCleanupIntervalMS: Interval between region cleanups in milliseconds.
-;     RegionUnvisitedThresholdMS: The amount of time in milliseconds a region needs to remain unvisited to be eligible for cleanup.
-; DisableMovementPowerChargeCost: Disables charge costs for movement powers to imitate pre-BUE behavior.
-;           DisableInstancedLoot: Makes loot free-for-all, Diablo 2 style.
-;        LootSpawnGridCellRadius: Affects the spacing of loot that drops [16-128].
+;                   AutoUnlockAvatars: Automatically unlocks all avatars for players who have finished the tutorial.
+;                   AutoUnlockTeamUps: Automatically unlocks all team-ups for players who have finished the tutorial.
+;             RegionCleanupIntervalMS: Interval between region cleanups in milliseconds.
+;          RegionUnvisitedThresholdMS: The amount of time in milliseconds a region needs to remain unvisited to be eligible for cleanup.
+;      DisableMovementPowerChargeCost: Disables charge costs for movement powers to imitate pre-BUE behavior.
+;               AllowSameGroupTalents: Allows mutually exclusive talents to be enabled at the same time.
+;                DisableInstancedLoot: Makes loot free-for-all, Diablo 2 style.
+;             LootSpawnGridCellRadius: Affects the spacing of loot that drops [16-128].
+; TrashedItemExpirationTimeMultiplier: Affects how long items trashed by players remain on the ground.
+;               DisableAccountBinding: Disables account binding on pickup for items.
+;             DisableCharacterBinding: Disables character binding on equip for items.
+;                UsePrestigeLootTable: Replaces starting costume prestige rewards with the loot table specified in game data.
 
+AutoUnlockAvatars=%%AUTO_UNLOCK_AVATARS%%
+AutoUnlockTeamUps=%%AUTO_UNLOCK_TEAMUPS%%
 RegionCleanupIntervalMS=300000
 RegionUnvisitedThresholdMS=300000
 DisableMovementPowerChargeCost=false
-DisableInstancedLoot=false
+AllowSameGroupTalents=%%ALLOW_SAME_GROUP_TALENTS%%
+DisableInstancedLoot=%%DISABLE_INSTANCED_LOOT%%
 LootSpawnGridCellRadius=20
+TrashedItemExpirationTimeMultiplier=1.0
+DisableAccountBinding=%%DISABLE_ACCOUNT_BINDING%%
+DisableCharacterBinding=%%DISABLE_CHARACTER_BINDING%%
+UsePrestigeLootTable=%%USE_PRESTIGE_LOOT_TABLE%%
 
 [Billing]
-;            CurrencyBalance: The amount of Gs to display in the UI.
-;          ApplyCatalogPatch: Loads CatalogPatch.json and merges its content with data loaded from Catalog.json.
-;          OverrideStoreUrls: Enables custom in-game store URL overrides assigned below.
-;           StoreHomePageUrl: URL for the page displayed on the Home tab.
-;     StoreHomeBannerPageUrl: URL for the top banner displayed when the Home tab is selected.
-;   StoreHeroesBannerPageUrl: URL for the top banner displayed when the Heroes tab is selected.
-; StoreCostumesBannerPageUrl: URL for the top banner displayed when the Costumes tab is selected.
-;   StoreBoostsBannerPageUrl: URL for the top banner displayed when the Items tab is selected.
-;   StoreChestsBannerPageUrl: URL for the top banner displayed when the Cards tab is selected.
-; StoreSpecialsBannerPageUrl: URL for the top banner displayed when the Specials tab is selected.
-;          StoreRealMoneyUrl: URL for the page displayed in the add G window.
+; GazillioniteBalanceForNewAccounts: The amount of Gs new accounts will get when they log in for the first time.
+;   ESToGazillioniteConversionRatio: The amount of Gs players will get for each Eternity Splinter when converting them.
+;                 ApplyCatalogPatch: Loads CatalogPatch.json and merges its content with data loaded from Catalog.json.
+;                 OverrideStoreUrls: Enables custom in-game store URL overrides assigned below.
+;                  StoreHomePageUrl: URL for the page displayed on the Home tab.
+;            StoreHomeBannerPageUrl: URL for the top banner displayed when the Home tab is selected.
+;          StoreHeroesBannerPageUrl: URL for the top banner displayed when the Heroes tab is selected.
+;        StoreCostumesBannerPageUrl: URL for the top banner displayed when the Costumes tab is selected.
+;          StoreBoostsBannerPageUrl: URL for the top banner displayed when the Items tab is selected.
+;          StoreChestsBannerPageUrl: URL for the top banner displayed when the Cards tab is selected.
+;        StoreSpecialsBannerPageUrl: URL for the top banner displayed when the Specials tab is selected.
+;                 StoreRealMoneyUrl: URL for the page displayed in the add G window.
 
-CurrencyBalance=9000
+GazillioniteBalanceForNewAccounts=%%GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS%%
+ESToGazillioniteConversionRatio=%%ES_TO_GAZILLIONITE_CONVERSION_RATIO%%
 ApplyCatalogPatch=true
 OverrideStoreUrls=true
 StoreHomePageUrl=%%STORE_HOME_PAGE_URL%%
@@ -209,3 +216,12 @@ StoreBoostsBannerPageUrl=%%STORE_BOOSTS_BANNER_PAGE_URL%%
 StoreChestsBannerPageUrl=%%STORE_CHESTS_BANNER_PAGE_URL%%
 StoreSpecialsBannerPageUrl=%%STORE_SPECIALS_BANNER_PAGE_URL%%
 StoreRealMoneyUrl=%%STORE_REAL_MONEY_URL%%
+
+[Leaderboards]
+;            DatabaseFile: Name of the SQLite database file to use relative to the server's Data/Leaderboards directory.
+;            ScheduleFile: Name of the JSON schedule file to use relative to the server's Data/Leaderboards directory
+; AutoSaveIntervalMinutes: The minimum interval in minutes between autosave to database.
+
+DatabaseFile=/data/Leaderboards.db
+ScheduleFile=/data/LeaderboardSchedule.json
+AutoSaveIntervalMinutes=5
