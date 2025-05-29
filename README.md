@@ -2,15 +2,17 @@
 
 The `zkoesters/mhserveremu` image provides tags for running [MHServerEmu](https://github.com/Crypto137/MHServerEmu).
 
-# Versions ( 2025-01-09 )
+# Versions ( 2025-06-03 )
 
-Recommended version for the new users: `zkoesters/mhserveremu:0.4.0`
+Recommended version for the new users: `zkoesters/mhserveremu:0.6.0`
 
 ### Debian based:
 
 | DockerHub image                                                                                                   | Dockerfile                                                                                 | OS              | dotnet | MHServerEmu |
 |-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|-----------------|--------|-------------|
 | [zkoesters/mhserveremu:0.4.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.4.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.4.0/Dockerfile)   | debian:bookworm | 8.0.11 | 0.4.0       |
+| [zkoesters/mhserveremu:0.5.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.5.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.5.0/Dockerfile)   | debian:bookworm | 8.0.11 | 0.5.0       |
+| [zkoesters/mhserveremu:0.6.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.6.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.6.0/Dockerfile)   | debian:bookworm | 8.0.11 | 0.6.0       |
 | [zkoesters/mhserveremu:nightly](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/nightly/Dockerfile) | debian:bookworm | 8.0.11 | master      |
 
 ### Alpine based:
@@ -18,6 +20,8 @@ Recommended version for the new users: `zkoesters/mhserveremu:0.4.0`
 | DockerHub image                                                                                                                 | Dockerfile                                                                                        | OS          | dotnet | MHServerEmu |
 |---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-------------|--------|-------------|
 | [zkoesters/mhserveremu:0.4.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.4.0-alpine)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.4.0/alpine/Dockerfile)   | alpine:3.20 | 8.0.11 | 0.4.0       |
+| [zkoesters/mhserveremu:0.5.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.5.0-alpine)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.5.0/alpine/Dockerfile)   | alpine:3.20 | 8.0.11 | 0.5.0       |
+| [zkoesters/mhserveremu:0.6.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.6.0-alpine)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.6.0/alpine/Dockerfile)   | alpine:3.20 | 8.0.11 | 0.6.0       |
 | [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/nightly/alpine/Dockerfile) | alpine:3.20 | 8.0.11 | master      |
 
 ## Configuration
