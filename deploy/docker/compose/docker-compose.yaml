@@ -12,4 +12,6 @@ services:
       - "4306:4306/udp"
     volumes:
       - mhserveremu-data:/data
+    stdin_open: true
+    tty: true
     restart: unless-stopped

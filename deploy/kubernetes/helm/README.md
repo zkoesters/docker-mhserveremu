@@ -4,8 +4,8 @@
 
 ```shell
 # Add the bjw-s repository
-helm repo add bjw-s https://bjw-s.github.io/helm-charts/
+helm repo add bjw-s https://bjw-s-labs.github.io/helm-charts
 
 # Install the chart
-helm install mhserveremu app-template -f values.yaml
+helm install mhserveremu bjw-s/app-template -f values.yaml
 ```

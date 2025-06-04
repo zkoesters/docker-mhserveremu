@@ -20,6 +20,8 @@ controllers:
             value: "0.0.0.0"
           - name: AUTH_ADDRESS
             value: "*"
+        stdin: true
+        tty: true
         resources:
           requests:
             cpu: 2000m
