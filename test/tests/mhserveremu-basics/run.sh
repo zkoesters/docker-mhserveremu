@@ -11,7 +11,7 @@ nname="mhserveremu-network-$RANDOM-$RANDOM"
 vname="mhserveremu-data-$RANDOM-$RANDOM"
 docker volume create "$vname"
 nid="$(docker network create "$nname")"
-cid="$(docker run -d --network "$nname" -e FRONTEND_BIND_IP -e AUTH_ADDRESS -v $vname:/data --name "$cname" "$image")"
+cid="$(docker run -itd --network "$nname" -e FRONTEND_BIND_IP -e AUTH_ADDRESS -v $vname:/data --name "$cname" "$image")"
 trap "docker rm -vf $cid > /dev/null && docker volume rm -f $vname > /dev/null && docker network rm -f $nid" EXIT
 
 docker_curl() {
