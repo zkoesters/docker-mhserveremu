@@ -46,14 +46,26 @@ PublicAddress=%%FRONTEND_PUBLIC_ADDRESS%%
 ReceiveTimeoutMS=60000
 SendTimeoutMS=6000
 
-[Auth]
-;      Address: Address for the auth server to listen on.
-;         Port: Port for the auth server to listen on.
-; EnableWebApi: Enables custom web API endpoints.
+[WebFrontend]
+;                 Address: Address for the web frontend to listen on.
+;                    Port: Port for the web frontend to listen on.
+;    EnableLoginRateLimit: Enables rate limiting for login attempts.
+;    LoginRateLimitCostMS: Time cost in milliseconds for a single login attempt.
+;     LoginRateLimitBurst: The number of times in a row the time cost can be paid before the limit starts applying. Must be >= 2.
+;            EnableWebApi: Enables custom web API endpoints.
+;         EnableDashboard: Enables a server dashboard accessible from the web API. Requires the web API to be enabled.
+;  DashboardFileDirectory: Name of the directory that contains dashboard files. The directory should be placed in Data\Web.
+;        DashboardUrlPath: URL path relative to the origin from which the dashboard is served.
 
-Address=%%AUTH_ADDRESS%%
-Port=%%AUTH_PORT%%
+Address=%%WEBFRONTEND_ADDRESS%%
+Port=%%WEBFRONTEND_PORT%%
+EnableLoginRateLimit=%%WEBFRONTEND_ENABLE_LOGING_RATE_LIMIT%%
+LoginRateLimitCostMS=30000
+LoginRateLimitBurst=10
 EnableWebApi=true
+EnableDashboard=true
+DashboardFileDirectory=Dashboard
+DashboardUrlPath=/Dashboard/
 
 [PlayerManager]
 ;          EnablePersistence: Allows player data to be saved.
@@ -68,11 +80,11 @@ EnableWebApi=true
 ;       MaxLoginQueueClients: The maximum number of normal priority clients that can be put into the login queue at the same time.
 
 EnablePersistence=true
-UseJsonDBManager=%%USE_JSON_DB_MANAGER%%
+UseJsonDBManager=%%PLAYERMANAGER_USE_JSON_DB_MANAGER%%
 AllowClientVersionMismatch=false
 UseWhitelist=false
 ShowNewsOnLogin=false
-NewsUrl=%%NEWS_URL%%
+NewsUrl=%%PLAYERMANAGER_NEWS_URL%%
 ServerCapacity=0
 MaxLoginQueueClients=10000
 
@@ -83,8 +95,8 @@ MaxLoginQueueClients=10000
 ; BackupIntervalMinutes: The minimum interval in minutes between backup creation.
 
 FileName=/data/Account.db
-MaxBackupNumber=%%MAX_BACKUP_NUMBER%%
-BackupIntervalMinutes=%%BACKUP_INTERVAL_MINUTES%%
+MaxBackupNumber=%%DBMANAGER_MAX_BACKUP_NUMBER%%
+BackupIntervalMinutes=%%DBMANAGER_BACKUP_INTERVAL_MINUTES%%
 
 [JsonDBManager]
 ;              FileName: Name of the JSON save file to use relative to the server's Data directory
@@ -107,7 +119,7 @@ PlayerName=Player
 
 ServerName=MHServerEmu
 ServerPrestigeLevel=6
-MotdText=Welcome back to Marvel Heroes! Type !commands to see a list of available server commands. Use the !store convertes command to convert Eternity Splinters to Gs.
+MotdText=Welcome back to Marvel Heroes! Type !commands to see a list of available server commands.
 LogTells=false
 
 [GameInstance]
@@ -120,8 +132,8 @@ NumWorkerThreads=1
 ; UseEquipmentSlotTableCache: Enables caching for the EquipmentSlotTable. Makes server start slower if not used with LoadAllPrototypes.
 ;         EnablePatchManager: Enables Prototype Patch Manager. Fixes mission bugs and prototype errors.
 
-LoadAllPrototypes=%%LOAD_ALL_PROTOTYPES%%
-UseEquipmentSlotTableCache=%%USE_EQUIPMENT_SLOT_TABLE_CACHE%%
+LoadAllPrototypes=%%GAMEDATA_LOAD_ALL_PROTOTYPES%%
+UseEquipmentSlotTableCache=%%GAMEDATA_USE_EQUIPMENT_SLOT_TABLE_CACHE%%
 EnablePatchManager=true
 
 [GameOptions]
@@ -185,49 +197,57 @@ OrbisTrophiesEnabled=true
 
 ESCooldownOverrideMinutes=-1.0
 CombineESStacks=false
-AutoUnlockAvatars=%%AUTO_UNLOCK_AVATARS%%
-AutoUnlockTeamUps=%%AUTO_UNLOCK_TEAMUPS%%
+AutoUnlockAvatars=%%CUSTOMGAMEOPTIONS_AUTO_UNLOCK_AVATARS%%
+AutoUnlockTeamUps=%%CUSTOMGAMEOPTIONS_AUTO_UNLOCK_TEAMUPS%%
 DisableMovementPowerChargeCost=false
-AllowSameGroupTalents=%%ALLOW_SAME_GROUP_TALENTS%%
-DisableInstancedLoot=%%DISABLE_INSTANCED_LOOT%%
+AllowSameGroupTalents=%%CUSTOMGAMEOPTIONS_ALLOW_SAME_GROUP_TALENTS%%
+DisableInstancedLoot=%%CUSTOMGAMEOPTIONS_DISABLE_INSTANCED_LOOT%%
 LootSpawnGridCellRadius=20
 TrashedItemExpirationTimeMultiplier=1.0
-DisableAccountBinding=%%DISABLE_ACCOUNT_BINDING%%
-DisableCharacterBinding=%%DISABLE_CHARACTER_BINDING%%
-UsePrestigeLootTable=%%USE_PRESTIGE_LOOT_TABLE%%
+DisableAccountBinding=%%CUSTOMGAMEOPTIONS_DISABLE_ACCOUNT_BINDING%%
+DisableCharacterBinding=%%CUSTOMGAMEOPTIONS_DISABLE_CHARACTER_BINDING%%
+UsePrestigeLootTable=%%CUSTOMGAMEOPTIONS_USE_PRESTIGE_LOOT_TABLE%%
 
-[Billing]
+[MTXStore]
 ; GazillioniteBalanceForNewAccounts: The amount of Gs new accounts will get when they log in for the first time.
 ;   ESToGazillioniteConversionRatio: The amount of Gs players will get for each Eternity Splinter when converting them.
-;                 ApplyCatalogPatch: Loads CatalogPatch.json and merges its content with data loaded from Catalog.json.
-;                 OverrideStoreUrls: Enables custom in-game store URL overrides assigned below.
-;                  StoreHomePageUrl: URL for the page displayed on the Home tab.
-;            StoreHomeBannerPageUrl: URL for the top banner displayed when the Home tab is selected.
-;          StoreHeroesBannerPageUrl: URL for the top banner displayed when the Heroes tab is selected.
-;        StoreCostumesBannerPageUrl: URL for the top banner displayed when the Costumes tab is selected.
-;          StoreBoostsBannerPageUrl: URL for the top banner displayed when the Items tab is selected.
-;          StoreChestsBannerPageUrl: URL for the top banner displayed when the Cards tab is selected.
-;        StoreSpecialsBannerPageUrl: URL for the top banner displayed when the Specials tab is selected.
-;                 StoreRealMoneyUrl: URL for the page displayed in the add G window.
+;    ESToGazillioniteConversionStep: Step for the Eternity Splinter amount when converting to G. Used to avoid rounding errors.
+;         GiftingOmegaLevelRequired: Minimum Omega level required to purchase gifts for other players (if Omega is enabled).
+;      GiftingInfinityLevelRequired: Minimum Infinity level required to purchase gifts for other players (if Infinity is enabled).
+;                       HomePageUrl: URL for the page displayed on the Home tab.
+;                 HomeBannerPageUrl: URL for the top banner displayed when the Home tab is selected.
+;               HeroesBannerPageUrl: URL for the top banner displayed when the Heroes tab is selected.
+;             CostumesBannerPageUrl: URL for the top banner displayed when the Costumes tab is selected.
+;               BoostsBannerPageUrl: URL for the top banner displayed when the Items tab is selected.
+;               ChestsBannerPageUrl: URL for the top banner displayed when the Cards tab is selected.
+;             SpecialsBannerPageUrl: URL for the top banner displayed when the Specials tab is selected.
+;                      RealMoneyUrl: URL for the page displayed in the add G window.
+;         RewriteOriginalBundleUrls: When enabled, rewrites original bundle URLs pointing to the Gazillion CDN with new prefixes.
+;                     BundleInfoUrl: URL used to rewrite Gazillion bundle info URLs (if enabled).
+;                    BundleImageUrl: URL used to rewrite Gazillion bundle image URLs (if enabled).
 
-GazillioniteBalanceForNewAccounts=%%GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS%%
-ESToGazillioniteConversionRatio=%%ES_TO_GAZILLIONITE_CONVERSION_RATIO%%
-ApplyCatalogPatch=true
-OverrideStoreUrls=true
-StoreHomePageUrl=%%STORE_HOME_PAGE_URL%%
-StoreHomeBannerPageUrl=%%STORE_HOME_BANNER_PAGE_URL%%
-StoreHeroesBannerPageUrl=%%STORE_HEROES_BANNER_PAGE_URL%%
-StoreCostumesBannerPageUrl=%%STORE_COSTUMES_BANNER_PAGE_URL%%
-StoreBoostsBannerPageUrl=%%STORE_BOOSTS_BANNER_PAGE_URL%%
-StoreChestsBannerPageUrl=%%STORE_CHESTS_BANNER_PAGE_URL%%
-StoreSpecialsBannerPageUrl=%%STORE_SPECIALS_BANNER_PAGE_URL%%
-StoreRealMoneyUrl=%%STORE_REAL_MONEY_URL%%
+GazillioniteBalanceForNewAccounts=%%MTXSTORE_GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS%%
+ESToGazillioniteConversionRatio=%%MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_RATIO%%
+ESToGazillioniteConversionStep=4
+GiftingOmegaLevelRequired=0
+GiftingInfinityLevelRequired=0
+HomePageUrl=%%MTXSTORE_HOME_PAGE_URL%%
+HomeBannerPageUrl=%%MTXSTORE_HOME_BANNER_PAGE_URL%%
+HeroesBannerPageUrl=%%MTXSTORE_HEROES_BANNER_PAGE_URL%%
+CostumesBannerPageUrl=%%MTXSTORE_COSTUMES_BANNER_PAGE_URL%%
+BoostsBannerPageUrl=%%MTXSTORE_BOOSTS_BANNER_PAGE_URL%%
+ChestsBannerPageUrl=%%MTXSTORE_CHESTS_BANNER_PAGE_URL%%
+SpecialsBannerPageUrl=%%MTXSTORE_SPECIALS_BANNER_PAGE_URL%%
+RealMoneyUrl=%%MTXSTORE_REAL_MONEY_URL%%
+RewriteOriginalBundleUrls=%%MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS%%
+BundleInfoUrl=%%MTXSTORE_BUNDLE_INFO_URL%%
+BundleImageUrl=%%MTXSTORE_BUNDLE_IMAGE_URL%%
 
 [Leaderboards]
 ;            DatabaseFile: Name of the SQLite database file to use relative to the server's Data/Leaderboards directory.
 ;            ScheduleFile: Name of the JSON schedule file to use relative to the server's Data/Leaderboards directory
-; AutoSaveIntervalMinutes: The minimum interval in minutes between autosave to database.
+; AutoSaveIntervalMinutes: The minimum interval in minutes between leaderboard entry autosaves to the database.
 
 DatabaseFile=/data/Leaderboards.db
 ScheduleFile=/data/LeaderboardSchedule.json
-AutoSaveIntervalMinutes=5
+AutoSaveIntervalMinutes=10
