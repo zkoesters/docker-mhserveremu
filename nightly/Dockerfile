@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0.416-bookworm-slim AS build-stage
+FROM mcr.microsoft.com/dotnet/sdk:9.0.307-bookworm-slim AS build-stage
 
 WORKDIR /tmp/MHServerEmu
 
@@ -11,7 +11,7 @@ RUN set -eux \
 
 COPY ["Calligraphy.sip","mu_cdata.sip","/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0/Data/Game/"]
 
-FROM mcr.microsoft.com/dotnet/runtime:8.0.22-bookworm-slim
+FROM mcr.microsoft.com/dotnet/runtime:9.0.11-bookworm-slim
 
 COPY --from=build-stage --chown=$APP_UID:$APP_UID ["/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0", "/usr/share/mhserveremu"]
 
