@@ -26,7 +26,7 @@ RUN apt-get update \
     \
     && install -d -o "$APP_UID" -g "$APP_UID" /data
 
-COPY 0.6.0/Config.ini.template /usr/share/mhserveremu/Config.ini.template
+COPY 0.7.0/Config.ini.template /usr/share/mhserveremu/Config.ini.template
 COPY ["docker-entrypoint.sh", "start-server", "/usr/local/bin/"]
 
 VOLUME ["/data"]
