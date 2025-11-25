@@ -1,0 +1,52 @@
+networks:
+  traefik:
+    driver: bridge
+services:
+  mhserveremu:
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.mh.rule: Host(`mhserveremu.localdev`)
+      traefik.http.routers.mh.entrypoints: websecure
+      traefik.http.routers.mh.tls: "true"
+      traefik.http.middlewares.mh-auth-stripprefix.stripprefix.prefixes: "/AuthServer"
+      traefik.http.routers.mh.middlewares: mh-auth-stripprefix@docker
+      traefik.http.services.mh.loadbalancer.server.port: "8080"
+    networks:
+      - traefik
+  static:
+    image: nginx:1
+    restart: unless-stopped
+    volumes:
+      - ./mhserveremu:/usr/share/nginx/html:ro
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.static.rule: Host(`static.mhserveremu.localdev`)
+      traefik.http.routers.static.entrypoints: websecure
+      traefik.http.routers.static.tls: "true"
+      traefik.http.services.static.loadbalancer.server.port: "80"
+    networks:
+      - traefik
+  traefik:
+    image: traefik:3
+    restart: unless-stopped
+    depends_on:
+      - static
+      - mhserveremu
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --providers.file.directory=/etc/traefik/dynamic
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/etc/traefik/certs:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+    networks:
+      - traefik

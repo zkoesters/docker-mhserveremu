@@ -1,0 +1,21 @@
+networks:
+  apache:
+    driver: bridge
+services:
+  mhserveremu:
+    networks:
+      - apache
+  apache:
+    image: httpd:2
+    restart: unless-stopped
+    depends_on:
+      - mhserveremu
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+      - ./mhserveremu:/usr/local/apache2/htdocs:ro
+      - ./certs:/usr/local/apache2/certs:ro
+    networks:
+      - apache

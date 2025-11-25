@@ -1,0 +1,30 @@
+networks:
+  caddy:
+    driver: bridge
+volumes:
+  caddy_data:
+  caddy_config:
+services:
+  mhserveremu:
+    # Expose game traffic directly on the host; Caddy cannot proxy UDP 4306
+    ports:
+      - "4306:4306/tcp"
+      - "4306:4306/udp"
+    networks:
+      - caddy
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - mhserveremu
+    ports:
+      - "80:80"
+      - "443:443"
+      # Note: Caddy does not natively proxy UDP 4306. Keep 4306 published on mhserveremu.
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./mhserveremu:/srv/static:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - caddy
