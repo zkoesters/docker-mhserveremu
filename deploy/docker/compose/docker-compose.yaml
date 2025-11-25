@@ -1,13 +1,22 @@
+# Base compose for running mhserveremu locally.
+#
+# By default this exposes:
+# - 8080/tcp (HTTP API and web UI)
+# - 4306/tcp and 4306/udp (game server traffic)
+#
+# Reverse proxy examples are available as separate override files in this
+# directory. See README.md in this directory for usage instructions.
+
 volumes:
     mhserveremu-data:
 services:
   mhserveremu:
     image: zkoesters/mhserveremu:0.7.0
     environment:
-      FRONTEND_BIND_IP: "0.0.0.0"
       AUTH_ADDRESS: "*"
+      FRONTEND_BIND_IP: "0.0.0.0"
+      FRONTEND_PUBLIC_ADDRESS: "fes.mhserveremu.localdev"
     ports:
-      - "8080:8080/tcp"
       - "4306:4306/tcp"
       - "4306:4306/udp"
     volumes:

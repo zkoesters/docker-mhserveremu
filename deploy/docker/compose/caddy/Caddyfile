@@ -1,0 +1,17 @@
+mhserveremu.localdev {
+    tls internal
+    handle_path /AuthServer/* {
+        uri strip_prefix /AuthServer
+    }
+    reverse_proxy http://mhserveremu:8080
+}
+
+static.mhserveremu.localdev:80 {
+    redir https://static.mhserveremu.localdev{uri} permanent
+}
+
+static.mhserveremu.localdev {
+    tls internal
+    root * /srv/static
+    file_server
+}

@@ -1,0 +1,21 @@
+networks:
+  nginx:
+    driver: bridge
+services:
+  mhserveremu:
+    networks:
+      - nginx
+  nginx:
+    image: nginx:1
+    restart: unless-stopped
+    depends_on:
+      - mhserveremu
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./mhserveremu:/usr/share/nginx/html:ro
+      - ./certs:/etc/ssl/mhserveremu:ro
+    networks:
+      - nginx
