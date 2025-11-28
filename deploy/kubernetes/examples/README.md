@@ -59,11 +59,11 @@ http://static.mhserveremu.localdev/SiteConfig.xml
 
 2b) Create a TLS secret for HTTPS (self‑signed certificate)
 
-The Docker examples include a helper script and a self‑signed certificate for local development. You can reuse those files to create a Kubernetes TLS secret used by all the manifests here.
+A common helper script is provided under `deploy/common/certs` to generate a self‑signed certificate for local development. You can use these files to create a Kubernetes TLS secret used by all the manifests here.
 
 If you need to (re)generate the cert first:
 ```
-cd deploy/docker/compose/certs
+cd deploy/common/certs
 ./generate_certs.sh
 cd -
 ```
@@ -71,11 +71,11 @@ cd -
 Create the TLS secret in the `mhserveremu` namespace:
 ```
 kubectl -n mhserveremu create secret tls mhserveremu-tls \
-  --cert=deploy/docker/compose/certs/server.crt \
-  --key=deploy/docker/compose/certs/server.key
+  --cert=deploy/common/certs/server.crt \
+  --key=deploy/common/certs/server.key
 ```
 
-Browsers will warn about this self‑signed certificate. You can proceed for local testing, or import `deploy/docker/compose/certs/server.crt` into your system trust store.
+Browsers will warn about this self‑signed certificate. You can proceed for local testing, or import `deploy/common/certs/server.crt` into your system trust store.
 
 
 3) Choose and install ONE ingress controller

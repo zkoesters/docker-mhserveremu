@@ -6,9 +6,7 @@ cd "$(dirname "$0")"
 CRT="server.crt"
 KEY="server.key"
 
-if command -v openssl >/dev/null 2>&1; then
-  :
-else
+if ! command -v openssl >/dev/null 2>&1; then
   echo "OpenSSL not found. Please install openssl and re-run." >&2
   exit 1
 fi
