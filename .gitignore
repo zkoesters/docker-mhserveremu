@@ -199,5 +199,6 @@ GitHub.sublime-settings
 
 Calligraphy.sip
 mu_cdata.sip
-/deploy/docker/compose/certs/server.crt
-/deploy/docker/compose/certs/server.key
+/deploy/common/certs/server.crt
+/deploy/common/certs/server.key
+charts/

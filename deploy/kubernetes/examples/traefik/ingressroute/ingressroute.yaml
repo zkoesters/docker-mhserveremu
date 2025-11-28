@@ -1,0 +1,48 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mhserveremu
+  namespace: mhserveremu
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    secretName: mhserveremu-tls
+  routes:
+    - match: Host(`mhserveremu.localdev`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: mh-auth-stripprefix
+      services:
+        - name: mhserveremu
+          port: 8080
+    - match: Host(`static.mhserveremu.localdev`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: mhserveremu-static
+          port: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mhserveremu-redirect
+  namespace: mhserveremu
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`mhserveremu.localdev`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-https
+      services:
+        - name: noop@internal
+          kind: TraefikService
+    - match: Host(`static.mhserveremu.localdev`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-https
+      services:
+        - name: noop@internal
+          kind: TraefikService

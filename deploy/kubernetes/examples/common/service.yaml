@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mhserveremu-static
+  namespace: mhserveremu
+  labels:
+    app: mhserveremu-static
+spec:
+  selector:
+    app: mhserveremu-static
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mhserveremu
+  namespace: mhserveremu
+  labels:
+    app: mhserveremu
+spec:
+  type: ClusterIP
+  selector:
+    app: mhserveremu
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mhserveremu-frontend
+  namespace: mhserveremu
+  labels:
+    app: mhserveremu
+spec:
+  type: LoadBalancer
+  selector:
+    app: mhserveremu
+  ports:
+    - name: frontend-tcp
+      port: 4306
+      targetPort: game-tcp
+      protocol: TCP
+    - name: frontend-udp
+      port: 4306
+      targetPort: game-udp
+      protocol: UDP

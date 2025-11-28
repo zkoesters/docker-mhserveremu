@@ -1,0 +1,38 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ingress-system
+
+resources:
+  - gatewayclass.yaml
+
+helmCharts:
+  - name: gateway-crds-helm
+    repo: oci://docker.io/envoyproxy
+    releaseName: gateway-api-crds
+    namespace: ingress-system
+    valuesInline:
+      crds:
+        gatewayAPI:
+          enabled: true
+          channel: experimental
+  - name: contour
+    repo: https://projectcontour.github.io/helm-charts/
+    releaseName: contour
+    namespace: ingress-system
+    includeCRDs: true
+    valuesInline:
+      configInline:
+        disablePermitInsecure: false
+        tls:
+          fallback-certificate: { }
+        accesslog-format: envoy
+        gateway:
+          gatewayRef:
+            name: mhserveremu
+            namespace: mhserveremu
+      contour:
+        manageCRDs: true
+      gatewayAPI:
+        manageCRDs: false

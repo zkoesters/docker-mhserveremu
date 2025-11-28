@@ -1,0 +1,107 @@
+@import url(../font/BebasNeue-Regular/BebasNeue-Regular.css);
+
+html {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+}
+
+a {
+    text-decoration: none;
+}
+
+span {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 48px;
+
+    background-color: rgba(0, 0, 0, 0.40);
+    text-shadow: black 2px 2px;
+    width: 100%;
+    display: block;
+}
+
+.mtx-embedded-browser {
+    width: 956px;
+    height: 528px;
+}
+
+.carousel-with-three-side-callouts {
+    margin: 4px;
+}
+
+.left-column {
+    float: left;
+}
+
+.right-column {
+    float: right;
+}
+
+.carousel {
+    width: 676px;
+    height: 496px;
+    border: 2px solid;
+    border-color: #00aaff;
+    border-radius: 4px;
+    color: #00aaff;
+    overflow: hidden;
+    background-size: contain;
+    background-position: 50%;
+    background-repeat: no-repeat;
+}
+
+.carousel:hover {
+    border-color: white;
+    color: white;
+}
+
+.carousel span {
+    margin-top: 32px;
+    padding-left: 32px;
+
+}
+
+.callout {
+    width: 260px;
+    height: 160px;
+    border: 2px solid;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    background-size: contain;
+    background-position: 50%;
+    background-repeat: no-repeat;    
+    display : flex;
+    align-items : center;
+    justify-content: center;
+}
+
+.callout:hover {
+    border-color: white;
+    color: white;
+}
+
+.callout span {
+    text-align: center;
+}
+
+.hero {
+    border-color: #ec92ff;
+    color: #ec92ff;
+}
+
+.costume {
+    border-color: #88E497;
+    color: #88E497;
+}
+
+.item {
+    border-color: #ffb347;
+    color: #ffb347;
+}

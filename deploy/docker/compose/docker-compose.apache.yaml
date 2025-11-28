@@ -15,7 +15,7 @@ services:
       - "443:443"
     volumes:
       - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-      - ./mhserveremu:/usr/local/apache2/htdocs:ro
-      - ./certs:/usr/local/apache2/certs:ro
+      - ../../common/mhserveremu:/usr/local/apache2/htdocs:ro
+      - ../../common/certs:/usr/local/apache2/certs:ro
     networks:
       - apache

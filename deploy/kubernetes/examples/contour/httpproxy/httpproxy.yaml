@@ -1,0 +1,46 @@
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: mhserveremu
+  namespace: mhserveremu
+spec:
+  virtualhost:
+    fqdn: mhserveremu.localdev
+    tls:
+      secretName: mhserveremu-tls
+  routes:
+    - conditions:
+        - prefix: /AuthServer
+      pathRewritePolicy:
+        replacePrefix:
+          - prefix: /AuthServer
+            replacement: /
+      permitInsecure: false
+      services:
+        - name: mhserveremu
+          port: 8080
+    - conditions:
+        - prefix: /
+      permitInsecure: false
+      services:
+        - name: mhserveremu
+          port: 8080
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: mhserveremu-static
+  namespace: mhserveremu
+spec:
+  virtualhost:
+    fqdn: static.mhserveremu.localdev
+    tls:
+      secretName: mhserveremu-tls
+  routes:
+    - conditions:
+        - prefix: /
+      permitInsecure: false
+      services:
+        - name: mhserveremu-static
+          port: 80

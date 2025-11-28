@@ -1,0 +1,47 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: mhserveremu
+  namespace: mhserveremu
+spec:
+  gatewayClassName: contour
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: mhserveremu.localdev
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: mhserveremu.localdev
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: mhserveremu-tls
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: http-static
+      protocol: HTTP
+      port: 80
+      hostname: static.mhserveremu.localdev
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https-static
+      protocol: HTTPS
+      port: 443
+      hostname: static.mhserveremu.localdev
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: mhserveremu-tls
+      allowedRoutes:
+        namespaces:
+          from: Same

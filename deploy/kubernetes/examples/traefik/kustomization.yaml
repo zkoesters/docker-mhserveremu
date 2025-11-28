@@ -1,0 +1,34 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ingress-system
+
+helmCharts:
+  - name: gateway-crds-helm
+    repo: oci://docker.io/envoyproxy
+    releaseName: gateway-api-crds
+    namespace: ingress-system
+    valuesInline:
+      crds:
+        gatewayAPI:
+          enabled: true
+          channel: standard
+  - name: traefik-crds
+    repo: https://traefik.github.io/charts
+    releaseName: traefik-crds
+    namespace: ingress-system
+    includeCRDs: true
+    valuesInline:
+      traefik: true
+      gatewayAPI: false
+      gatewayAPIExperimental: false
+  - name: traefik
+    repo: https://traefik.github.io/charts
+    releaseName: traefik
+    namespace: ingress-system
+    valuesInline:
+      providers:
+        kubernetesGateway:
+          enabled: true
+      gateway:
+        enabled: false
