@@ -5,6 +5,11 @@ metadata:
   namespace: mhserveremu
 spec:
   ingressClassName: contour
+  tls:
+    - hosts:
+        - mhserveremu.localdev
+        - static.mhserveremu.localdev
+      secretName: mhserveremu-tls
   rules:
     - host: mhserveremu.localdev
       http:

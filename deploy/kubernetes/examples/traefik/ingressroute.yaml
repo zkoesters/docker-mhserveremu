@@ -5,7 +5,9 @@ metadata:
   namespace: mhserveremu
 spec:
   entryPoints:
-    - web
+    - websecure
+  tls:
+    secretName: mhserveremu-tls
   routes:
     - match: Host(`mhserveremu.localdev`) && PathPrefix(`/`)
       kind: Rule

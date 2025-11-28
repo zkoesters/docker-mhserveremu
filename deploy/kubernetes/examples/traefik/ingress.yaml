@@ -4,9 +4,14 @@ metadata:
   name: mhserveremu
   namespace: mhserveremu
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - mhserveremu.localdev
+        - static.mhserveremu.localdev
+      secretName: mhserveremu-tls
   rules:
     - host: mhserveremu.localdev
       http:

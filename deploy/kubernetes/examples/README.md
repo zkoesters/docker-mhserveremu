@@ -1,6 +1,6 @@
 Overview
 
-This directory contains standalone Kubernetes manifests to run mhserveremu and expose it via different Ingress controllers locally using minikube or kind.
+This directory contains standalone Kubernetes manifests to run mhserveremu and expose it via different Ingress controllers locally using minikube or kind. All examples use HTTPS (port 443) with a self‑signed certificate for local testing, similar to the Docker examples.
 
 What you get
 - A base app (Namespace, Deployment, Service, PVC)
@@ -15,8 +15,9 @@ What you get
  - Optional: Static file hosting at host `static.mhserveremu.localdev` (serves `SiteConfig.xml`)
 
 Notes
-- Ingress exposes only the HTTP API/UI on port 8080. The game traffic on TCP/UDP 4306 is exposed via the Service directly. For local testing, you can port-forward or use a LoadBalancer with `minikube tunnel`.
+- Ingress/Gateway exposes only the HTTP(S) API/UI; the backend service still listens on 8080. The game traffic on TCP/UDP 4306 is exposed via the Service directly. For local testing, you can port-forward or use a LoadBalancer with `minikube tunnel`.
 - Default DNS host used in the examples: `fes.mhserveremu.localdev`.
+- TLS: A single Kubernetes TLS secret named `mhserveremu-tls` is referenced by all examples. See step 2b to create it from the self‑signed certificate bundled with the Docker examples.
 
 
 1) Create a local cluster
@@ -56,6 +57,26 @@ The `SiteConfig.xml` will be available at:
 http://static.mhserveremu.localdev/SiteConfig.xml
 ```
 
+2b) Create a TLS secret for HTTPS (self‑signed certificate)
+
+The Docker examples include a helper script and a self‑signed certificate for local development. You can reuse those files to create a Kubernetes TLS secret used by all the manifests here.
+
+If you need to (re)generate the cert first:
+```
+cd deploy/docker/compose/certs
+./generate_certs.sh
+cd -
+```
+
+Create the TLS secret in the `mhserveremu` namespace:
+```
+kubectl -n mhserveremu create secret tls mhserveremu-tls \
+  --cert=deploy/docker/compose/certs/server.crt \
+  --key=deploy/docker/compose/certs/server.key
+```
+
+Browsers will warn about this self‑signed certificate. You can proceed for local testing, or import `deploy/docker/compose/certs/server.crt` into your system trust store.
+
 
 3) Choose and install ONE ingress controller
 
@@ -75,7 +96,7 @@ kubectl -n ingress-nginx wait --for=condition=Available deployment/ingress-nginx
 
 Apply the example Ingress:
 ```
-kubectl apply -f deploy/kubernetes/examples/ingress-nginx/ingress.yaml
+kubectl apply -f deploy/kubernetes/examples/nginx/ingress.yaml
 ```
 
 
@@ -140,8 +161,8 @@ kubectl -n nginx-gateway wait --for=condition=Available deploy/nginx-gateway --t
 
 Apply the Gateway and HTTPRoute:
 ```
-kubectl apply -f deploy/kubernetes/examples/nginx-gateway/gateway.yaml
-kubectl apply -f deploy/kubernetes/examples/nginx-gateway/httproute.yaml
+kubectl apply -f deploy/kubernetes/examples/nginx/gateway.yaml
+kubectl apply -f deploy/kubernetes/examples/nginx/httproute.yaml
 ```
 
 
@@ -158,8 +179,8 @@ helm upgrade --install traefik traefik/traefik -n traefik --create-namespace \
 
 Apply the Gateway and HTTPRoute:
 ```
-kubectl apply -f deploy/kubernetes/examples/traefik-gateway/gateway.yaml
-kubectl apply -f deploy/kubernetes/examples/traefik-gateway/httproute.yaml
+kubectl apply -f deploy/kubernetes/examples/traefik/gateway.yaml
+kubectl apply -f deploy/kubernetes/examples/traefik/httproute.yaml
 ```
 
 
@@ -175,8 +196,8 @@ kubectl -n projectcontour wait --for=condition=Available deployment/envoy --time
 
 Apply the Gateway and HTTPRoute:
 ```
-kubectl apply -f deploy/kubernetes/examples/contour-gateway/gateway.yaml
-kubectl apply -f deploy/kubernetes/examples/contour-gateway/httproute.yaml
+kubectl apply -f deploy/kubernetes/examples/contour/gateway.yaml
+kubectl apply -f deploy/kubernetes/examples/contour/httproute.yaml
 ```
 
 
@@ -193,40 +214,40 @@ Option A: Port-forward the Ingress Service (works everywhere)
 
 - ingress-nginx:
 ```
-kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8080:80
+kubectl -n ingress-nginx port-forward svc/ingress-nginx-controller 8443:443
 ```
-- Traefik (Helm NodePort install above):
+- Traefik (Helm install above):
 ```
-kubectl -n traefik port-forward svc/traefik 8080:80
+kubectl -n traefik port-forward svc/traefik 8443:443
 ```
 - Contour (Envoy service):
 ```
-kubectl -n projectcontour port-forward svc/envoy 8080:80
+kubectl -n projectcontour port-forward svc/envoy 8443:443
 ```
 
 Gateway API controllers (port-forward one of the following):
 
 - NGINX Gateway Fabric:
 ```
-kubectl -n nginx-gateway port-forward svc/nginx-gateway 8080:80
+kubectl -n nginx-gateway port-forward svc/nginx-gateway 8443:443
 ```
-- Traefik (Helm NodePort install above):
+- Traefik (Helm install above):
 ```
-kubectl -n traefik port-forward svc/traefik 8080:80
+kubectl -n traefik port-forward svc/traefik 8443:443
 ```
 - Contour (Envoy service):
 ```
-kubectl -n projectcontour port-forward svc/envoy 8080:80
+kubectl -n projectcontour port-forward svc/envoy 8443:443
 ```
 
-Then open http://fes.mhserveremu.localdev:8080 in your browser.
+Then open https://fes.mhserveremu.localdev:8443 in your browser.
 
 Option B: Use a LoadBalancer IP (minikube only)
 ```
 minikube tunnel
 kubectl get svc -A | grep -E "ingress-nginx-controller|traefik|envoy"
 ```
-Use the assigned EXTERNAL-IP to access http://fes.mhserveremu.localdev:80.
+Use the assigned EXTERNAL-IP to access https://fes.mhserveremu.localdev:443.
 
 
 5) Access game ports (TCP/UDP 4306)
@@ -250,12 +271,12 @@ Cleanup
 kubectl delete -f deploy/kubernetes/examples/common/static-service.yaml --ignore-not-found
 kubectl delete -f deploy/kubernetes/examples/common/static-deployment.yaml --ignore-not-found
 kubectl delete -f deploy/kubernetes/examples/common/static-configmap.yaml --ignore-not-found
-kubectl delete -f deploy/kubernetes/examples/contour-gateway/httproute.yaml --ignore-not-found
-kubectl delete -f deploy/kubernetes/examples/contour-gateway/gateway.yaml --ignore-not-found
-kubectl delete -f deploy/kubernetes/examples/traefik-gateway/httproute.yaml --ignore-not-found
-kubectl delete -f deploy/kubernetes/examples/traefik-gateway/gateway.yaml --ignore-not-found
-kubectl delete -f deploy/kubernetes/examples/nginx-gateway/httproute.yaml --ignore-not-found
-kubectl delete -f deploy/kubernetes/examples/nginx-gateway/gateway.yaml --ignore-not-found
+kubectl delete -f deploy/kubernetes/examples/contour/httproute.yaml --ignore-not-found
+kubectl delete -f deploy/kubernetes/examples/contour/gateway.yaml --ignore-not-found
+kubectl delete -f deploy/kubernetes/examples/traefik/httproute.yaml --ignore-not-found
+kubectl delete -f deploy/kubernetes/examples/traefik/gateway.yaml --ignore-not-found
+kubectl delete -f deploy/kubernetes/examples/nginx/httproute.yaml --ignore-not-found
+kubectl delete -f deploy/kubernetes/examples/nginx/gateway.yaml --ignore-not-found
 kubectl delete -f deploy/kubernetes/examples/contour/httpproxy.yaml --ignore-not-found
 kubectl delete -f deploy/kubernetes/examples/contour/ingress.yaml --ignore-not-found
 kubectl delete -f deploy/kubernetes/examples/traefik/ingress.yaml --ignore-not-found
