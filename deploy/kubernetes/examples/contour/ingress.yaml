@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mhserveremu
+  namespace: mhserveremu
+spec:
+  ingressClassName: contour
+  rules:
+    - host: mhserveremu.localdev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mhserveremu
+                port:
+                  number: 8080

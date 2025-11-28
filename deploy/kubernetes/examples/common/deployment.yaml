@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mhserveremu
+  namespace: mhserveremu
+  labels:
+    app: mhserveremu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mhserveremu
+  template:
+    metadata:
+      labels:
+        app: mhserveremu
+    spec:
+      containers:
+        - name: mhserveremu
+          image: docker.io/zkoesters/mhserveremu:0.7.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: FRONTEND_BIND_IP
+              value: "0.0.0.0"
+            - name: AUTH_ADDRESS
+              value: "*"
+            - name: FRONTEND_PUBLIC_ADDRESS
+              value: "fe.mhserveremu.localdev"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: game-tcp
+              containerPort: 4306
+              protocol: TCP
+            - name: game-udp
+              containerPort: 4306
+              protocol: UDP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          stdin: true
+          tty: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mhserveremu-data

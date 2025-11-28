@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: mhserveremu
+  namespace: mhserveremu
+spec:
+  gatewayClassName: nginx
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: mhserveremu.localdev
+      allowedRoutes:
+        namespaces:
+          from: Same
