@@ -12,3 +12,8 @@ spec:
       services:
         - name: mhserveremu
           port: 8080
+    - match: Host(`static.mhserveremu.localdev`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: mhserveremu-static
+          port: 80

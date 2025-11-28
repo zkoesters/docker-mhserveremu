@@ -13,3 +13,10 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
+    - name: http-static
+      protocol: HTTP
+      port: 80
+      hostname: static.mhserveremu.localdev
+      allowedRoutes:
+        namespaces:
+          from: Same

@@ -18,3 +18,13 @@ spec:
                 name: mhserveremu
                 port:
                   number: 8080
+    - host: static.mhserveremu.localdev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mhserveremu-static
+                port:
+                  number: 80

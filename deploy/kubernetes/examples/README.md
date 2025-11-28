@@ -12,6 +12,7 @@ What you get
   - NGINX Gateway Fabric
   - Traefik
   - Contour Gateway (Gateway Provisioner)
+ - Optional: Static file hosting at host `static.mhserveremu.localdev` (serves `SiteConfig.xml`)
 
 Notes
 - Ingress exposes only the HTTP API/UI on port 8080. The game traffic on TCP/UDP 4306 is exposed via the Service directly. For local testing, you can port-forward or use a LoadBalancer with `minikube tunnel`.
@@ -42,6 +43,17 @@ kubectl apply -f deploy/kubernetes/examples/common/service.yaml
 Verify:
 ```
 kubectl -n mhserveremu get pods,svc,pvc
+```
+
+2a) Optional: Deploy static file host (serves files at http://static.mhserveremu.localdev)
+```
+kubectl apply -f deploy/kubernetes/examples/common/static-configmap.yaml
+kubectl apply -f deploy/kubernetes/examples/common/static-deployment.yaml
+kubectl apply -f deploy/kubernetes/examples/common/static-service.yaml
+```
+The `SiteConfig.xml` will be available at:
+```
+http://static.mhserveremu.localdev/SiteConfig.xml
 ```
 
 
@@ -173,6 +185,8 @@ kubectl apply -f deploy/kubernetes/examples/contour-gateway/httproute.yaml
 Add to your /etc/hosts (or platform equivalent):
 ```
 127.0.0.1 fes.mhserveremu.localdev
+127.0.0.1 mhserveremu.localdev
+127.0.0.1 static.mhserveremu.localdev
 ```
 
 Option A: Port-forward the Ingress Service (works everywhere)
@@ -233,6 +247,9 @@ kubectl -n mhserveremu get svc mhserveremu -w
 
 Cleanup
 ```
+kubectl delete -f deploy/kubernetes/examples/common/static-service.yaml --ignore-not-found
+kubectl delete -f deploy/kubernetes/examples/common/static-deployment.yaml --ignore-not-found
+kubectl delete -f deploy/kubernetes/examples/common/static-configmap.yaml --ignore-not-found
 kubectl delete -f deploy/kubernetes/examples/contour-gateway/httproute.yaml --ignore-not-found
 kubectl delete -f deploy/kubernetes/examples/contour-gateway/gateway.yaml --ignore-not-found
 kubectl delete -f deploy/kubernetes/examples/traefik-gateway/httproute.yaml --ignore-not-found
