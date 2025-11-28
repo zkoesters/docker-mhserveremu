@@ -33,49 +33,36 @@ kind create cluster --name mhserveremu
 ```
 
 
-2) Deploy the base app
+2) Deploy using Kustomize (one command)
+
+The common example now includes a `kustomization.yaml` that:
+- Creates the `mhserveremu` namespace
+- Deploys the app `Deployment` and `Service`
+- Deploys the optional static file host (Deployment + Service)
+- Generates the slim `mhserveremu-static-files` ConfigMap with only `SiteConfig.xml` and `LiveLoadingTips.xml`
+- Creates the TLS secret `mhserveremu-tls` from the bundled self‑signed cert
+
+Because the kustomization references files outside its directory (static XMLs and TLS certs under `deploy/common`), you must relax Kustomize’s load restrictor. If you are using kind, run:
 ```
-kubectl apply -f deploy/kubernetes/examples/common/namespace.yaml
-kubectl apply -f deploy/kubernetes/examples/common/pvc.yaml
-kubectl apply -f deploy/kubernetes/examples/common/deployment.yaml
-kubectl apply -f deploy/kubernetes/examples/common/service.yaml
+kubectl kustomize --load-restrictor=LoadRestrictionsNone deploy/kubernetes/examples/common/ | \
+  kubectl --context kind-kind apply -f -
 ```
+
+Notes
+- If you need to (re)generate the self‑signed certs first, use `deploy/common/certs/generate_certs.sh`.
 
 Verify:
 ```
-kubectl -n mhserveremu get pods,svc,pvc
+kubectl -n mhserveremu get pods,svc,pvc,cm,secret
 ```
 
-2a) Optional: Deploy static file host (serves files at http://static.mhserveremu.localdev)
-```
-kubectl apply -f deploy/kubernetes/examples/common/static-configmap.yaml
-kubectl apply -f deploy/kubernetes/examples/common/static-deployment.yaml
-kubectl apply -f deploy/kubernetes/examples/common/static-service.yaml
-```
-The `SiteConfig.xml` will be available at:
-```
-http://static.mhserveremu.localdev/SiteConfig.xml
-```
+Static host
+- Once applied, `SiteConfig.xml` will be served at:
+  ```
+  http://static.mhserveremu.localdev/SiteConfig.xml
+  ```
 
-2b) Create a TLS secret for HTTPS (self‑signed certificate)
-
-A common helper script is provided under `deploy/common/certs` to generate a self‑signed certificate for local development. You can use these files to create a Kubernetes TLS secret used by all the manifests here.
-
-If you need to (re)generate the cert first:
-```
-cd deploy/common/certs
-./generate_certs.sh
-cd -
-```
-
-Create the TLS secret in the `mhserveremu` namespace:
-```
-kubectl -n mhserveremu create secret tls mhserveremu-tls \
-  --cert=deploy/common/certs/server.crt \
-  --key=deploy/common/certs/server.key
-```
-
-Browsers will warn about this self‑signed certificate. You can proceed for local testing, or import `deploy/common/certs/server.crt` into your system trust store.
+Browsers will warn about the bundled self‑signed certificate. You can proceed for local testing, or import `deploy/common/certs/server.crt` into your system trust store.
 
 
 3) Choose and install ONE ingress controller

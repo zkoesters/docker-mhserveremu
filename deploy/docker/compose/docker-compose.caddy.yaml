@@ -23,7 +23,7 @@ services:
       # Note: Caddy does not natively proxy UDP 4306. Keep 4306 published on mhserveremu.
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./mhserveremu:/srv/static:ro
+      - ../../common/mhserveremu:/srv/static:ro
       - caddy_data:/data
       - caddy_config:/config
     networks:

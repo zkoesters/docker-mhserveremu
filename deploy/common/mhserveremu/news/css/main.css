@@ -1,0 +1,78 @@
+@import url(../font/BebasNeue-Regular/BebasNeue-Regular.css);
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+
+    background: #00131a url(../images/background.jpg) no-repeat;
+    background-size: auto;
+}
+
+h1 {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    width: 100%;
+    text-align: center;
+
+    background-color: rgba(0, 0, 0, 0.15);
+    color: white;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 48px;
+    text-shadow: black 2px 2px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.content-container {
+    width: 988px;
+    height: 644px;
+}
+
+.slide-container {
+    margin: 4px;
+}
+
+.slide {
+    display: flex;
+    float: left;
+    margin: 2px;
+    overflow: hidden;
+
+    border: 2px solid #00aaff;
+    border-radius: 4px;
+    background-size: cover;
+    background-position: 50%;
+    color: #d7d7d7;
+}
+
+.slide:hover {
+    border-color: white;
+    color: white;
+}
+
+.big-slide {
+    width: 481px;
+    height: 300px;
+}
+
+.small-slide {
+    width: 318px;
+    height: 240px;
+}
+
+.slide-text-container {
+    align-self: flex-end;
+    width: 100%;
+    height: auto;
+    padding: 4px 8px;
+    
+    background-color: rgba(0, 0, 0, 0.40);
+    font: 24px Verdana;
+    text-shadow: black 2px 2px;
+}
