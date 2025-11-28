@@ -17,7 +17,7 @@ services:
     image: nginx:1
     restart: unless-stopped
     volumes:
-      - ./mhserveremu:/usr/share/nginx/html:ro
+      - ../../common/mhserveremu:/usr/share/nginx/html:ro
     labels:
       traefik.enable: "true"
       traefik.http.routers.static.rule: Host(`static.mhserveremu.localdev`)
@@ -46,7 +46,7 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./certs:/etc/traefik/certs:ro
+      - ../../common/certs:/etc/traefik/certs:ro
       - ./traefik/dynamic:/etc/traefik/dynamic:ro
     networks:
       - traefik

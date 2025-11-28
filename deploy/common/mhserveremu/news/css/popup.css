@@ -1,0 +1,66 @@
+@import url(../font/BebasNeue-Regular/BebasNeue-Regular.css);
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background: #00131a url(../images/background.jpg) no-repeat center top;
+    background-size: auto;
+    background-attachment: fixed; 
+}
+
+h1, h2, h3, h4, h5, h6  {
+    margin-top: 12px;
+    margin-bottom: 12px;
+
+    color: white;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1 {
+    font-size: 48px;
+}
+
+h2 {
+    font-size: 32px;
+}
+
+li {
+    color: #d7d7d7;
+    font: 12px/1.385 Verdana;
+}
+
+.content-container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    width: 570px;
+    height: auto;
+    padding: 20px;
+
+    border: 2px solid #00aaff;
+    border-radius: 4px;
+    background-color: rgba(0, 9, 14, 0.40);
+}
+
+.close-button {
+    position: fixed;
+    bottom: 16px;
+    width: 570px;
+    height: auto;
+    text-align: center;
+
+    border: 2px solid #00aaff;
+    border-radius: 4px;
+    background-color: #00090E;
+    color: #d7d7d7;
+    font: 18px/1.385 Verdana;
+}
+
+.close-button:hover {
+    border-color: white;
+    color: white;
+}

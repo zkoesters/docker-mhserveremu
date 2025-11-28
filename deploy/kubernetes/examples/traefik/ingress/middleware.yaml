@@ -1,0 +1,20 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+  namespace: mhserveremu
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: mh-auth-stripprefix
+  namespace: mhserveremu
+spec:
+  stripPrefix:
+    prefixes:
+      - /AuthServer

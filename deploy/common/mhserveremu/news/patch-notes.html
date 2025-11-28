@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MHServerEmu 0.7.0 Patch Notes</title>
+    <link rel="stylesheet" href="css/popup.css">
+</head>
+<body>
+<div class="content-container">
+<h1>MHServerEmu 0.7.0 Patch Notes</h1>
+
+<h2>General</h2>
+<ul>
+	<li>Overhauled game thread management, resulting in significant load balancing improvements in multiplayer scenarios.</li>
+	<ul>
+		<li>The number of game threads can be configured using the new NumWorkerThreads setting in Config.ini. We recommend to set this value to be less or equal to the available number of logical CPUs.</li>
+	</ul>
+	<li>Improved frame timing when running the server on Windows.</li>
+	<li>Implemented login queues:</li>
+	<ul>
+		<li>Login queues can be configured using the new ServerCapacity and MaxLoginQueueClients settings in Config.ini.</li>
+		<li>The following settings have been removed: SimulateQueue, QueuePlaceInLine, and QueueNumberOfPlayersInLine.</li>
+	</ul>
+	<li>Implemented Whitelist mode:</li>
+	<ul>
+		<li>When enabled, only accounts that have been explicitly whitelisted can log into the game.</li>
+		<li>Whitelist mode can be enabled with the new UseWhitelist setting in Config.ini.</li>
+		<li>Accounts can be added to and removed from the whitelist using the new !whitelist and !unwhitelist commands.</li>
+	</ul>
+	<li>Player data is now automatically saved when transferring between game instances.</li>
+	<li>Player data saving can now be disabled by setting EnablePersistence to false in Config.ini.</li>
+	<li>Improved the SQLite persistence layer:</li>
+	<ul>
+		<li>The database now uses the WAL mode, resulting in increased concurrent performance. You may now see additional .shm and .wal files in the Data directory while the server is running.</li>
+		<li>Switched to using the SQLite backup API for creating automatic backups.</li>
+		<li>Automatic backups are now created asynchronously.</li>
+		<li>Migration scripts are now embedded in the MHServerEmu.DatabaseAccess.dll file. If you are upgrading from an older version of the server, the MHServerEmu\Data\SQLite folder is no longer needed and can be removed.</li>
+		<li>Optimized entity queries.</li>
+	</ul>
+	<li>The ConfigOverride.ini file is now automatically created on server startup if it does not already exist.</li>
+	<li>Adjusted default network settings:</li>
+	<ul>
+		<li>Increased the receive timeout from 30 to 60 seconds.</li>
+		<li>Changed the Frontend bind IP to 0.0.0.0 to simplify configuration for LAN play.</li>
+		<ul>
+			<li>You still need to specify an accessible IP address in Config.ini and SiteConfig.xml to allow remote clients to connect to your server.</li>
+		</ul>
+	</ul>
+	<li>Made changes to the web API:</li>
+	<ul>
+		<li>Removed performance metrics from the /ServerStatus endpoint.</li>
+		<li>Improved the html output of the /Metrics/Performance endpoint.</li>
+		<li>Added the /RegionReport endpoint.</li>
+	</ul>
+	<li>Players can now kill their current hero using the new !player die command. This can be used if your hero or the encounter you are in gets stuck.</li>
+	<li>Improved the achievement system:</li>
+	<ul>
+		<li>Implemented additional achievement tracking events, resulting in more achievements being earnable.</li>
+		<li>Fantastic Four related achievements are now earnable again.</li>
+		<li>Implemented overrides for the AchievementInfoMap.json file that function similar to Live Tuning and prototype patches.</li>
+		<li>Added an example AchievementInfoMap override that restores unreleased party achievements. This is disabled by default.</li>
+	</ul>
+	<li>Implemented AI leashing.</li>
+	<li>Continued to incrementally improve optimization.</li>
+</ul>
+
+<h2>Social</h2>
+<ul>
+	<li>Implemented Friend and Ignore lists.</li>
+	<li>Implemented parties.</li>
+	<li>Implemented the eGTV_PartyXPBonusPct Live Tuning variable.</li>
+	<li>Implemented reviving other players by interacting with them.</li>
+	<li>Implemented Tells (private chat messages).</li>
+	<ul>
+		<li>By default, the text of Tells is not included in server logs. You can configure this using the new LogTells setting in Config.ini.</li>
+	</ul>
+	<li>Server notifications are now logged with other chat messages when split logging is enabled.</li>
+	<li>Renamed Grouping config settings:</li>
+	<ul>
+		<li>MotdPlayerName -> ServerName.</li>
+		<li>MotdPrestigeLevel -> ServerPrestigeLevel.</li>
+	</ul>
+</ul>
+
+<h2>Regions</h2>
+<ul>
+	<li>Overhauled region instancing:</li>
+	<ul>
+		<li>Public regions are now processed independently from other regions, preventing lagging public regions from “dragging down” other regions with them.</li>
+		<li>Public regions now follow expiration and regeneration behaviors defined in the original game data.</li>
+		<li>There is now only a single instance of each hub region.</li>
+		<li>Players can now transfer between regions within the same game instance without doing a full reload. This is mostly a backend change that results in faster loading times in some cases (e.g. transferring between Danger Room levels).</li>
+		<li>Match regions (e.g. X-Defense, Holo-Sim, raids, etc.) are now treated as private regions. To play in these regions with other players you now need to invite them to your party.</li>
+		<li>Private story instances (e.g. The Raft) now reset when you swap to a different hero.</li>
+		<li>All regions now reset on prestige.</li>
+		<li>The following instancing related settings have been removed from Config.ini: GameInstanceCount, PlayerCountDivisor, RegionCleanupIntervalMS, and RegionUnvisitedThresholdMS.</li>
+	</ul>
+	<li>Players now return to the last visited hub region on logout.</li>
+	<li>Bodysliding or using a “Travel to Base” portal now returns the player to the last visited hub region.</li>
+	<li>Player can now return from hubs to the last bodyslide location.</li>
+	<li>Added collision checking when entering a region to reduce overlap of players in the start location.</li>
+	<li>Revealed map now persists for up to 8 hours on logout.</li>
+</ul>
+
+<h2>Regions</h2>
+<ul>
+	<li>Implemented additional power events:</li>
+	<ul>
+		<li>DespawnTarget (used by Purifier commanders).</li>
+		<li>TeleportToPartyMember.</li>
+		<li>TeleportRegion (used for Surtur boss teleports in Muspelheim).</li>
+	</ul>
+	<li>Implemented power specs.</li>
+</ul>
+
+<h2>Items</h2>
+<ul>
+	<li>Implemented crafting.</li>
+	<li>Implemented runewords.</li>
+	<li>Implemented PetTech affixes.</li>
+	<li>Implemented item stack splitting.</li>
+	<li>Implemented remaining item interaction actions:</li>
+	<ul>
+		<li>Learning crafting recipes.</li>
+		<li>Unlocking STASH tabs.</li>
+		<li>Team-up experience potion.</li>
+		<li>Opening a UI panel (e.g. Vibranium Ticket).</li>
+		<li>Unlocking emotes.</li>
+	</ul>
+	<li>Updated the default store catalog:</li>
+	<ul>
+		<li>Removed development only costumes.</li>
+		<li>Removed costumes that come from non-store sources (Fortune Cards, achievements, and default costumes).</li>
+		<li>Added appropriate prices for the remaining costumes that were excluded from the store by default (e.g. Fantastic Four costumes).</li>
+		<li>Added Fantastic Four heroes and their stash tabs.</li>
+		<ul>
+			<li>The !unlock hero command has been removed because the heroes it was added to unlock are now available in the store.</li>
+		</ul>
+	</ul>
+	<li>Store bundle purchases have been disabled until the bundle feature works properly to prevent players from accidentally wasting G.</li>
+	<li>Increased the default G balance for new accounts from 5000 to 10000. This affects only accounts that log in for the first time after this change.</li>
+	<li>Replaced the LootDropWeightMultiplierOverride system with prototype patches.</li>
+	<li>The Eternity Splinter drop cooldown can now be adjusted using the new  ESCooldownOverrideMinutes setting in Config.ini.</li>
+	<li>Eternity Splinters that drop at the same time can now be forced to drop as a single stack using the new CombineESStacks setting in Config.ini.</li>
+	<li>Separated the !player costume default subcommand into its own command, !player disablevu. The !player costume command is now available only to server admins, while !player disablevu is available to all players.</li>
+	<li>Loot boxes that use the ReplaceSelfLootTable action (e.g. S.H.I.E.L.D. Supply Drop) no longer overflow into the Delivery Box inventory.</li>
+	<li>Added a new !item cleardeliverybox command that can be used to destroy all items in the Delivery Box inventory.</li>
+	<li>Heroes can no longer gain full experience value from orbs that were spawned for other heroes.</li>
+	<li>Added a patch to revert the 99.9% artifact drop chance reduction introduced by Gazillion along with S.H.I.E.L.D. Supply Boosts.</li>
+</ul>
+
+<h2>Bug Fixes</h2>
+<ul>
+	<li>Fixed a crash when invoking leaderboard commands from the in-game chat.</li>
+	<li>Fixed a crash when trying to reload leaderboard schedule with the leaderboard system disabled.</li>
+	<li>Fixed an issue where the MaxResetCount setting allowed leaderboards to run one more time than intended.</li>
+	<li>Fixed an issue where leaderboard entries were written to the database repeatedly even if there were no changes.</li>
+	<li>Fixed a major memory leak that occurred when players disconnected if the leaderboard system was turned on.</li>
+	<li>Fixed a minor memory leak caused by ItemResolverContext not being cleared when ItemResolver instances were returned to a pool.</li>
+	<li>Fixed a minor memory leak that occurred when entity instances failed to enter world due to their initial coordinates being outside of region bounds.</li>
+	<li>Fixed a minor memory leak that occurred when interacting with items that use eval-based validation.</li>
+	<li>Fixed an issue that prevented loot tables from spawning props.</li>
+	<li>Fixed an issue where loot drops that are supposed to roll only on specific days of the week would always be eligible for rolling.</li>
+	<li>Fixed an issue that prevented raid encounters from resetting after reaching the player death limit.</li>
+	<li>Fixed an issue that prevented additional power spec pages from being unlockable.</li>
+	<li>Fixed an issue where loot tables that use the PickWeightTryAll picking method were not using the weights specified in choice node prototypes.</li>
+	<li>Fixed an issue where that caused the inner part of Loki’s Energy Ring in phase 2 to damage players. This also makes safe spots during the Surtur fight in Muspelheim work more consistently.</li>
+	<li>Fixed a crash related to spawners when shutting down game instances.</li>
+	<li>Fixed an issue that prevented controlled entities with dramatic entrance animations from being affected by hidden passive powers when loading into a region.</li>
+</ul>
+
+<a href="#" onclick="myApi.CloseNewsUrl()">
+<div class="close-button">
+	<span>Close</span>
+</div>
+</a>
+</div>
+</body>
+</html>

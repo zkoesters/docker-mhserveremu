@@ -1,0 +1,81 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mhserveremu
+  namespace: mhserveremu
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - mhserveremu.localdev
+      secretName: mhserveremu-tls
+  rules:
+    - host: mhserveremu.localdev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mhserveremu
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mhserveremu-static
+  namespace: mhserveremu
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - static.mhserveremu.localdev
+      secretName: mhserveremu-tls
+  rules:
+    - host: static.mhserveremu.localdev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mhserveremu-static
+                port:
+                  number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mhserveremu-auth-rewrite
+  namespace: mhserveremu
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - mhserveremu.localdev
+      secretName: mhserveremu-tls
+  rules:
+    - host: mhserveremu.localdev
+      http:
+        paths:
+          - path: /AuthServer(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mhserveremu
+                port:
+                  number: 8080

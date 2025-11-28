@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ingress-system
+
+helmCharts:
+  - name: gateway-crds-helm
+    repo: oci://docker.io/envoyproxy
+    releaseName: gateway-api-crds
+    namespace: ingress-system
+    valuesInline:
+      crds:
+        gatewayAPI:
+          enabled: true
+          channel: standard
+  - name: nginx-gateway-fabric
+    repo: oci://ghcr.io/nginx/charts
+    releaseName: nginx-gateway-fabric
+    namespace: ingress-system
+    includeCRDs: true
+  - name: ingress-nginx
+    repo: https://kubernetes.github.io/ingress-nginx
+    releaseName: ingress-nginx
+    namespace: ingress-system
+    valuesInline:
+      controller:
+        config:
+          http-redirect-code: "301"

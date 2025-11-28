@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="mtx-embedded-browser">
+        <div class="carousel-with-three-side-callouts column-container">
+            <div class="left-column column">
+                <div class="carousel-container">
+                    <a onclick="myApi.OpenCatalogToItem('SpecialsPage', '')" href="#">
+                        <div class="carousel" style="background-image: url('images/carousel.png')">
+                            <span>Welcome!</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="right-column column">
+                <div class="three-callouts callouts">
+                    <a class="overlay" onclick="myApi.OpenCatalogToItem('HeroesPage', '')" href="#">
+                        <div class="callout hero" style="background-image: url('images/callout_hero.png')">
+                            <span>Heroes</span>
+                        </div>
+                    </a>
+                    <a class="overlay" onclick="myApi.OpenCatalogToItem('CostumesPage', '0x1CA0070')" href="#">
+                        <div class="callout costume" style="background-image: url('images/callout_costume.png')">
+                            <span>Costumes</span>
+                        </div>
+                    </a>
+                    <a class="overlay" onclick="myApi.OpenCatalogToItem('BoostsPage', '')" href="#">
+                        <div class="callout item" style="background-image: url('images/callout_item.png')">
+                            <span>Items</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

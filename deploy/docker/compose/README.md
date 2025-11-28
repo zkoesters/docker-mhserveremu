@@ -61,7 +61,7 @@ For local setups you can generate a self-signed certificate that covers
 Use the helper script:
 
 ```bash
-cd deploy/docker/compose/certs
+cd deploy/common/certs
 ./generate_certs.sh
 ```
 
