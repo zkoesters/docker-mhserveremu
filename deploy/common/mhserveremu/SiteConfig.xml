@@ -30,7 +30,7 @@
     <str name="ChangePasswordURL" value="https://login.marvelheroes.com/dashboard/changepassword.php" />
     <bool name="EnableLiveTips" value="false" />
     <bool name="EnableLiveTipsDownloader" value="false" />
-    <str name="LoadScreenTipsURL" value="http://cdn.marvelheroes.com/marvelheroes/liveloadingtips.xml" />
+    <str name="LoadScreenTipsURL" value="https://static.mhserveremu.localdev/LiveLoadingTips.xml" />
     <int name="LiveTipsQueryInterval" value="15" />
     <str name="ConfirmEmailFAQ" value="https://d5.parature.com/ics/support/default.asp?deptID=15144" />
     <str name="YouTubeVideoPlayer" value="http://storecdn.marvelheroes.com/cdn/youtubePlayer.html?videoId=%S&amp;height=%d&amp;width=%d&amp;protoId=%S" />

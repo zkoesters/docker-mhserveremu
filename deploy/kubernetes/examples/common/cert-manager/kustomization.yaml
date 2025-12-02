@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - clusterissuer.yaml
+  - certificaterequestpolicy.yaml
+  - certificate.yaml
+
+helmCharts:
+  - name: cert-manager
+    repo: oci://quay.io/jetstack/charts
+    releaseName: cert-manager
+    namespace: cert-manager-system
+    valuesInline:
+      crds:
+        enabled: true
+  - name: cert-manager-approver-policy
+    repo: oci://quay.io/jetstack/charts
+    releaseName: cert-manager-approver-policy
+    namespace: cert-manager-system
+    valuesInline:
+      crds:
+        enabled: true
+
+generatorOptions:
+  disableNameSuffixHash: true
