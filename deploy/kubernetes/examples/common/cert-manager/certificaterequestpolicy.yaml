@@ -1,0 +1,19 @@
+apiVersion: policy.cert-manager.io/v1alpha1
+kind: CertificateRequestPolicy
+metadata:
+  name: allow-mhserveremu
+spec:
+  selector:
+    issuerRef:
+      name: my-cluster-issuer
+      kind: ClusterIssuer
+  allowed:
+    commonName:
+      value: "mhserveremu.localdev"
+    dnsNames:
+      values:
+        - "mhserveremu.localdev"
+        - "static.mhserveremu.localdev"
+    usages:
+      - digital signature
+      - key encipherment
