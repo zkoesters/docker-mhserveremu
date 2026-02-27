@@ -19,10 +19,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - version: '0.6.0'
-            path: '0.6.0'
-          - version: '0.6.0-alpine'
-            path: '0.6.0/alpine'
           - version: '0.7.0'
             path: '0.7.0'
           - version: '0.7.0-alpine'
