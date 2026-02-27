@@ -4,7 +4,7 @@ WORKDIR /tmp/MHServerEmu
 
 RUN set -eux \
     \
-    && git clone --depth 1 --branch 0.6.0 https://github.com/Crypto137/MHServerEmu.git /tmp/MHServerEmu \
+    && git clone --depth 1 --branch 0.8.0 https://github.com/Crypto137/MHServerEmu.git /tmp/MHServerEmu \
     && dotnet restore MHServerEmu.sln \
     && dotnet build MHServerEmu.sln --no-restore --configuration Release \
     && dotnet test MHServerEmu.sln --no-build --no-restore --configuration Release
@@ -26,13 +26,13 @@ RUN apt-get update \
     \
     && install -d -o "$APP_UID" -g "$APP_UID" /data
 
-COPY 0.6.0/Config.ini.template /usr/share/mhserveremu/Config.ini.template
-COPY ["docker-entrypoint.sh", "start-server", "/usr/local/bin/"]
+COPY 0.8.0/Config.ini.template /usr/share/mhserveremu/Config.ini.template
+COPY ["docker-entrypoint-nightly.sh", "start-server", "/usr/local/bin/"]
 
 VOLUME ["/data"]
 
 USER $APP_UID
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint-nightly.sh"]
 
 CMD ["start-server"]
