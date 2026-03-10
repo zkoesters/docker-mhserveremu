@@ -111,11 +111,15 @@ BackupIntervalMinutes=%%BACKUP_INTERVAL_MINUTES%%
 PlayerName=Player
 
 [GroupingManager]
-;          ServerName: Name in chat for system messages sent by the server.
-; ServerPrestigeLevel: Determines the color of the server's name in system messages.
-;                      0 - white, 1 - green, 2 - blue, 3 - purple, 4 - orange, 5 - red, 6 - yellow (cosmic).
-;            MotdText: Message of the day text.
-;            LogTells: When enabled, the text of tell (private) messages is included in server logs.
+;             ServerName: Name in chat for system messages sent by the server.
+;    ServerPrestigeLevel: Determines the color of the server's name in system messages.
+;                         0 - white, 1 - green, 2 - blue, 3 - purple, 4 - orange, 5 - red, 6 - yellow (cosmic).
+;               MotdText: Message of the day text.
+;    LogPrivateChatRooms: When enabled, the text of messages in private chat rooms (tell, party, guild) is included in server logs.
+;         EnableChatTips: When enabled, the server periodically broadcasts chat tips to all players.
+;        ChatTipFileName: Name of the file in the data directory that contains chat tips.
+; ChatTipIntervalMinutes: Interval for broadcasting chat tips in minutes.
+;         ChatTipShuffle: Randomizes the order of chat tips on load.
 
 ServerName=MHServerEmu
 ServerPrestigeLevel=6
