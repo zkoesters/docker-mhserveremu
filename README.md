@@ -2,16 +2,16 @@
 
 The `zkoesters/mhserveremu` image provides tags for running [MHServerEmu](https://github.com/Crypto137/MHServerEmu).
 
-# Versions ( 2026-02-26 )
+# Versions ( 2026-03-10 )
 
-Recommended version for the new users: `zkoesters/mhserveremu:0.8.0`
+Recommended version for the new users: `zkoesters/mhserveremu:0.8.1`
 
 ### Debian based:
 
 | DockerHub image                                                                                                   | Dockerfile                                                                                 | OS              | dotnet | MHServerEmu |
 |-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|-----------------|--------|-------------|
 | [zkoesters/mhserveremu:0.7.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.7.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.7.0/Dockerfile)   | debian:bookworm | 8.0.22 | 0.7.0       |
-| [zkoesters/mhserveremu:0.8.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.8.0/Dockerfile)   | debian:bookworm | 8.0.22 | 0.8.0       |
+| [zkoesters/mhserveremu:0.8.1](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.8.1/Dockerfile)   | debian:bookworm | 8.0.22 | 0.8.1       |
 | [zkoesters/mhserveremu:nightly](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/nightly/Dockerfile) | debian:bookworm | 8.0.22 | master      |
 
 ### Alpine based:
@@ -19,14 +19,14 @@ Recommended version for the new users: `zkoesters/mhserveremu:0.8.0`
 | DockerHub image                                                                                                                 | Dockerfile                                                                                        | OS          | dotnet | MHServerEmu |
 |---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-------------|--------|-------------|
 | [zkoesters/mhserveremu:0.7.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.7.0-alpine)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.7.0/alpine/Dockerfile)   | alpine:3.22 | 8.0.22 | 0.7.0       |
-| [zkoesters/mhserveremu:0.8.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.0-alpine)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.8.0/alpine/Dockerfile)   | alpine:3.22 | 8.0.22 | 0.8.0       |
+| [zkoesters/mhserveremu:0.8.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1-alpine)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.8.1/alpine/Dockerfile)   | alpine:3.22 | 8.0.22 | 0.8.1       |
 | [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/nightly/alpine/Dockerfile) | alpine:3.22 | 8.0.22 | master      |
 
 ## Configuration
 
 The images expose environment variables to generate `Config.ini` at container start. The set differs between releases. The table below lists all variables and the versions that support them.
 
-| Environment Variable                                  | Default                                    | 0.7.0              | 0.8.0              | Nightly            |
+| Environment Variable                                  | Default                                    | 0.7.0              | 0.8.1              | Nightly            |
 |-------------------------------------------------------|--------------------------------------------|--------------------|--------------------|--------------------|
 | `FRONTEND_BIND_IP`                                    | `127.0.0.1`                                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `FRONTEND_PORT`                                       | `4306`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
