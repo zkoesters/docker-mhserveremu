@@ -52,7 +52,7 @@ docker_sqlite3() {
 
 tries=10
 while ! docker_curl "http://$cname:8080/ServerStatus" &> /dev/null; do
-    (( tries-- ))
+    tries=$((tries - 1))
     if [ $tries -le 0 ]; then
         echo >&2 'server failed to accept connections in a reasonable amount of time!'
         docker_curl "http://$cname:8080/ServerStatus" # to hopefully get a useful error message
@@ -66,7 +66,7 @@ done
 # Validate SQLite database was created and is accessible
 tries=10
 while ! docker_sqlite3 "SELECT 1;" &> /dev/null; do
-    (( tries-- ))
+    tries=$((tries - 1))
     if [ $tries -le 0 ]; then
         echo >&2 'sqlite db failed to accept connections in a reasonable amount of time!'
         docker_sqlite3 "SELECT 1;"   # get a useful error message
