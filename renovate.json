@@ -7,7 +7,9 @@
     {
       "customType": "regex",
       "description": "Update Docker image versions in test helper scripts",
-      "fileMatch": ["^test/.*\\.sh$"],
+      "managerFilePatterns": [
+        "/^test/.*\\.sh$/"
+      ],
       "matchStrings": [
         "_IMAGE=\"(?<depName>[a-z0-9][a-z0-9._/-]+):(?<currentValue>[A-Za-z0-9._-]+)\""
       ],
