@@ -11,9 +11,12 @@ volumes:
     mhserveremu-data:
 services:
   mhserveremu:
-    image: zkoesters/mhserveremu:0.8.0
+    image: zkoesters/mhserveremu:1.0.0
+    env_file:
+      - path: .env
+        required: false
     environment:
-      AUTH_ADDRESS: "*"
+      WEBFRONTEND_ADDRESS: "*"
       FRONTEND_BIND_IP: "0.0.0.0"
       FRONTEND_PUBLIC_ADDRESS: "fes.mhserveremu.localdev"
     ports:

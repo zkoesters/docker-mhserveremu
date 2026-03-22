@@ -1,0 +1,13 @@
+{
+  "Exclude": [
+    "\\.idea/",
+    "LICENSE",
+    "IMPROVEMENT_PLAN\\.md",
+    "deploy/common/mhserveremu/",
+    "\\.sip$",
+    "test/mhserveremu-config\\.sh"
+  ],
+  "Disable": {
+    "IndentSize": true
+  }
+}
