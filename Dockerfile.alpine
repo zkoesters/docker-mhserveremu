@@ -9,8 +9,8 @@
 #
 # Multi-arch: supports linux/amd64 and linux/arm64 via TARGETARCH.
 
-ARG DOTNET_SDK_TAG=8.0.416-alpine3.22
-ARG DOTNET_RUNTIME_TAG=8.0.22-alpine3.22
+ARG DOTNET_SDK_TAG=10.0.103-alpine3.22
+ARG DOTNET_RUNTIME_TAG=10.0.3-alpine3.22
 
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_TAG} AS build-stage
 
