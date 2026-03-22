@@ -10,17 +10,17 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.0`
 
 | DockerHub image                                                                                                   | Dockerfile                                                                                 | OS              | dotnet | MHServerEmu |
 |-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|-----------------|--------|-------------|
-| [zkoesters/mhserveremu:0.8.1](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.8.1/Dockerfile)   | debian:bookworm | 8.0.22 | 0.8.1       |
-| [zkoesters/mhserveremu:1.0.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/1.0.0/Dockerfile)   | debian:bookworm | 8.0.22 | 1.0.0       |
-| [zkoesters/mhserveremu:nightly](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/nightly/Dockerfile) | debian:bookworm | 8.0.22 | master      |
+| [zkoesters/mhserveremu:0.8.1](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.22 | 0.8.1       |
+| [zkoesters/mhserveremu:1.0.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.22 | 1.0.0       |
+| [zkoesters/mhserveremu:nightly](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.22 | master      |
 
 ### Alpine based:
 
 | DockerHub image                                                                                                                 | Dockerfile                                                                                        | OS          | dotnet | MHServerEmu |
 |---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-------------|--------|-------------|
-| [zkoesters/mhserveremu:0.8.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1-alpine)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/0.8.1/alpine/Dockerfile)   | alpine:3.22 | 8.0.22 | 0.8.1       |
-| [zkoesters/mhserveremu:1.0.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0-alpine)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/1.0.0/alpine/Dockerfile)   | alpine:3.22 | 8.0.22 | 1.0.0       |
-| [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/nightly/alpine/Dockerfile) | alpine:3.22 | 8.0.22 | master      |
+| [zkoesters/mhserveremu:0.8.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.22 | 8.0.22 | 0.8.1       |
+| [zkoesters/mhserveremu:1.0.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.22 | 8.0.22 | 1.0.0       |
+| [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.22 | 8.0.22 | master      |
 
 ## Configuration
 

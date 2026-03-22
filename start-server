@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# start-server — Simple wrapper that exec's the MHServerEmu binary.
+# Used as the default CMD in the Docker image.
 set -e
 
 exec MHServerEmu

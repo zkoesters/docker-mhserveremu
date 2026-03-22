@@ -3,63 +3,25 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - "**/Dockerfile"
+      - "Dockerfile"
+      - "Dockerfile.alpine"
+      - "docker-entrypoint.sh"
+      - "start-server"
+      - "**/Config.ini.template"
+      - "Makefile"
   workflow_dispatch:
-env:
-  IMAGE_NAME: zkoesters/mhserveremu
 jobs:
-  docker:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - version: '0.8.1'
-            path: '0.8.1'
-          - version: '0.8.1-alpine'
-            path: '0.8.1/alpine'
-          - version: '1.0.0'
-            path: '1.0.0'
-          - version: '1.0.0-alpine'
-            path: '1.0.0/alpine'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Set up rclone
-        uses: AnimMouse/setup-rclone@26ef2133e09fd383329a1d4c1fbe6a71db1976c9 # v1.12.0
-        with:
-          rclone_config: ${{ secrets.RCLONE_CONFIG }}
-      - name: Download necessary files
-        run: |
-          rclone copy r2:private-dependencies/Calligraphy.sip ${{ github.workspace }}
-          rclone copy r2:private-dependencies/mu_cdata.sip ${{ github.workspace }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
-      - name: Login to Docker Hub
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
-        with:
-          images: ${{ env.IMAGE_NAME }}
-      - name: Build and push
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
-        with:
-          context: .
-          file: ${{ matrix.path }}/Dockerfile
-          platforms: linux/amd64
-          annotations: ${{ steps.meta.outputs.annotations }}
-          sbom: true
-          provenance: mode=max
-          push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ matrix.version }}
+  build:
+    uses: ./.github/workflows/docker-build-push.yml
+    with:
+      matrix: >-
+        [
+          {"version": "0.8.1",        "version_dir": "0.8.1", "branch": "0.8.1",  "dockerfile": "Dockerfile"},
+          {"version": "0.8.1-alpine", "version_dir": "0.8.1", "branch": "0.8.1",  "dockerfile": "Dockerfile.alpine"},
+          {"version": "1.0.0",        "version_dir": "1.0.0", "branch": "1.0.0",  "dockerfile": "Dockerfile"},
+          {"version": "1.0.0-alpine", "version_dir": "1.0.0", "branch": "1.0.0",  "dockerfile": "Dockerfile.alpine"}
+        ]
+    secrets:
+      RCLONE_CONFIG: ${{ secrets.RCLONE_CONFIG }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

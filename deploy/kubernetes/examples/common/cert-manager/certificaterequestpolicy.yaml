@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     issuerRef:
-      name: my-cluster-issuer
+      name: mhserveremu-selfsigned-cluster-issuer
       kind: ClusterIssuer
   allowed:
     commonName:

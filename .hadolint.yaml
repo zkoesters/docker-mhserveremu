@@ -1,0 +1,15 @@
+# .hadolint.yaml — Hadolint configuration for docker-mhserveremu.
+#
+# Suppressed rules:
+#   DL3008 — "Pin versions in apt-get install."
+#            We use --no-install-recommends and only install stable distro
+#            packages (sqlite3, unzip). Pinning apt versions makes images
+#            fail to build when the pinned version is rotated out of the
+#            package mirror — a worse outcome than a minor version bump.
+#
+#   DL3018 — "Pin versions in apk add."
+#            Same rationale as DL3008 for Alpine's apk.
+
+ignored:
+  - DL3008
+  - DL3018
