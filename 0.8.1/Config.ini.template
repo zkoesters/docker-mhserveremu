@@ -241,9 +241,9 @@ ApplyHiddenPvPDamageModifiers=%%CUSTOMGAMEOPTIONS_APPLY_HIDDEN_PVP_DAMAGE_MODIFI
 
 GazillioniteBalanceForNewAccounts=%%MTXSTORE_GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS%%
 ESToGazillioniteConversionRatio=%%MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_RATIO%%
-ESToGazillioniteConversionStep=4
-GiftingOmegaLevelRequired=0
-GiftingInfinityLevelRequired=0
+ESToGazillioniteConversionStep=%%MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_STEP%%
+GiftingOmegaLevelRequired=%%MTXSTORE_GIFTING_OMEGA_LEVEL_REQUIRED%%
+GiftingInfinityLevelRequired=%%MTXSTORE_GIFTING_INFINITY_LEVEL_REQUIRED%%
 HomePageUrl=%%MTXSTORE_HOME_PAGE_URL%%
 HomeBannerPageUrl=%%MTXSTORE_HOME_BANNER_PAGE_URL%%
 HeroesBannerPageUrl=%%MTXSTORE_HEROES_BANNER_PAGE_URL%%
