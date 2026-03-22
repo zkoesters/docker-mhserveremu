@@ -19,14 +19,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - version: '0.7.0'
-            path: '0.7.0'
-          - version: '0.7.0-alpine'
-            path: '0.7.0/alpine'
           - version: '0.8.1'
             path: '0.8.1'
           - version: '0.8.1-alpine'
             path: '0.8.1/alpine'
+          - version: '1.0.0'
+            path: '1.0.0'
+          - version: '1.0.0-alpine'
+            path: '1.0.0/alpine'
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
