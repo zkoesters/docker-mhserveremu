@@ -26,48 +26,49 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.0`
 
 The images expose environment variables to generate `Config.ini` at container start.
 
-Supported variable set (`1.0.0` and `nightly`):
+Supported variable set (`0.8.1`, `1.0.0`, and `nightly`):
 
-| Environment Variable                                  | Default                                    | 1.0.0              | Nightly            |
-|-------------------------------------------------------|--------------------------------------------|--------------------|--------------------|
-| `FRONTEND_BIND_IP`                                    | `127.0.0.1`                                | :white_check_mark: | :white_check_mark: |
-| `FRONTEND_PORT`                                       | `4306`                                     | :white_check_mark: | :white_check_mark: |
-| `FRONTEND_PUBLIC_ADDRESS`                             | `127.0.0.1`                                | :white_check_mark: | :white_check_mark: |
-| `WEBFRONTEND_ADDRESS`                                 | `localhost`                                | :white_check_mark: | :white_check_mark: |
-| `WEBFRONTEND_PORT`                                    | `8080`                                     | :white_check_mark: | :white_check_mark: |
-| `WEBFRONTEND_ENABLE_LOGING_RATE_LIMIT`                | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `PLAYERMANAGER_USE_JSON_DB_MANAGER`                   | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `PLAYERMANAGER_NEWS_URL`                              | `http://localhost/news`                    | :white_check_mark: | :white_check_mark: |
-| `DBMANAGER_MAX_BACKUP_NUMBER`                         | `5`                                        | :white_check_mark: | :white_check_mark: |
-| `DBMANAGER_BACKUP_INTERVAL_MINUTES`                   | `15`                                       | :white_check_mark: | :white_check_mark: |
-| `GAMEDATA_LOAD_ALL_PROTOTYPES`                        | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `GAMEDATA_USE_EQUIPMENT_SLOT_TABLE_CACHE`             | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_AVATARS`               | `true`                                     | :white_check_mark: | :white_check_mark: |
-| `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_TEAMUPS`               | `true`                                     | :white_check_mark: | :white_check_mark: |
-| `CUSTOMGAMEOPTIONS_ALLOW_SAME_GROUP_TALENTS`          | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `CUSTOMGAMEOPTIONS_DISABLE_INSTANCED_LOOT`            | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `CUSTOMGAMEOPTIONS_DISABLE_ACCOUNT_BINDING`           | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `CUSTOMGAMEOPTIONS_DISABLE_CHARACTER_BINDING`         | `true`                                     | :white_check_mark: | :white_check_mark: |
-| `CUSTOMGAMEOPTIONS_USE_PRESTIGE_LOOT_TABLE`           | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `CUSTOMGAMEOPTIONS_APPLY_HIDDEN_PVP_DAMAGE_MODIFIERS` | `false`                                    | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS`      | `10000`                                    | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_RATIO`        | `2.25`                                     | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_STEP`         | `4`                                        | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_GIFTING_OMEGA_LEVEL_REQUIRED`               | `0`                                        | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_GIFTING_INFINITY_LEVEL_REQUIRED`            | `0`                                        | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_HOME_PAGE_URL`                              | `http://localhost/store`                   | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_HOME_BANNER_PAGE_URL`                       | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_HEROES_BANNER_PAGE_URL`                     | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_COSTUMES_BANNER_PAGE_URL`                   | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_BOOSTS_BANNER_PAGE_URL`                     | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_CHESTS_BANNER_PAGE_URL`                     | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_SPECIALS_BANNER_PAGE_URL`                   | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_REAL_MONEY_URL`                             | `https://localhost/MTXStore/AddG`          | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS`               | `true`                                     | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_BUNDLE_INFO_URL`                            | `http://localhost/bundles/`                | :white_check_mark: | :white_check_mark: |
-| `MTXSTORE_BUNDLE_IMAGE_URL`                           | `http://localhost/bundles/images/`         | :white_check_mark: | :white_check_mark: |
+| Environment Variable                                  | Default                                    | 0.8.1              | 1.0.0              | Nightly            |
+|-------------------------------------------------------|--------------------------------------------|--------------------|--------------------|--------------------|
+| `FRONTEND_BIND_IP`                                    | `127.0.0.1`                                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `FRONTEND_PORT`                                       | `4306`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `FRONTEND_PUBLIC_ADDRESS`                             | `127.0.0.1`                                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `WEBFRONTEND_ADDRESS`                                 | `localhost`                                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `WEBFRONTEND_PORT`                                    | `8080`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `WEBFRONTEND_ENABLE_LOGIN_RATE_LIMIT`                 | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `WEBFRONTEND_ENABLE_LOGING_RATE_LIMIT`                | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `PLAYERMANAGER_USE_JSON_DB_MANAGER`                   | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `PLAYERMANAGER_NEWS_URL`                              | `http://localhost/news`                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `DBMANAGER_MAX_BACKUP_NUMBER`                         | `5`                                        | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `DBMANAGER_BACKUP_INTERVAL_MINUTES`                   | `15`                                       | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `GAMEDATA_LOAD_ALL_PROTOTYPES`                        | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `GAMEDATA_USE_EQUIPMENT_SLOT_TABLE_CACHE`             | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_AVATARS`               | `true`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_TEAMUPS`               | `true`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `CUSTOMGAMEOPTIONS_ALLOW_SAME_GROUP_TALENTS`          | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `CUSTOMGAMEOPTIONS_DISABLE_INSTANCED_LOOT`            | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `CUSTOMGAMEOPTIONS_DISABLE_ACCOUNT_BINDING`           | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `CUSTOMGAMEOPTIONS_DISABLE_CHARACTER_BINDING`         | `true`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `CUSTOMGAMEOPTIONS_USE_PRESTIGE_LOOT_TABLE`           | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `CUSTOMGAMEOPTIONS_APPLY_HIDDEN_PVP_DAMAGE_MODIFIERS` | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS`      | `10000`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_RATIO`        | `2.25`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_STEP`         | `4`                                        | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_GIFTING_OMEGA_LEVEL_REQUIRED`               | `0`                                        | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_GIFTING_INFINITY_LEVEL_REQUIRED`            | `0`                                        | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_HOME_PAGE_URL`                              | `http://localhost/store`                   | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_HOME_BANNER_PAGE_URL`                       | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_HEROES_BANNER_PAGE_URL`                     | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_COSTUMES_BANNER_PAGE_URL`                   | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_BOOSTS_BANNER_PAGE_URL`                     | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_CHESTS_BANNER_PAGE_URL`                     | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_SPECIALS_BANNER_PAGE_URL`                   | `http://localhost/store/images/banner.png` | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_REAL_MONEY_URL`                             | `https://localhost/MTXStore/AddG`          | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS`               | `true`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_BUNDLE_INFO_URL`                            | `http://localhost/bundles/`                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `MTXSTORE_BUNDLE_IMAGE_URL`                           | `http://localhost/bundles/images/`         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
-Temporary compatibility aliases (accepted by `1.0.0` and `nightly`, but use the preferred names above in new deployments):
+Temporary compatibility aliases (accepted by `0.8.1`, `1.0.0`, and `nightly`, but use the preferred names above in new deployments):
 
 | Legacy variable                    | Preferred variable                           |
 |------------------------------------|----------------------------------------------|
