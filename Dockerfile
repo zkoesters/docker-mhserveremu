@@ -9,8 +9,8 @@
 #
 # Multi-arch: supports linux/amd64 and linux/arm64 via TARGETARCH.
 
-ARG DOTNET_SDK_TAG=8.0.416-bookworm-slim
-ARG DOTNET_RUNTIME_TAG=8.0.22-bookworm-slim
+ARG DOTNET_SDK_TAG=8.0.419-bookworm-slim
+ARG DOTNET_RUNTIME_TAG=8.0.25-bookworm-slim
 
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_TAG} AS build-stage
 
