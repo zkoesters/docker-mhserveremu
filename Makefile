@@ -1,7 +1,7 @@
 REPO_NAME  ?= zkoesters
 IMAGE_NAME ?= mhserveremu
 
-LATEST_VERSION=0.8.1
+LATEST_VERSION=1.0.0
 do_default=true
 do_alpine=true
 

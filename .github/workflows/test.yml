@@ -14,8 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - version: '0.7.0'
           - version: '0.8.1'
+          - version: '1.0.0'
           - version: 'nightly'
     timeout-minutes: 15
     steps:
