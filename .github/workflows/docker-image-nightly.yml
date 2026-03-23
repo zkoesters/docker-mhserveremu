@@ -16,6 +16,7 @@ jobs:
   build:
     uses: ./.github/workflows/docker-build-push.yml
     permissions:
+      actions: write
       contents: read
       packages: write
       attestations: write
