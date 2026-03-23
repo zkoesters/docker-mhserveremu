@@ -13,6 +13,11 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/docker-build-push.yml
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     with:
       matrix: >-
         [
