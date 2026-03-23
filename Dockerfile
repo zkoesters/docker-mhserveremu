@@ -53,7 +53,7 @@ WORKDIR /tmp/MHServerEmu
 
 COPY --from=sqlinterop-build /out/SQLite.Interop.dll /tmp/SQLite.Interop.dll
 
-# Map TARGETARCH (amd64/arm64) to .NET naming conventions,
+# Validate TARGETARCH (amd64/arm64),
 # then clone, inject the source-built native library, build, and test.
 #
 # The csproj hard-codes Interop/linux-x64/ as the source path on Linux,
