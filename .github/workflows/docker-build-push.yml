@@ -63,6 +63,8 @@ jobs:
             MHSERVEREMU_BRANCH=${{ matrix.branch }}
             MHSERVEREMU_VERSION=${{ matrix.version_dir }}
           platforms: linux/amd64,linux/arm64
+          cache-from: type=gha,scope=mhserveremu-${{ matrix.version }}-${{ matrix.dockerfile }}
+          cache-to: type=gha,mode=max,scope=mhserveremu-${{ matrix.version }}-${{ matrix.dockerfile }}
           annotations: ${{ steps.meta.outputs.annotations }}
           sbom: true
           provenance: mode=max
