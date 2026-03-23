@@ -16,11 +16,11 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.0`
 
 ### Alpine based:
 
-| DockerHub image                                                                                                                 | Dockerfile                                                                                        | OS          | dotnet | MHServerEmu |
-|---------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|-------------|--------|-------------|
-| [zkoesters/mhserveremu:0.8.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.22 | 8.0.24 | 0.8.1       |
-| [zkoesters/mhserveremu:1.0.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.22 | 8.0.24 | 1.0.0       |
-| [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.22 | 8.0.24 | master      |
+| DockerHub image                                                                                                                 | Dockerfile                                                                                       | OS          | dotnet | MHServerEmu |
+|---------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|-------------|--------|-------------|
+| [zkoesters/mhserveremu:0.8.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | 0.8.1       |
+| [zkoesters/mhserveremu:1.0.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | 1.0.0       |
+| [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | master      |
 
 ## Build internals: SQLInterop
 
@@ -104,33 +104,33 @@ Supported variable set (`0.8.1`, `1.0.0`, and `nightly`):
 
 Temporary compatibility aliases (accepted by `0.8.1`, `1.0.0`, and `nightly`, but use the preferred names above in new deployments):
 
-| Legacy variable                    | Preferred variable                           |
-|------------------------------------|----------------------------------------------|
-| `AUTH_ADDRESS`                     | `WEBFRONTEND_ADDRESS`                        |
-| `AUTH_PORT`                        | `WEBFRONTEND_PORT`                           |
-| `USE_JSON_DB_MANAGER`              | `PLAYERMANAGER_USE_JSON_DB_MANAGER`          |
-| `NEWS_URL`                         | `PLAYERMANAGER_NEWS_URL`                     |
-| `MAX_BACKUP_NUMBER`                | `DBMANAGER_MAX_BACKUP_NUMBER`                |
-| `BACKUP_INTERVAL_MINUTES`          | `DBMANAGER_BACKUP_INTERVAL_MINUTES`          |
-| `LOAD_ALL_PROTOTYPES`              | `GAMEDATA_LOAD_ALL_PROTOTYPES`               |
-| `USE_EQUIPMENT_SLOT_TABLE_CACHE`   | `GAMEDATA_USE_EQUIPMENT_SLOT_TABLE_CACHE`    |
-| `AUTO_UNLOCK_AVATARS`              | `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_AVATARS`      |
-| `AUTO_UNLOCK_TEAMUPS`              | `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_TEAMUPS`      |
-| `ALLOW_SAME_GROUP_TALENTS`         | `CUSTOMGAMEOPTIONS_ALLOW_SAME_GROUP_TALENTS` |
-| `DISABLE_INSTANCED_LOOT`           | `CUSTOMGAMEOPTIONS_DISABLE_INSTANCED_LOOT`   |
-| `DISABLE_ACCOUNT_BINDING`          | `CUSTOMGAMEOPTIONS_DISABLE_ACCOUNT_BINDING`  |
-| `DISABLE_CHARACTER_BINDING`        | `CUSTOMGAMEOPTIONS_DISABLE_CHARACTER_BINDING`|
-| `USE_PRESTIGE_LOOT_TABLE`          | `CUSTOMGAMEOPTIONS_USE_PRESTIGE_LOOT_TABLE`  |
+| Legacy variable                         | Preferred variable                               |
+|-----------------------------------------|--------------------------------------------------|
+| `AUTH_ADDRESS`                          | `WEBFRONTEND_ADDRESS`                            |
+| `AUTH_PORT`                             | `WEBFRONTEND_PORT`                               |
+| `USE_JSON_DB_MANAGER`                   | `PLAYERMANAGER_USE_JSON_DB_MANAGER`              |
+| `NEWS_URL`                              | `PLAYERMANAGER_NEWS_URL`                         |
+| `MAX_BACKUP_NUMBER`                     | `DBMANAGER_MAX_BACKUP_NUMBER`                    |
+| `BACKUP_INTERVAL_MINUTES`               | `DBMANAGER_BACKUP_INTERVAL_MINUTES`              |
+| `LOAD_ALL_PROTOTYPES`                   | `GAMEDATA_LOAD_ALL_PROTOTYPES`                   |
+| `USE_EQUIPMENT_SLOT_TABLE_CACHE`        | `GAMEDATA_USE_EQUIPMENT_SLOT_TABLE_CACHE`        |
+| `AUTO_UNLOCK_AVATARS`                   | `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_AVATARS`          |
+| `AUTO_UNLOCK_TEAMUPS`                   | `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_TEAMUPS`          |
+| `ALLOW_SAME_GROUP_TALENTS`              | `CUSTOMGAMEOPTIONS_ALLOW_SAME_GROUP_TALENTS`     |
+| `DISABLE_INSTANCED_LOOT`                | `CUSTOMGAMEOPTIONS_DISABLE_INSTANCED_LOOT`       |
+| `DISABLE_ACCOUNT_BINDING`               | `CUSTOMGAMEOPTIONS_DISABLE_ACCOUNT_BINDING`      |
+| `DISABLE_CHARACTER_BINDING`             | `CUSTOMGAMEOPTIONS_DISABLE_CHARACTER_BINDING`    |
+| `USE_PRESTIGE_LOOT_TABLE`               | `CUSTOMGAMEOPTIONS_USE_PRESTIGE_LOOT_TABLE`      |
 | `GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS` | `MTXSTORE_GAZILLIONITE_BALANCE_FOR_NEW_ACCOUNTS` |
-| `ES_TO_GAZILLIONITE_CONVERSION_RATIO`    | `MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_RATIO`    |
-| `STORE_HOME_PAGE_URL`              | `MTXSTORE_HOME_PAGE_URL`                     |
-| `STORE_HOME_BANNER_PAGE_URL`       | `MTXSTORE_HOME_BANNER_PAGE_URL`              |
-| `STORE_HEROES_BANNER_PAGE_URL`     | `MTXSTORE_HEROES_BANNER_PAGE_URL`            |
-| `STORE_COSTUMES_BANNER_PAGE_URL`   | `MTXSTORE_COSTUMES_BANNER_PAGE_URL`          |
-| `STORE_BOOSTS_BANNER_PAGE_URL`     | `MTXSTORE_BOOSTS_BANNER_PAGE_URL`            |
-| `STORE_CHESTS_BANNER_PAGE_URL`     | `MTXSTORE_CHESTS_BANNER_PAGE_URL`            |
-| `STORE_SPECIALS_BANNER_PAGE_URL`   | `MTXSTORE_SPECIALS_BANNER_PAGE_URL`          |
-| `STORE_REAL_MONEY_URL`             | `MTXSTORE_REAL_MONEY_URL`                    |
+| `ES_TO_GAZILLIONITE_CONVERSION_RATIO`   | `MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_RATIO`   |
+| `STORE_HOME_PAGE_URL`                   | `MTXSTORE_HOME_PAGE_URL`                         |
+| `STORE_HOME_BANNER_PAGE_URL`            | `MTXSTORE_HOME_BANNER_PAGE_URL`                  |
+| `STORE_HEROES_BANNER_PAGE_URL`          | `MTXSTORE_HEROES_BANNER_PAGE_URL`                |
+| `STORE_COSTUMES_BANNER_PAGE_URL`        | `MTXSTORE_COSTUMES_BANNER_PAGE_URL`              |
+| `STORE_BOOSTS_BANNER_PAGE_URL`          | `MTXSTORE_BOOSTS_BANNER_PAGE_URL`                |
+| `STORE_CHESTS_BANNER_PAGE_URL`          | `MTXSTORE_CHESTS_BANNER_PAGE_URL`                |
+| `STORE_SPECIALS_BANNER_PAGE_URL`        | `MTXSTORE_SPECIALS_BANNER_PAGE_URL`              |
+| `STORE_REAL_MONEY_URL`                  | `MTXSTORE_REAL_MONEY_URL`                        |
 
 ## Migration: `0.7.0` -> `1.0.0`
 

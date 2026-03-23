@@ -89,11 +89,11 @@
         "/^README\\.md$/"
       ],
       "matchStrings": [
-        "(\\|\\s*\\[zkoesters/mhserveremu:(?:0\\.8\\.1-alpine|1\\.0\\.0-alpine|nightly-alpine)\\].*\\|\\s*alpine:3\\.22\\s*\\|\\s*)(?<currentValue>\\d+\\.\\d+\\.\\d+)(\\s*\\|)"
+        "(\\|\\s*\\[zkoesters/mhserveremu:(?:0\\.8\\.1-alpine|1\\.0\\.0-alpine|nightly-alpine)\\].*\\|\\s*alpine:3\\.23\\s*\\|\\s*)(?<currentValue>\\d+\\.\\d+\\.\\d+)(\\s*\\|)"
       ],
       "depNameTemplate": "mcr.microsoft.com/dotnet/runtime",
       "datasourceTemplate": "docker",
-      "extractVersionTemplate": "^(?<version>\\d+\\.\\d+\\.\\d+)-alpine3\\.22$",
+      "extractVersionTemplate": "^(?<version>\\d+\\.\\d+\\.\\d+)-alpine3\\.23$",
       "versioningTemplate": "semver"
     }
   ]
