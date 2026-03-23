@@ -3,6 +3,35 @@
   "extends": [
     "config:recommended"
   ],
+  "packageRules": [
+    {
+      "description": "Keep .NET base images on 8.0 channel",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "mcr.microsoft.com/dotnet/sdk",
+        "mcr.microsoft.com/dotnet/runtime"
+      ],
+      "allowedVersions": "/^8\\.0\\./"
+    },
+    {
+      "description": "Group .NET base image, comments, and README updates into one PR",
+      "matchManagers": [
+        "dockerfile",
+        "custom.regex"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "mcr.microsoft.com/dotnet/sdk",
+        "mcr.microsoft.com/dotnet/runtime"
+      ],
+      "groupName": ".NET 8 base image updates",
+      "groupSlug": "dotnet-8-base-images"
+    }
+  ],
   "customManagers": [
     {
       "customType": "regex",
@@ -14,6 +43,58 @@
         "_IMAGE=\"(?<depName>[a-z0-9][a-z0-9._/-]+):(?<currentValue>[A-Za-z0-9._-]+)\""
       ],
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Update .NET SDK defaults in Dockerfile comments",
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile(\\.alpine)?$/"
+      ],
+      "matchStrings": [
+        "#\\s+DOTNET_SDK_TAG\\s+- .*\\(default: (?<currentValue>[^)]+)\\)"
+      ],
+      "depNameTemplate": "mcr.microsoft.com/dotnet/sdk",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Update .NET runtime defaults in Dockerfile comments",
+      "managerFilePatterns": [
+        "/(^|/)Dockerfile(\\.alpine)?$/"
+      ],
+      "matchStrings": [
+        "#\\s+DOTNET_RUNTIME_TAG\\s+- .*\\(default: (?<currentValue>[^)]+)\\)"
+      ],
+      "depNameTemplate": "mcr.microsoft.com/dotnet/runtime",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Debian .NET runtime version in README",
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "(\\|\\s*\\[zkoesters/mhserveremu:(?:0\\.8\\.1|1\\.0\\.0|nightly)\\].*\\|\\s*debian:bookworm\\s*\\|\\s*)(?<currentValue>\\d+\\.\\d+\\.\\d+)(\\s*\\|)"
+      ],
+      "depNameTemplate": "mcr.microsoft.com/dotnet/runtime",
+      "datasourceTemplate": "docker",
+      "extractVersionTemplate": "^(?<version>\\d+\\.\\d+\\.\\d+)-bookworm-slim$",
+      "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Alpine .NET runtime version in README",
+      "managerFilePatterns": [
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "(\\|\\s*\\[zkoesters/mhserveremu:(?:0\\.8\\.1-alpine|1\\.0\\.0-alpine|nightly-alpine)\\].*\\|\\s*alpine:3\\.22\\s*\\|\\s*)(?<currentValue>\\d+\\.\\d+\\.\\d+)(\\s*\\|)"
+      ],
+      "depNameTemplate": "mcr.microsoft.com/dotnet/runtime",
+      "datasourceTemplate": "docker",
+      "extractVersionTemplate": "^(?<version>\\d+\\.\\d+\\.\\d+)-alpine3\\.22$",
+      "versioningTemplate": "semver"
     }
   ]
 }
