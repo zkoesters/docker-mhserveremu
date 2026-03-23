@@ -12,7 +12,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Kubernetes `readinessProbe` and `livenessProbe` for the mhserveremu container.
 - Kubernetes `securityContext` (pod-level and container-level) for both mhserveremu and
   nginx containers.
-- SHA256 checksum verification for the third-party SQLite.Interop download (Alpine images).
 - Consolidated parameterized `Dockerfile` and `Dockerfile.alpine` at repo root,
   and switched CI/Makefile to use them as the primary build path.
 - Reusable GitHub Actions workflow (`.github/workflows/docker-build-push.yml`).
@@ -23,6 +22,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - SQLite database connectivity smoke test (previously commented out).
 - Header comments to all scripts (`start-server`, `Makefile`, `generate_certs.sh`,
   `run.sh`).
+- In-pipeline SQLInterop source build (`scripts/build-sqlinterop.sh`) with pinned
+  source version and SHA256 verification.
+- Build-stage architecture verification for SQLInterop artifacts (`amd64`/`arm64`).
+- Buildx GitHub Actions cache integration (`cache-from`/`cache-to`) for Docker builds.
 
 ### Changed
 
@@ -41,6 +44,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `DisableMissionXPBonuses`).
 - Standardized shebang to `#!/usr/bin/env bash` in all scripts.
 - Quoted all variables in the test script trap to prevent word splitting.
+- Replaced third-party prebuilt SQLInterop binary downloads with source-built
+  artifacts in both `Dockerfile` and `Dockerfile.alpine`.
 
 ### Fixed
 
@@ -52,6 +57,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `1.0.0`.
 - Legacy `AUTH_ADDRESS` env var in deployment examples replaced with
   `WEBFRONTEND_ADDRESS`.
+- SQLInterop build now fails fast with explicit errors for invalid source version,
+  checksum mismatch, and architecture mismatch.
 
 ### Removed
 

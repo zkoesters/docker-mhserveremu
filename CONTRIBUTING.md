@@ -29,6 +29,49 @@ The build uses two consolidated Dockerfiles at the repo root (`Dockerfile` for
 Debian, `Dockerfile.alpine` for Alpine). Build args `MHSERVEREMU_BRANCH` and
 `MHSERVEREMU_VERSION` are set automatically by the Makefile.
 
+### SQLInterop build pipeline
+
+`SQLite.Interop.dll` is built from pinned source during Docker builds via
+`scripts/build-sqlinterop.sh` and the `sqlinterop-build` stage in each Dockerfile.
+
+Security and reproducibility controls:
+
+- Source archive version is pinned (`SQLITE_INTEROP_VERSION`).
+- Archive integrity is pinned (`SQLITE_SOURCE_ARCHIVE_SHA256`).
+- Build fails fast on checksum mismatch, missing archive, or architecture mismatch.
+
+#### Bumping SQLInterop version
+
+When upgrading `SQLite.Interop` source inputs:
+
+1. Update `SQLITE_INTEROP_VERSION` in both `Dockerfile` and `Dockerfile.alpine`.
+2. Update `SQLITE_SOURCE_ARCHIVE_SHA256` in both Dockerfiles.
+3. Build both variants:
+
+```bash
+make build VERSION=1.0.0 VARIANT=default
+make build VERSION=1.0.0 VARIANT=alpine
+```
+
+4. Run tests for both variants:
+
+```bash
+make test VERSION=1.0.0 VARIANT=default
+make test VERSION=1.0.0 VARIANT=alpine
+```
+
+5. If CI cache is enabled, validate first-run populate and subsequent cache hits.
+6. Update `README.md` and `CHANGELOG.md` if behavior/process changed.
+
+#### Common SQLInterop failures
+
+- `SHA256 mismatch for ...`
+  - Check that the checksum matches the selected source archive version.
+- `Failed to download source archive ...`
+  - Check upstream version availability and network reachability.
+- `Unexpected SQLite.Interop.dll architecture ...`
+  - Ensure build platform/`TARGETARCH` is set correctly (`amd64` or `arm64`).
+
 ## Testing
 
 ```bash

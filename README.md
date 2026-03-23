@@ -22,6 +22,40 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.0`
 | [zkoesters/mhserveremu:1.0.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.22 | 8.0.24 | 1.0.0       |
 | [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.22 | 8.0.24 | master      |
 
+## Build internals: SQLInterop
+
+`SQLite.Interop.dll` is built from pinned `System.Data.SQLite` source during image
+builds (Debian and Alpine), instead of downloading third-party prebuilt binaries.
+
+### Why this approach
+
+- Better supply-chain control (pinned version + checksum verification).
+- Better reproducibility across architectures (`linux/amd64`, `linux/arm64`).
+- Better maintainability (single in-repo build script used by both Dockerfiles).
+
+### Where it is implemented
+
+- `scripts/build-sqlinterop.sh`: source download, checksum verification, build,
+  and architecture verification.
+- `Dockerfile` / `Dockerfile.alpine`: `sqlinterop-build` stage compiles and exports
+  `/out/SQLite.Interop.dll`, then `build-stage` injects it into MHServerEmu.
+
+### Pinned inputs
+
+- `SQLITE_INTEROP_VERSION`
+- `SQLITE_SOURCE_ARCHIVE_SHA256`
+
+These are exposed as Docker build args and are intentionally explicit for review.
+
+### Troubleshooting quick reference
+
+- `SHA256 mismatch for ...`: verify `SQLITE_SOURCE_ARCHIVE_SHA256` for the selected
+  `SQLITE_INTEROP_VERSION`.
+- `Failed to download source archive ...`: verify version exists upstream and URL is
+  reachable from the builder.
+- `Unexpected SQLite.Interop.dll architecture ...`: verify `TARGETARCH` is
+  correctly set by the build platform (`amd64` or `arm64`).
+
 ## Configuration
 
 The images expose environment variables to generate `Config.ini` at container start.

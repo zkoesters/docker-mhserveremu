@@ -3,6 +3,8 @@
 # Build args:
 #   MHSERVEREMU_BRANCH  - git branch or tag to clone (e.g. "1.0.0", "master")
 #   MHSERVEREMU_VERSION - directory containing Config.ini.template (e.g. "1.0.0", "nightly")
+#   SQLITE_INTEROP_VERSION         - System.Data.SQLite source version (default: 1.0.118.0)
+#   SQLITE_SOURCE_ARCHIVE_SHA256   - SHA256 for sqlite source archive
 #   APP_UID             - runtime user/group ID (default: 1654)
 #   DOTNET_SDK_TAG      - .NET SDK image tag (default: 8.0.419-bookworm-slim)
 #   DOTNET_RUNTIME_TAG  - .NET runtime image tag (default: 8.0.25-bookworm-slim)
@@ -12,39 +14,61 @@
 ARG DOTNET_SDK_TAG=8.0.419-bookworm-slim
 ARG DOTNET_RUNTIME_TAG=8.0.25-bookworm-slim
 
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_TAG} AS sqlinterop-build
+
+ARG TARGETARCH
+ARG SQLITE_INTEROP_VERSION=1.0.118.0
+ARG SQLITE_SOURCE_ARCHIVE_SHA256=bb599fa265088abb8a7d4af6218cae97df8b9c8ed6f04fb940a5d564920ee6a1
+
+COPY scripts/build-sqlinterop.sh /usr/local/bin/build-sqlinterop.sh
+
+RUN set -eux \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        bash \
+        binutils \
+        ca-certificates \
+        curl \
+        g++ \
+        gcc \
+        libc6-dev \
+        make \
+        unzip \
+    && rm -rf /var/lib/apt/lists/* \
+    && case "$TARGETARCH" in amd64|arm64) ;; *) echo "Unsupported architecture: $TARGETARCH" >&2; exit 1 ;; esac \
+    && SQLITE_INTEROP_VERSION="$SQLITE_INTEROP_VERSION" \
+       SQLITE_SOURCE_ARCHIVE_SHA256="$SQLITE_SOURCE_ARCHIVE_SHA256" \
+       TARGETARCH="$TARGETARCH" \
+       OUTPUT_DIR=/out \
+       WORK_DIR=/tmp/sqlinterop-build \
+       /usr/local/bin/build-sqlinterop.sh \
+    && test -s /out/SQLite.Interop.dll
+
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_TAG} AS build-stage
 
 ARG MHSERVEREMU_BRANCH=1.0.0
 ARG TARGETARCH
 
-ADD --checksum=sha256:84ead59477ee15b5289143aa33e8a35521edfd5c3c8881a0d809613625553a40 \
-    https://github.com/rhubarb-geek-nz/SQLite.Interop/releases/download/1.0.118.0/SQLite.Interop-1.0.118.0-debian.12.zip \
-    /tmp/SQLite.Interop.zip
-
 WORKDIR /tmp/MHServerEmu
 
-# Map TARGETARCH (amd64/arm64) to .NET and SQLite.Interop naming conventions,
-# then clone, inject the correct native library, build, and test.
+COPY --from=sqlinterop-build /out/SQLite.Interop.dll /tmp/SQLite.Interop.dll
+
+# Map TARGETARCH (amd64/arm64) to .NET naming conventions,
+# then clone, inject the source-built native library, build, and test.
 #
-# The upstream repo bundles only linux-x64/SQLite.Interop.dll, so we always
-# replace it with the architecture-correct variant from rhubarb-geek-nz.
 # The csproj hard-codes Interop/linux-x64/ as the source path on Linux,
 # so we write to that path regardless of architecture.
 # Upstream test projects are x64-targeted, so arm64 build-stage testing is
 # currently skipped until upstream publishes arm64-compatible test targets.
 RUN set -eux \
-    && apt-get update && apt-get install -y --no-install-recommends unzip \
-    && rm -rf /var/lib/apt/lists/* \
     && case "$TARGETARCH" in \
-        amd64) dotnet_arch=x64 ;; \
-        arm64) dotnet_arch=arm64 ;; \
+        amd64|arm64) ;; \
         *)     echo "Unsupported architecture: $TARGETARCH" >&2; exit 1 ;; \
         esac \
     && git clone --depth 1 --branch "${MHSERVEREMU_BRANCH}" \
         https://github.com/Crypto137/MHServerEmu.git /tmp/MHServerEmu \
-    && unzip -p /tmp/SQLite.Interop.zip \
-        "runtimes/debian.12-${dotnet_arch}/native/SQLite.Interop.dll" \
-        > /tmp/MHServerEmu/src/MHServerEmu.DatabaseAccess/Interop/linux-x64/SQLite.Interop.dll \
+    && cp /tmp/SQLite.Interop.dll \
+        /tmp/MHServerEmu/src/MHServerEmu.DatabaseAccess/Interop/linux-x64/SQLite.Interop.dll \
     && dotnet restore MHServerEmu.sln \
     && dotnet build MHServerEmu.sln --no-restore --configuration Release \
     && if [ "$TARGETARCH" = "amd64" ]; then \
