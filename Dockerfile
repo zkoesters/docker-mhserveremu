@@ -4,13 +4,13 @@
 #   MHSERVEREMU_BRANCH  - git branch or tag to clone (e.g. "1.0.0", "master")
 #   MHSERVEREMU_VERSION - directory containing Config.ini.template (e.g. "1.0.0", "nightly")
 #   APP_UID             - runtime user/group ID (default: 1654)
-#   DOTNET_SDK_TAG      - .NET SDK image tag (default: 8.0.416-bookworm-slim)
-#   DOTNET_RUNTIME_TAG  - .NET runtime image tag (default: 8.0.22-bookworm-slim)
+#   DOTNET_SDK_TAG      - .NET SDK image tag (default: 8.0.419-bookworm-slim)
+#   DOTNET_RUNTIME_TAG  - .NET runtime image tag (default: 8.0.25-bookworm-slim)
 #
 # Multi-arch: supports linux/amd64 and linux/arm64 via TARGETARCH.
 
-ARG DOTNET_SDK_TAG=8.0.416-bookworm-slim
-ARG DOTNET_RUNTIME_TAG=8.0.22-bookworm-slim
+ARG DOTNET_SDK_TAG=8.0.419-bookworm-slim
+ARG DOTNET_RUNTIME_TAG=8.0.25-bookworm-slim
 
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_TAG} AS build-stage
 
