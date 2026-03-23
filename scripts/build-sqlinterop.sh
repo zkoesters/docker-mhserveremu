@@ -16,6 +16,7 @@ Optional environment variables:
   SQLITE_SOURCE_BASE_URL            Default: https://system.data.sqlite.org/blobs
   SQLITE_SOURCE_ARCHIVE_NAME        Default: sqlite-netFx-source-${SQLITE_INTEROP_VERSION}.zip
   WORK_DIR                          Default: /tmp/sqlinterop-build
+  ALLOW_NON_TMP_WORKDIR             Set to 1 to allow WORK_DIR outside /tmp
   OUTPUT_DIR                        Default: /out
   KEEP_WORKDIR                      Set to 1 to preserve work dir on exit
   VERBOSE                           Set to 1 for verbose logs
@@ -43,6 +44,27 @@ validate_sha256_input() {
 
     if [[ ! "$value" =~ ^[A-Fa-f0-9]{64}$ ]]; then
         die "SQLITE_SOURCE_ARCHIVE_SHA256 must be a 64-character hex string"
+    fi
+}
+
+validate_work_dir() {
+    local dir="$1"
+    local allow_non_tmp_workdir="${ALLOW_NON_TMP_WORKDIR:-0}"
+
+    [ -n "$dir" ] || die "WORK_DIR must not be empty"
+    [ "$dir" != "/" ] || die "Refusing to use WORK_DIR='/'"
+
+    case "$dir" in
+        /*) ;;
+        *) die "WORK_DIR must be an absolute path" ;;
+    esac
+
+    if [ "$allow_non_tmp_workdir" != "1" ]; then
+        case "$dir" in
+            /tmp/*) ;;
+            /tmp) die "Refusing to use WORK_DIR='/tmp'; use a dedicated subdirectory" ;;
+            *) die "WORK_DIR must be under /tmp (set ALLOW_NON_TMP_WORKDIR=1 to override)" ;;
+        esac
     fi
 }
 
@@ -113,6 +135,7 @@ resolve_extracted_root() {
     local extract_root="$1"
     local compile_script_rel="Setup/compile-interop-assembly-release.sh"
     local first_dir=""
+    local d=""
     local candidate=""
 
     if [ -f "${extract_root}/${compile_script_rel}" ]; then
@@ -176,6 +199,8 @@ main() {
     require_command curl
     require_command unzip
     require_command chmod
+
+    validate_work_dir "$work_dir"
 
     rm -rf "$work_dir"
     mkdir -p "$work_dir" "$output_dir" "$extract_root"
