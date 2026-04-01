@@ -1,7 +1,7 @@
 # Parameterized Dockerfile for MHServerEmu (Alpine)
 #
 # Build args:
-#   MHSERVEREMU_BRANCH      - git branch or tag to clone (e.g. "1.0.0", "master")
+#   MHSERVEREMU_BRANCH      - git branch or tag to clone (e.g. "1.0.0", "dev")
 #   MHSERVEREMU_VERSION     - directory containing Config.ini.template (e.g. "1.0.0", "nightly")
 #   SQLITE_INTEROP_VERSION         - System.Data.SQLite source version (default: 1.0.118.0)
 #   SQLITE_SOURCE_ARCHIVE_SHA256   - SHA256 for sqlite source archive

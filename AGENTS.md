@@ -28,7 +28,7 @@ make all
 ```
 
 Supported versions are inferred from directories containing a `Config.ini.template`
-(currently `0.8.1`, `1.0.0`, `nightly`). The `nightly` version tracks the `master`
+(currently `0.8.1`, `1.0.0`, `nightly`). The `nightly` version tracks the `dev`
 branch upstream; all others track a branch matching the directory name.
 
 ## Test commands
