@@ -12,7 +12,7 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.0`
 |-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|-----------------|--------|-------------|
 | [zkoesters/mhserveremu:0.8.1](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.25 | 0.8.1       |
 | [zkoesters/mhserveremu:1.0.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.25 | 1.0.0       |
-| [zkoesters/mhserveremu:nightly](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.25 | master      |
+| [zkoesters/mhserveremu:nightly](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.25 | dev         |
 
 ### Alpine based:
 
@@ -20,7 +20,7 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.0`
 |---------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|-------------|--------|-------------|
 | [zkoesters/mhserveremu:0.8.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | 0.8.1       |
 | [zkoesters/mhserveremu:1.0.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | 1.0.0       |
-| [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | master      |
+| [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | dev         |
 
 ## Build internals: SQLInterop
 

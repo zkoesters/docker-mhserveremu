@@ -34,8 +34,8 @@ ALL_VERSIONS := $(sort $(foreach cfg,$(wildcard */Config.ini.template),$(cfg:%/C
 
 # Map version directories to the upstream git branch they track.
 # Versions whose directory name matches the branch are handled by the
-# default value; only add entries here for exceptions (e.g. nightly→master).
-branch_nightly=master
+# default value; only add entries here for exceptions (e.g. nightly→dev).
+branch_nightly=dev
 
 # Resolve the git branch for a given version. Falls back to the version
 # name itself when no explicit mapping exists (e.g. "1.0.0" → "1.0.0").
