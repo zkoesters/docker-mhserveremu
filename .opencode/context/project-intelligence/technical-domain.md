@@ -35,11 +35,11 @@ FRONTEND_PORT|port
 
 # 3. Add %%PRIMARY_VAR%% to each affected Config.ini.template
 
-# 4. If legacy alias needs re-exporting, add to LEGACY_REEXPORTS:
+# 4. Update the env var configuration table in README.md
+
+# 5. If legacy alias needs re-exporting, add to LEGACY_REEXPORTS:
 #    ALIAS_NAME|SOURCE_VAR
 MAX_BACKUP_NUMBER|DBMANAGER_MAX_BACKUP_NUMBER
-
-# 5. Update the env var configuration table in README.md
 ```
 
 ### Shell function style
@@ -95,7 +95,7 @@ verify_sha256 "$SQLITE_SOURCE_ARCHIVE_SHA256" "$archive_path"
 
 ## Code Standards
 - All scripts pass ShellCheck without warnings; suppressions require `# shellcheck disable=SCxxxx  # reason`
-- Entrypoint: `set -Eeo pipefail`; build scripts: `set -Eeuo pipefail`
+- For new scripts (and when updating existing ones), prefer: entrypoints use `set -Eeo pipefail`; build scripts use `set -Eeuo pipefail`
 - Use `printf` not `echo`; `local` for all function-scoped variables
 - Prefer `[ ... ]` for simple POSIX-compatible tests; `[[ ... ]]` also used for Bash conditionals; required for regex (`=~`) or advanced pattern matching
 - Errors to stderr: `printf '%s\n' "Error: ..." >&2`; fatal errors via `die()` helper
