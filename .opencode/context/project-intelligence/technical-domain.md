@@ -1,4 +1,4 @@
-<!-- Context: project-intelligence/technical | Priority: critical | Version: 1.0 | Updated: 2026-03-31 -->
+<!-- Context: project-intelligence/technical-domain | Priority: critical | Version: 1.0 | Updated: 2026-03-31 -->
 
 # Technical Domain
 
@@ -13,7 +13,7 @@
 | Layer | Technology | Notes |
 |-------|-----------|-------|
 | Packaging | Docker (multi-stage) | Debian + Alpine variants kept in sync |
-| Runtime | .NET 8 (`net8.0`) | Built upstream; this repo packages it |
+| Runtime | .NET 8 (`net8.0`) | Clones and builds upstream MHServerEmu during Docker image build; this repo defines the images/packaging |
 | Config | Bash + INI templates | `%%UPPER_SNAKE_CASE%%` placeholders |
 | Automation | GNU Make | Version/variant matrix via `define`/`foreach` |
 | Base images | Pinned tags | Renovate manages updates — never use `latest` |
@@ -38,6 +38,8 @@ FRONTEND_PORT|port
 # 4. If legacy alias needs re-exporting, add to LEGACY_REEXPORTS:
 #    ALIAS_NAME|SOURCE_VAR
 MAX_BACKUP_NUMBER|DBMANAGER_MAX_BACKUP_NUMBER
+
+# 5. Update the env var configuration table in README.md
 ```
 
 ### Shell function style
@@ -95,8 +97,8 @@ verify_sha256 "$SQLITE_SOURCE_ARCHIVE_SHA256" "$archive_path"
 - All scripts pass ShellCheck without warnings; suppressions require `# shellcheck disable=SCxxxx  # reason`
 - Entrypoint: `set -Eeo pipefail`; build scripts: `set -Eeuo pipefail`
 - Use `printf` not `echo`; `local` for all function-scoped variables
-- Use `[ ... ]` for POSIX tests; `[[ ... ]]` only for regex (`=~`) or pattern matching
-- Errors to stderr: `echo "Error: ..." >&2`; fatal errors via `die()` helper
+- Prefer `[ ... ]` for simple POSIX-compatible tests; `[[ ... ]]` also used for Bash conditionals; required for regex (`=~`) or advanced pattern matching
+- Errors to stderr: `printf '%s\n' "Error: ..." >&2`; fatal errors via `die()` helper
 - Both `Dockerfile` and `Dockerfile.alpine` must be kept in sync
 - `RUN` instructions use `set -eux` and chain with `&&`
 - Hadolint ignores `DL3008`/`DL3018` (apt/apk pin) — see `.hadolint.yaml`; no other suppression without rationale

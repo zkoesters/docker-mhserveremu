@@ -81,14 +81,15 @@ rationale. Do not suppress other rules without a documented reason.
 ### Shell scripts
 
 - Shebang: `#!/usr/bin/env bash`.
-- Always open with `set -Eeo pipefail` (entrypoint) or `set -Eeuo pipefail` (build
-  scripts). Use `-E` so ERR traps fire in subshells and functions.
+- New scripts should open with `set -Eeo pipefail` (entrypoint) or `set -Eeuo pipefail`
+  (build scripts). Prefer this pattern when updating existing scripts. Use `-E` so ERR
+  traps fire in subshells and functions.
 - All scripts must pass ShellCheck without warnings.
 - Use `local` for all function-scoped variables.
 - Use `printf` instead of `echo` for portable output.
-- Prefer `[ ... ]` for POSIX tests; use `[[ ... ]]` only for regex (`=~`) or pattern
-  matching where POSIX syntax is insufficient.
-- Error messages go to stderr: `echo "Error: ..." >&2`.
+- Prefer `[ ... ]` for simple POSIX-compatible tests; `[[ ... ]]` is also used in this
+  repo for Bash conditionals and is required for regex (`=~`) or advanced pattern matching.
+- Error messages go to stderr: `printf '%s\n' "Error: ..." >&2`.
 - Fatal errors via a `die()` helper that writes to stderr and exits 1.
 - Use `trap cleanup EXIT` for resource cleanup; never rely on the happy path.
 
