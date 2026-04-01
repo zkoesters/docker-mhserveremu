@@ -24,8 +24,8 @@ jobs:
     with:
       matrix: >-
         [
-          {"version": "nightly",        "version_dir": "nightly", "branch": "master", "dockerfile": "Dockerfile"},
-          {"version": "nightly-alpine", "version_dir": "nightly", "branch": "master", "dockerfile": "Dockerfile.alpine"}
+          {"version": "nightly",        "version_dir": "nightly", "branch": "dev", "dockerfile": "Dockerfile"},
+          {"version": "nightly-alpine", "version_dir": "nightly", "branch": "dev", "dockerfile": "Dockerfile.alpine"}
         ]
     secrets:
       RCLONE_CONFIG: ${{ secrets.RCLONE_CONFIG }}
