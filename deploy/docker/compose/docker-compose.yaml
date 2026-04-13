@@ -11,7 +11,7 @@ volumes:
     mhserveremu-data:
 services:
   mhserveremu:
-    image: zkoesters/mhserveremu:1.0.0
+    image: zkoesters/mhserveremu:1.0.1
     env_file:
       - path: .env
         required: false

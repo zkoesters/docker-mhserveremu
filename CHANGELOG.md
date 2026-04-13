@@ -4,10 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [1.0.1] - 2026-04-13
 
 ### Added
 
+- MHServerEmu 1.0.1 Docker image (Debian and Alpine).
+- `EnableLiveTuningEvents` and `AutoRefreshLiveTuning` config options (`[GameData]`),
+  controllable via `GAMEDATA_ENABLE_LIVE_TUNING_EVENTS` and `GAMEDATA_AUTO_REFRESH_LIVE_TUNING`.
 - `HEALTHCHECK` instruction in all Dockerfiles (Debian and Alpine).
 - Kubernetes `readinessProbe` and `livenessProbe` for the mhserveremu container.
 - Kubernetes `securityContext` (pod-level and container-level) for both mhserveremu and
@@ -17,11 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Reusable GitHub Actions workflow (`.github/workflows/docker-build-push.yml`).
 - Input validation for environment variables (port ranges, booleans, numbers).
 - `.editorconfig` for consistent formatting across editors.
-- `CHANGELOG.md` (this file).
 - `CONTRIBUTING.md` with build, test, and contribution instructions.
 - SQLite database connectivity smoke test (previously commented out).
-- Header comments to all scripts (`start-server`, `Makefile`, `generate_certs.sh`,
-  `run.sh`).
 - In-pipeline SQLInterop source build (`scripts/build-sqlinterop.sh`) with pinned
   source version and SHA256 verification.
 - Build-stage architecture verification for SQLInterop artifacts (`amd64`/`arm64`).
@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- `MaxLoginQueueClients` default updated to `8192` (upstream changed from `10000`).
 - `docker-entrypoint.sh` rewritten as table-driven: a single `ENV_VARS` table defines
   all environment variables (primary name, legacy alias, default). Adding a new variable
   is now a one-line change.
@@ -39,11 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   wrappers around the reusable workflow.
 - Disabled directory listing in nginx (`autoindex off`) and Apache (removed `Indexes`
   from `Options`).
-- Nightly `Config.ini.template` synced with 1.0.0 (added `EnableTownPlayerLimit`,
-  `EnableCreditChestConversion`, `CreditChestConversionMultiplier`,
-  `DisableMissionXPBonuses`).
 - Standardized shebang to `#!/usr/bin/env bash` in all scripts.
-- Quoted all variables in the test script trap to prevent word splitting.
 - Replaced third-party prebuilt SQLInterop binary downloads with source-built
   artifacts in both `Dockerfile` and `Dockerfile.alpine`.
 
@@ -54,7 +51,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `CertificateRequestPolicy` referenced `my-cluster-issuer` instead of
   `mhserveremu-selfsigned-cluster-issuer`.
 - Stale `0.8.0` image tags in `docker-compose.yaml` and `values.yaml` updated to
-  `1.0.0`.
+  `1.0.1`.
 - Legacy `AUTH_ADDRESS` env var in deployment examples replaced with
   `WEBFRONTEND_ADDRESS`.
 - SQLInterop build now fails fast with explicit errors for invalid source version,
@@ -62,6 +59,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Removed
 
+- Support for MHServerEmu 0.8.1 (Docker image, CI matrix, config template).
 - `vim` from all production images (reduces attack surface and image size).
 - `apt-cache showpkg` debugging line from Debian Dockerfiles.
 

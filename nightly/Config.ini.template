@@ -87,7 +87,7 @@ UseWhitelist=false
 ShowNewsOnLogin=false
 NewsUrl=%%PLAYERMANAGER_NEWS_URL%%
 ServerCapacity=0
-MaxLoginQueueClients=10000
+MaxLoginQueueClients=8192
 EnableTownPlayerLimit=false
 
 [SQLiteDBManager]
@@ -125,7 +125,7 @@ PlayerName=Player
 
 ServerName=MHServerEmu
 ServerPrestigeLevel=6
-MotdText=Welcome back to Marvel Heroes! Type !commands to see a list of available server commands.
+MotdText=Welcome to Marvel Heroes! Type !commands for a list of available server commands.
 LogPrivateChatRooms=false
 EnableChatTips=false
 ChatTipFileName=ChatTips.txt
@@ -141,10 +141,14 @@ NumWorkerThreads=1
 ;          LoadAllPrototypes: Preloads all prototypes on server start. Makes server start slower, but removes lag spikes during the game when data is loaded for the first time.
 ; UseEquipmentSlotTableCache: Enables caching for the EquipmentSlotTable. Makes server start slower if not used with LoadAllPrototypes.
 ;         EnablePatchManager: Enables Prototype Patch Manager. Fixes mission bugs and prototype errors.
+;     EnableLiveTuningEvents: Applies events based on the current date when loading Live Tuning data.
+;      AutoRefreshLiveTuning: Automatically reloads Live Tuning data when the daily mission reset happens. Requires EnableLiveTuningEvents.
 
 LoadAllPrototypes=%%GAMEDATA_LOAD_ALL_PROTOTYPES%%
 UseEquipmentSlotTableCache=%%GAMEDATA_USE_EQUIPMENT_SLOT_TABLE_CACHE%%
 EnablePatchManager=true
+EnableLiveTuningEvents=%%GAMEDATA_ENABLE_LIVE_TUNING_EVENTS%%
+AutoRefreshLiveTuning=%%GAMEDATA_AUTO_REFRESH_LIVE_TUNING%%
 
 [GameOptions]
 ; NOTE: These options are sent from the server to the client and affect the UI in many cases.
@@ -221,7 +225,7 @@ AllowSameGroupTalents=%%CUSTOMGAMEOPTIONS_ALLOW_SAME_GROUP_TALENTS%%
 EnableCreditChestConversion=false
 CreditChestConversionMultiplier=2.0
 DisableInstancedLoot=%%CUSTOMGAMEOPTIONS_DISABLE_INSTANCED_LOOT%%
-LootSpawnGridCellRadius=20
+LootSpawnGridCellRadius=20.0
 TrashedItemExpirationTimeMultiplier=1.0
 DisableAccountBinding=%%CUSTOMGAMEOPTIONS_DISABLE_ACCOUNT_BINDING%%
 DisableCharacterBinding=%%CUSTOMGAMEOPTIONS_DISABLE_CHARACTER_BINDING%%

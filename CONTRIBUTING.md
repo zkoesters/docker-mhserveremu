@@ -111,8 +111,8 @@ The test script (`test/tests/mhserveremu-basics/run.sh`) validates:
 ├── docker-entrypoint.sh    # Table-driven entrypoint (env resolution + Config.ini generation)
 ├── start-server            # Simple exec wrapper for MHServerEmu
 ├── Makefile                # Build and test automation
-├── 0.8.1/                  # Version-specific Config.ini.template (+ legacy Dockerfiles)
 ├── 1.0.0/                  # Version-specific Config.ini.template (+ legacy Dockerfiles)
+├── 1.0.1/                  # Version-specific Config.ini.template
 ├── nightly/                # Nightly Config.ini.template (+ legacy Dockerfiles)
 ├── deploy/                 # Docker Compose and Kubernetes deployment examples
 ├── test/                   # Test configuration and scripts

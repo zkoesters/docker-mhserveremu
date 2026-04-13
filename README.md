@@ -2,24 +2,24 @@
 
 The `zkoesters/mhserveremu` image provides tags for running [MHServerEmu](https://github.com/Crypto137/MHServerEmu).
 
-# Versions ( 2026-03-22 )
+# Versions ( 2026-04-13 )
 
-Recommended version for the new users: `zkoesters/mhserveremu:1.0.0`
+Recommended version for the new users: `zkoesters/mhserveremu:1.0.1`
 
 ### Debian based:
 
 | DockerHub image                                                                                                   | Dockerfile                                                                                 | OS              | dotnet | MHServerEmu |
 |-------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|-----------------|--------|-------------|
-| [zkoesters/mhserveremu:0.8.1](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.25 | 0.8.1       |
 | [zkoesters/mhserveremu:1.0.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.25 | 1.0.0       |
+| [zkoesters/mhserveremu:1.0.1](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.1)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.25 | 1.0.1       |
 | [zkoesters/mhserveremu:nightly](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.25 | dev         |
 
 ### Alpine based:
 
 | DockerHub image                                                                                                                 | Dockerfile                                                                                       | OS          | dotnet | MHServerEmu |
 |---------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|-------------|--------|-------------|
-| [zkoesters/mhserveremu:0.8.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=0.8.1-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | 0.8.1       |
 | [zkoesters/mhserveremu:1.0.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | 1.0.0       |
+| [zkoesters/mhserveremu:1.0.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.1-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | 1.0.1       |
 | [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.25 | dev         |
 
 ## Build internals: SQLInterop
@@ -60,9 +60,9 @@ These are exposed as Docker build args and are intentionally explicit for review
 
 The images expose environment variables to generate `Config.ini` at container start.
 
-Supported variable set (`0.8.1`, `1.0.0`, and `nightly`):
+Supported variable set (`1.0.0`, `1.0.1`, and `nightly`):
 
-| Environment Variable                                  | Default                                    | 0.8.1              | 1.0.0              | Nightly            |
+| Environment Variable                                  | Default                                    | 1.0.0              | 1.0.1              | Nightly            |
 |-------------------------------------------------------|--------------------------------------------|--------------------|--------------------|--------------------|
 | `FRONTEND_BIND_IP`                                    | `127.0.0.1`                                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `FRONTEND_PORT`                                       | `4306`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -77,6 +77,8 @@ Supported variable set (`0.8.1`, `1.0.0`, and `nightly`):
 | `DBMANAGER_BACKUP_INTERVAL_MINUTES`                   | `15`                                       | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `GAMEDATA_LOAD_ALL_PROTOTYPES`                        | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `GAMEDATA_USE_EQUIPMENT_SLOT_TABLE_CACHE`             | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| `GAMEDATA_ENABLE_LIVE_TUNING_EVENTS`                  | `true`                                     | :x:                | :white_check_mark: | :white_check_mark: |
+| `GAMEDATA_AUTO_REFRESH_LIVE_TUNING`                   | `true`                                     | :x:                | :white_check_mark: | :white_check_mark: |
 | `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_AVATARS`               | `true`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `CUSTOMGAMEOPTIONS_AUTO_UNLOCK_TEAMUPS`               | `true`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `CUSTOMGAMEOPTIONS_ALLOW_SAME_GROUP_TALENTS`          | `false`                                    | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -102,7 +104,7 @@ Supported variable set (`0.8.1`, `1.0.0`, and `nightly`):
 | `MTXSTORE_BUNDLE_INFO_URL`                            | `http://localhost/bundles/`                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `MTXSTORE_BUNDLE_IMAGE_URL`                           | `http://localhost/bundles/images/`         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
-Temporary compatibility aliases (accepted by `0.8.1`, `1.0.0`, and `nightly`, but use the preferred names above in new deployments):
+Temporary compatibility aliases (accepted by `1.0.0`, `1.0.1`, and `nightly`, but use the preferred names above in new deployments):
 
 | Legacy variable                         | Preferred variable                               |
 |-----------------------------------------|--------------------------------------------------|

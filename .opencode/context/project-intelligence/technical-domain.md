@@ -18,7 +18,7 @@
 | Automation | GNU Make | Version/variant matrix via `define`/`foreach` |
 | Base images | Pinned tags | Renovate manages updates — never use `latest` |
 
-Supported versions inferred from `*/Config.ini.template` directories (`0.8.1`, `1.0.0`, `nightly`).
+Supported versions inferred from `*/Config.ini.template` directories (`1.0.0`, `1.0.1`, `nightly`).
 `nightly` tracks upstream `master`; all others track a branch matching the directory name.
 
 ## Code Patterns

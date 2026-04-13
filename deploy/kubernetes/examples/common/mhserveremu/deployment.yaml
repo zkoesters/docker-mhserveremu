@@ -94,7 +94,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: mhserveremu
-          image: docker.io/zkoesters/mhserveremu:1.0.0
+          image: docker.io/zkoesters/mhserveremu:1.0.1
           imagePullPolicy: IfNotPresent
           securityContext:
             allowPrivilegeEscalation: false
