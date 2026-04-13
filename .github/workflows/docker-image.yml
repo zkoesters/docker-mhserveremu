@@ -22,10 +22,10 @@ jobs:
     with:
       matrix: >-
         [
-          {"version": "0.8.1",        "version_dir": "0.8.1", "branch": "0.8.1",  "dockerfile": "Dockerfile"},
-          {"version": "0.8.1-alpine", "version_dir": "0.8.1", "branch": "0.8.1",  "dockerfile": "Dockerfile.alpine"},
           {"version": "1.0.0",        "version_dir": "1.0.0", "branch": "1.0.0",  "dockerfile": "Dockerfile"},
-          {"version": "1.0.0-alpine", "version_dir": "1.0.0", "branch": "1.0.0",  "dockerfile": "Dockerfile.alpine"}
+          {"version": "1.0.0-alpine", "version_dir": "1.0.0", "branch": "1.0.0",  "dockerfile": "Dockerfile.alpine"},
+          {"version": "1.0.1",        "version_dir": "1.0.1", "branch": "1.0.1",  "dockerfile": "Dockerfile"},
+          {"version": "1.0.1-alpine", "version_dir": "1.0.1", "branch": "1.0.1",  "dockerfile": "Dockerfile.alpine"}
         ]
     secrets:
       RCLONE_CONFIG: ${{ secrets.RCLONE_CONFIG }}
