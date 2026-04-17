@@ -75,7 +75,7 @@
         "/^README\\.md$/"
       ],
       "matchStrings": [
-        "(\\|\\s*\\[zkoesters/mhserveremu:(?:0\\.8\\.1|1\\.0\\.0|nightly)\\].*\\|\\s*debian:bookworm\\s*\\|\\s*)(?<currentValue>\\d+\\.\\d+\\.\\d+)(\\s*\\|)"
+        "(\\|\\s*\\[zkoesters/mhserveremu:(?:[0-9]+\\.[0-9]+\\.[0-9]+|nightly)\\].*\\|\\s*debian:bookworm\\s*\\|\\s*)(?<currentValue>\\d+\\.\\d+\\.\\d+)(\\s*\\|)"
       ],
       "depNameTemplate": "mcr.microsoft.com/dotnet/runtime",
       "datasourceTemplate": "docker",
@@ -89,7 +89,7 @@
         "/^README\\.md$/"
       ],
       "matchStrings": [
-        "(\\|\\s*\\[zkoesters/mhserveremu:(?:0\\.8\\.1-alpine|1\\.0\\.0-alpine|nightly-alpine)\\].*\\|\\s*alpine:3\\.23\\s*\\|\\s*)(?<currentValue>\\d+\\.\\d+\\.\\d+)(\\s*\\|)"
+        "(\\|\\s*\\[zkoesters/mhserveremu:(?:[0-9]+\\.[0-9]+\\.[0-9]+-alpine|nightly-alpine)\\].*\\|\\s*alpine:3\\.23\\s*\\|\\s*)(?<currentValue>\\d+\\.\\d+\\.\\d+)(\\s*\\|)"
       ],
       "depNameTemplate": "mcr.microsoft.com/dotnet/runtime",
       "datasourceTemplate": "docker",
