@@ -6,13 +6,13 @@
 #   SQLITE_INTEROP_VERSION         - System.Data.SQLite source version (default: 1.0.118.0)
 #   SQLITE_SOURCE_ARCHIVE_SHA256   - SHA256 for sqlite source archive
 #   APP_UID             - runtime user/group ID (default: 1654)
-#   DOTNET_SDK_TAG      - .NET SDK image tag (default: 8.0.419-bookworm-slim)
-#   DOTNET_RUNTIME_TAG  - .NET runtime image tag (default: 8.0.25-bookworm-slim)
+#   DOTNET_SDK_TAG      - .NET SDK image tag (default: 8.0.420-bookworm-slim)
+#   DOTNET_RUNTIME_TAG  - .NET runtime image tag (default: 8.0.26-bookworm-slim)
 #
 # Multi-arch: supports linux/amd64 and linux/arm64 via TARGETARCH.
 
-ARG DOTNET_SDK_TAG=8.0.419-bookworm-slim
-ARG DOTNET_RUNTIME_TAG=8.0.25-bookworm-slim
+ARG DOTNET_SDK_TAG=8.0.420-bookworm-slim
+ARG DOTNET_RUNTIME_TAG=8.0.26-bookworm-slim
 
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_TAG} AS sqlinterop-build
 
