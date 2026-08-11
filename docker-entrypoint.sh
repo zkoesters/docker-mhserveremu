@@ -231,7 +231,7 @@ validate_portal_bridge() {
     if [ "${#PORTALBRIDGE_KEY_ID}" -lt 1 ] || [ "${#PORTALBRIDGE_KEY_ID}" -gt 128 ]; then
         die "PORTALBRIDGE_KEY_ID must be between 1 and 128 characters"
     fi
-    if [[ "$PORTALBRIDGE_SECRET_FILE" != /* ]] || [ ! -r "$PORTALBRIDGE_SECRET_FILE" ]; then
+    if [[ "$PORTALBRIDGE_SECRET_FILE" != /* ]] || [ ! -f "$PORTALBRIDGE_SECRET_FILE" ] || [ ! -r "$PORTALBRIDGE_SECRET_FILE" ]; then
         die "PORTALBRIDGE_SECRET_FILE must reference a readable absolute file"
     fi
     if ! [[ "$PORTALBRIDGE_SERVER_INSTANCE_ID" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]] \
