@@ -22,10 +22,10 @@ jobs:
     with:
       matrix: >-
         [
-          {"version": "1.0.0",        "version_dir": "1.0.0", "branch": "1.0.0",  "dockerfile": "Dockerfile"},
-          {"version": "1.0.0-alpine", "version_dir": "1.0.0", "branch": "1.0.0",  "dockerfile": "Dockerfile.alpine"},
-          {"version": "1.0.1",        "version_dir": "1.0.1", "branch": "1.0.1",  "dockerfile": "Dockerfile"},
-          {"version": "1.0.1-alpine", "version_dir": "1.0.1", "branch": "1.0.1",  "dockerfile": "Dockerfile.alpine"}
+          {"repository": "https://github.com/Crypto137/MHServerEmu.git", "ref": "1.0.0", "commit": "", "version_dir": "1.0.0", "tag": "1.0.0",        "dockerfile": "Dockerfile"},
+          {"repository": "https://github.com/Crypto137/MHServerEmu.git", "ref": "1.0.0", "commit": "", "version_dir": "1.0.0", "tag": "1.0.0-alpine", "dockerfile": "Dockerfile.alpine"},
+          {"repository": "https://github.com/Crypto137/MHServerEmu.git", "ref": "1.0.1", "commit": "", "version_dir": "1.0.1", "tag": "1.0.1",        "dockerfile": "Dockerfile"},
+          {"repository": "https://github.com/Crypto137/MHServerEmu.git", "ref": "1.0.1", "commit": "", "version_dir": "1.0.1", "tag": "1.0.1-alpine", "dockerfile": "Dockerfile.alpine"}
         ]
     secrets:
       RCLONE_CONFIG: ${{ secrets.RCLONE_CONFIG }}
