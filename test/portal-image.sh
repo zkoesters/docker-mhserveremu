@@ -55,6 +55,27 @@ if [ "$#" -ne 0 ]; then
     exit 2
 fi
 
+compose=deploy/docker/compose/docker-compose.yaml
+
+ruby -ryaml - "$compose" <<'RUBY'
+compose = YAML.load_file(ARGV.fetch(0))
+service = compose.dig("services", "mhserveremu")
+expected_tmpfs = [
+  "/tmp:uid=1654,gid=1654,mode=1777",
+  "/run/mhserveremu:uid=1654,gid=1654,mode=0700"
+]
+
+abort "Compose service must use a read-only root filesystem" unless service["read_only"] == true
+abort "Compose tmpfs mounts do not match the read-only runtime contract" unless service["tmpfs"] == expected_tmpfs
+abort "Compose must not publish PortalBridge port 8090" if service.fetch("ports", []).any? { |port| port.to_s.match?(/(^|:)8090(?::|\/|$)/) }
+abort "Compose must not configure PortalBridge secrets" if service.fetch("environment", {}).keys.any? { |key| key.start_with?("PORTALBRIDGE_") }
+RUBY
+
+grep -Fq 'zkoesters/mhserveremu:portal-master-89b02d6f39c0' README.md
+grep -Fq 'zkoesters/mhserveremu@sha256:<published-manifest-digest>' README.md
+grep -Fq 'PORTALBRIDGE_SECRET_FILE' README.md
+grep -Fq 'must not be published' README.md
+
 workflow=.github/workflows/test.yml
 
 grep -Fq 'run: test/portal-image.sh' "$workflow"
