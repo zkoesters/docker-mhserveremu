@@ -73,7 +73,7 @@ define build-version
 build-$1:
 ifeq ($(do_default),true)
 	$(DOCKER) build --pull --no-cache \
-		--build-arg MHSERVEREMU_BRANCH=$(call branch,$1) \
+		--build-arg MHSERVEREMU_REF=$(call branch,$1) \
 		--build-arg MHSERVEREMU_VERSION=$1 \
 		-t $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1) \
 		-f Dockerfile .
@@ -81,7 +81,7 @@ ifeq ($(do_default),true)
 endif
 ifeq ($(do_alpine),true)
 	$(DOCKER) build --pull --no-cache \
-		--build-arg MHSERVEREMU_BRANCH=$(call branch,$1) \
+		--build-arg MHSERVEREMU_REF=$(call branch,$1) \
 		--build-arg MHSERVEREMU_VERSION=$1 \
 		-t $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1)-alpine \
 		-f Dockerfile.alpine .
