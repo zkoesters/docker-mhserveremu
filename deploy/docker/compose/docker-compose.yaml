@@ -24,10 +24,6 @@ services:
       - "4306:4306/udp"
     volumes:
       - mhserveremu-data:/data
-    read_only: true
-    tmpfs:
-      - /tmp:uid=1654,gid=1654,mode=1777
-      - /run/mhserveremu:uid=1654,gid=1654,mode=0700
     stdin_open: true
     tty: true
     restart: unless-stopped

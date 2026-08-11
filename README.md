@@ -35,9 +35,13 @@ Configure PortalBridge with `PORTALBRIDGE_ENABLED`, `PORTALBRIDGE_ADDRESS`,
 `PORTALBRIDGE_SECRET_FILE` path as read-only. Port 8090 is an internal bridge
 port and must not be published.
 
-Portal images run with a read-only root filesystem. Generated configuration is
-stored in the `/run/mhserveremu` tmpfs, while `/data/runtime` remains writable
-on the `/data` volume.
+Portal images support a read-only root filesystem, but do not inherently run
+read-only. Operators deploying an immutable portal image require an
+operator-set `read_only: true` and tmpfs entries
+`/tmp:uid=1654,gid=1654,mode=1777` and
+`/run/mhserveremu:uid=1654,gid=1654,mode=0700`. Generated configuration is
+stored in `/run/mhserveremu`, while `/data/runtime` remains writable on the
+`/data` volume.
 
 ## Build internals: SQLInterop
 
