@@ -95,7 +95,8 @@ workflow=.github/workflows/test.yml
 
 ruby -ryaml - "$workflow" <<'RUBY'
 workflow = YAML.load_file(ARGV.fetch(0))
-paths = workflow.fetch(true).fetch("pull_request").fetch("paths")
+trigger = workflow.key?(true) ? workflow.fetch(true) : workflow.fetch("on")
+paths = trigger.fetch("pull_request").fetch("paths")
 expected = [
   "README.md",
   "deploy/docker/compose/docker-compose.yaml",
