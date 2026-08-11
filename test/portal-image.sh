@@ -38,6 +38,10 @@ run_runtime_contract() {
         -e MHSERVEREMU_RUNTIME_DIRECTORY=/tmp/mhserveremu/runtime \
         "$image" sh -c 'test -f "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini" \
             && test -f "$MHSERVEREMU_CONFIG_DIRECTORY/ConfigOverride.ini" \
+            && test "$(readlink /usr/share/mhserveremu/Config.ini)" = "/run/mhserveremu/config/Config.ini" \
+            && test "$(readlink /usr/share/mhserveremu/ConfigOverride.ini)" = "/run/mhserveremu/config/ConfigOverride.ini" \
+            && grep -Fq "Enabled=true" /usr/share/mhserveremu/Config.ini \
+            && test -f /usr/share/mhserveremu/ConfigOverride.ini \
             && ! grep -Fq "portal-runtime-contract-hmac" "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini"'
 }
 
@@ -73,6 +77,8 @@ for dockerfile in Dockerfile Dockerfile.alpine; do
     grep -Fq "org.opencontainers.image.source=\"\$MHSERVEREMU_REPOSITORY\"" "$dockerfile"
     grep -Fq "org.opencontainers.image.revision=\"\$MHSERVEREMU_COMMIT\"" "$dockerfile"
     grep -Fq "io.mhserveremu.portal.ref=\"\$MHSERVEREMU_REF\"" "$dockerfile"
+    [ "$(grep -Fc 'ln -s /run/mhserveremu/config/Config.ini /usr/share/mhserveremu/Config.ini' "$dockerfile")" -eq 2 ]
+    [ "$(grep -Fc 'ln -s /run/mhserveremu/config/ConfigOverride.ini /usr/share/mhserveremu/ConfigOverride.ini' "$dockerfile")" -eq 2 ]
 done
 
 grep -Fq -- "--build-arg MHSERVEREMU_REF=\$(call branch,\$1)" Makefile

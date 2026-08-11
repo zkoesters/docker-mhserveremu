@@ -62,13 +62,15 @@ RUN set -eux \
 COPY --chown=$APP_UID:$APP_UID ${MHSERVEREMU_VERSION}/Config.ini.template /usr/share/mhserveremu/Config.ini.template
 COPY --chown=$APP_UID:$APP_UID docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+    && ln -s /run/mhserveremu/config/Config.ini /usr/share/mhserveremu/Config.ini \
+    && ln -s /run/mhserveremu/config/ConfigOverride.ini /usr/share/mhserveremu/ConfigOverride.ini
 
 USER $APP_UID
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["sh", "-c", "test -f \"$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini\" && test -f \"$MHSERVEREMU_CONFIG_DIRECTORY/ConfigOverride.ini\""]
+CMD ["sh", "-c", "test -f /usr/share/mhserveremu/Config.ini && test -f /usr/share/mhserveremu/ConfigOverride.ini"]
 
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_TAG} AS build-stage
 
@@ -145,7 +147,10 @@ RUN set -eux \
         wget \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/share/mhserveremu/MHServerEmu /usr/bin/MHServerEmu \
-    && install -d -o "$APP_UID" -g "$APP_UID" /data /run/mhserveremu
+    && install -d -o "$APP_UID" -g "$APP_UID" /data /run/mhserveremu \
+    && rm -f /usr/share/mhserveremu/Config.ini /usr/share/mhserveremu/ConfigOverride.ini \
+    && ln -s /run/mhserveremu/config/Config.ini /usr/share/mhserveremu/Config.ini \
+    && ln -s /run/mhserveremu/config/ConfigOverride.ini /usr/share/mhserveremu/ConfigOverride.ini
 
 COPY ${MHSERVEREMU_VERSION}/Config.ini.template /usr/share/mhserveremu/Config.ini.template
 COPY ["docker-entrypoint.sh", "start-server", "/usr/local/bin/"]
