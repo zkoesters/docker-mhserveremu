@@ -13,6 +13,7 @@ on:
       - ".editorconfig"
       - ".editorconfig-checker.json"
       - ".hadolint.yaml"
+      - ".github/workflows/test.yml"
 permissions:
   contents: read
 jobs:
@@ -66,3 +67,25 @@ jobs:
           rclone copy r2:private-dependencies/mu_cdata.sip ${{ github.workspace }}
       - name: Run tests
         run: make test-${{ matrix.version }}
+
+  config-test:
+    name: Config Test (${{ matrix.variant }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: debian
+            dockerfile: Dockerfile
+            image: mhserveremu-config-test-debian
+          - variant: alpine
+            dockerfile: Dockerfile.alpine
+            image: mhserveremu-config-test-alpine
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build config test image
+        run: docker build --target config-test --build-arg MHSERVEREMU_VERSION=nightly --tag ${{ matrix.image }} --file ${{ matrix.dockerfile }} .
+      - name: Run config test contract
+        run: test/portal-image.sh ${{ matrix.image }}

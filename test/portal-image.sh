@@ -1,9 +1,63 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+temporary_directory=
+
+run_runtime_contract() {
+    local image="$1"
+    local secret_file
+    local readonly_options=(
+        --read-only
+        --tmpfs "/tmp:rw,nosuid,nodev,noexec,mode=1777"
+        --tmpfs "/run/mhserveremu:rw,nosuid,nodev,noexec,uid=1654,gid=1654,mode=0700"
+    )
+
+    temporary_directory="$(mktemp -d)"
+    secret_file="${temporary_directory}/portal-hmac"
+    trap 'rm -rf -- "$temporary_directory"' EXIT
+    chmod 0755 "$temporary_directory"
+    printf '%s\n' 'portal-runtime-contract-hmac' > "$secret_file"
+    chmod 0444 "$secret_file"
+
+    if docker run --rm "${readonly_options[@]}" \
+        --mount "type=bind,source=${temporary_directory},target=/portal-secret,readonly" \
+        -e PORTALBRIDGE_ENABLED=true \
+        -e PORTALBRIDGE_SECRET_FILE=/portal-secret \
+        -e PORTALBRIDGE_SERVER_INSTANCE_ID=123e4567-e89b-12d3-a456-426614174000 \
+        -e MHSERVEREMU_RUNTIME_DIRECTORY=/tmp/mhserveremu/runtime \
+        "$image"; then
+        printf '%s\n' 'Error: PORTALBRIDGE_SECRET_FILE accepted a readable directory' >&2
+        exit 1
+    fi
+
+    docker run --rm "${readonly_options[@]}" \
+        --mount "type=bind,source=${secret_file},target=/portal-hmac,readonly" \
+        -e PORTALBRIDGE_ENABLED=true \
+        -e PORTALBRIDGE_SECRET_FILE=/portal-hmac \
+        -e PORTALBRIDGE_SERVER_INSTANCE_ID=123e4567-e89b-12d3-a456-426614174000 \
+        -e MHSERVEREMU_RUNTIME_DIRECTORY=/tmp/mhserveremu/runtime \
+        "$image" sh -c 'test -f "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini" \
+            && test -f "$MHSERVEREMU_CONFIG_DIRECTORY/ConfigOverride.ini" \
+            && ! grep -Fq "portal-runtime-contract-hmac" "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini"'
+}
+
+if [ "$#" -eq 1 ]; then
+    run_runtime_contract "$1"
+    exit 0
+fi
+
+if [ "$#" -ne 0 ]; then
+    printf '%s\n' 'Usage: test/portal-image.sh [config-test-image]' >&2
+    exit 2
+fi
+
 workflow=.github/workflows/test.yml
 
 grep -Fq 'run: test/portal-image.sh' "$workflow"
+grep -Fq 'config-test' "$workflow"
+grep -Fq 'MHSERVEREMU_VERSION=nightly' "$workflow"
+# shellcheck disable=SC2016 # Intentional literal GitHub Actions expression.
+grep -Fq 'test/portal-image.sh ${{ matrix.image }}' "$workflow"
 
 for dockerfile in Dockerfile Dockerfile.alpine; do
     grep -Fq 'ARG MHSERVEREMU_REPOSITORY=https://github.com/Crypto137/MHServerEmu.git' "$dockerfile"
