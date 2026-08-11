@@ -107,6 +107,7 @@ abort "Test workflow must run for portal deployment, Compose, and build workflow
 RUBY
 
 grep -Fq 'run: test/portal-image.sh' "$workflow"
+grep -Fq 'failure-threshold: error' "$workflow"
 grep -Fq 'config-test' "$workflow"
 grep -Fq 'MHSERVEREMU_VERSION=nightly' "$workflow"
 # shellcheck disable=SC2016 # Intentional literal GitHub Actions expression.
