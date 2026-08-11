@@ -96,9 +96,14 @@ workflow=.github/workflows/test.yml
 ruby -ryaml - "$workflow" <<'RUBY'
 workflow = YAML.load_file(ARGV.fetch(0))
 paths = workflow.fetch(true).fetch("pull_request").fetch("paths")
-expected = ["README.md", "deploy/docker/compose/docker-compose.yaml"]
+expected = [
+  "README.md",
+  "deploy/docker/compose/docker-compose.yaml",
+  ".github/workflows/docker-build-push.yml",
+  ".github/workflows/docker-image-portal.yml"
+]
 
-abort "Test workflow must run for portal deployment documentation and Compose changes" unless (expected - paths).empty?
+abort "Test workflow must run for portal deployment, Compose, and build workflow changes" unless (expected - paths).empty?
 RUBY
 
 grep -Fq 'run: test/portal-image.sh' "$workflow"
