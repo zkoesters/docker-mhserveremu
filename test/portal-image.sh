@@ -16,4 +16,11 @@ for dockerfile in Dockerfile Dockerfile.alpine; do
     grep -Fq "git fetch --depth=1 origin \"\$MHSERVEREMU_COMMIT\"" "$dockerfile"
     grep -Fq 'git checkout --detach FETCH_HEAD' "$dockerfile"
     grep -Fq 'git rev-parse HEAD' "$dockerfile"
+    grep -Fq "org.opencontainers.image.source=\"\$MHSERVEREMU_REPOSITORY\"" "$dockerfile"
+    grep -Fq "org.opencontainers.image.revision=\"\$MHSERVEREMU_COMMIT\"" "$dockerfile"
+    grep -Fq "io.mhserveremu.portal.ref=\"\$MHSERVEREMU_REF\"" "$dockerfile"
 done
+
+grep -Fq -- "--build-arg MHSERVEREMU_REF=\$(call branch,\$1)" Makefile
+# shellcheck disable=SC2016 # Intentional literal GitHub Actions expression.
+grep -Fq 'MHSERVEREMU_REF=${{ matrix.branch }}' .github/workflows/docker-build-push.yml

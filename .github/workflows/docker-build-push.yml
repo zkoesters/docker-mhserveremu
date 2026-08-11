@@ -61,7 +61,7 @@ jobs:
           context: .
           file: ${{ matrix.dockerfile }}
           build-args: |
-            MHSERVEREMU_BRANCH=${{ matrix.branch }}
+            MHSERVEREMU_REF=${{ matrix.branch }}
             MHSERVEREMU_VERSION=${{ matrix.version_dir }}
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=mhserveremu-${{ matrix.version }}-${{ matrix.dockerfile }}
