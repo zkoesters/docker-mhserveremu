@@ -19,6 +19,16 @@ run_runtime_contract() {
     printf '%s\n' 'portal-runtime-contract-hmac' > "$secret_file"
     chmod 0444 "$secret_file"
 
+    local port_output
+    if port_output="$(docker run --rm \
+        -e PORTALBRIDGE_ENABLED=true \
+        -e PORTALBRIDGE_PORT=invalid \
+        "$image" 2>&1)"; then
+        printf '%s\n' 'Error: PORTALBRIDGE_PORT accepted an invalid value' >&2
+        exit 1
+    fi
+    grep -Fq "got: 'invalid'" <<< "$port_output"
+
     if docker run --rm "${readonly_options[@]}" \
         --mount "type=bind,source=${temporary_directory},target=/portal-secret,readonly" \
         -e PORTALBRIDGE_ENABLED=true \
