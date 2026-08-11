@@ -60,23 +60,46 @@ compose=deploy/docker/compose/docker-compose.yaml
 ruby -ryaml - "$compose" <<'RUBY'
 compose = YAML.load_file(ARGV.fetch(0))
 service = compose.dig("services", "mhserveremu")
-expected_tmpfs = [
-  "/tmp:uid=1654,gid=1654,mode=1777",
-  "/run/mhserveremu:uid=1654,gid=1654,mode=0700"
-]
 
-abort "Compose service must use a read-only root filesystem" unless service["read_only"] == true
-abort "Compose tmpfs mounts do not match the read-only runtime contract" unless service["tmpfs"] == expected_tmpfs
-abort "Compose must not publish PortalBridge port 8090" if service.fetch("ports", []).any? { |port| port.to_s.match?(/(^|:)8090(?::|\/|$)/) }
+def portal_bridge_port_published?(port)
+  case port
+  when Hash
+    port["published"].to_s == "8090"
+  else
+    mapping = port.to_s.split("/", 2).first
+    mapping = mapping.sub(/\A\[[^\]]+\]:/, "")
+    parts = mapping.split(":")
+    parts.length >= 2 && parts[-2] == "8090"
+  end
+end
+
+abort "Generic Compose must not enable a read-only root filesystem" if service.key?("read_only")
+abort "Generic Compose must not configure PortalBridge tmpfs mounts" if service.key?("tmpfs")
+abort "Compose must not publish PortalBridge port 8090" if service.fetch("ports", []).any? { |port| portal_bridge_port_published?(port) }
 abort "Compose must not configure PortalBridge secrets" if service.fetch("environment", {}).keys.any? { |key| key.start_with?("PORTALBRIDGE_") }
+abort "Compose must not configure PortalBridge secrets" if service.key?("secrets")
+abort "Compose port detection must reject short-form published port 8090" unless portal_bridge_port_published?("8090:8090")
+abort "Compose port detection must reject long-form published port 8090" unless portal_bridge_port_published?({"target" => 4306, "published" => 8090})
 RUBY
 
 grep -Fq 'zkoesters/mhserveremu:portal-master-89b02d6f39c0' README.md
 grep -Fq 'zkoesters/mhserveremu@sha256:<published-manifest-digest>' README.md
 grep -Fq 'PORTALBRIDGE_SECRET_FILE' README.md
 grep -Fq 'must not be published' README.md
+# shellcheck disable=SC2016 # Literal Markdown code span.
+grep -Fq 'operator-set `read_only: true`' README.md
+grep -Fq '/tmp:uid=1654,gid=1654,mode=1777' README.md
+grep -Fq '/run/mhserveremu:uid=1654,gid=1654,mode=0700' README.md
 
 workflow=.github/workflows/test.yml
+
+ruby -ryaml - "$workflow" <<'RUBY'
+workflow = YAML.load_file(ARGV.fetch(0))
+paths = workflow.fetch(true).fetch("pull_request").fetch("paths")
+expected = ["README.md", "deploy/docker/compose/docker-compose.yaml"]
+
+abort "Test workflow must run for portal deployment documentation and Compose changes" unless (expected - paths).empty?
+RUBY
 
 grep -Fq 'run: test/portal-image.sh' "$workflow"
 grep -Fq 'config-test' "$workflow"

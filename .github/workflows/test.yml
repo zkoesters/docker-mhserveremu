@@ -10,6 +10,8 @@ on:
       - "**/Config.ini.template"
       - "Makefile"
       - "**/*.sh"
+      - "README.md"
+      - "deploy/docker/compose/docker-compose.yaml"
       - ".editorconfig"
       - ".editorconfig-checker.json"
       - ".hadolint.yaml"
