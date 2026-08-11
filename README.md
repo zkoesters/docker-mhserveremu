@@ -22,6 +22,23 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.1`
 | [zkoesters/mhserveremu:1.0.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.1-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.29 | 1.0.1       |
 | [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.29 | dev         |
 
+## PortalBridge portal images
+
+Use `zkoesters/mhserveremu:portal-master-89b02d6f39c0` only to locate the
+release. Deployments must use the recorded immutable image reference
+`zkoesters/mhserveremu@sha256:<published-manifest-digest>`; this document does
+not assert that a manifest digest is currently published.
+
+Configure PortalBridge with `PORTALBRIDGE_ENABLED`, `PORTALBRIDGE_ADDRESS`,
+`PORTALBRIDGE_PORT`, `PORTALBRIDGE_KEY_ID`, `PORTALBRIDGE_SECRET_FILE`, and
+`PORTALBRIDGE_SERVER_INSTANCE_ID`. Mount the secret file at the
+`PORTALBRIDGE_SECRET_FILE` path as read-only. Port 8090 is an internal bridge
+port and must not be published.
+
+Portal images run with a read-only root filesystem. Generated configuration is
+stored in the `/run/mhserveremu` tmpfs, while `/data/runtime` remains writable
+on the `/data` volume.
+
 ## Build internals: SQLInterop
 
 `SQLite.Interop.dll` is built from pinned `System.Data.SQLite` source during image
