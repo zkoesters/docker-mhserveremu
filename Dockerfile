@@ -1,7 +1,9 @@
 # Parameterized Dockerfile for MHServerEmu (Debian)
 #
 # Build args:
-#   MHSERVEREMU_BRANCH  - git branch or tag to clone (e.g. "1.0.0", "dev")
+#   MHSERVEREMU_REPOSITORY - upstream MHServerEmu git repository
+#   MHSERVEREMU_REF        - git ref to fetch when MHSERVEREMU_COMMIT is empty
+#   MHSERVEREMU_COMMIT     - immutable git commit to fetch and verify
 #   MHSERVEREMU_VERSION - directory containing Config.ini.template (e.g. "1.0.0", "nightly")
 #   SQLITE_INTEROP_VERSION         - System.Data.SQLite source version (default: 1.0.118.0)
 #   SQLITE_SOURCE_ARCHIVE_SHA256   - SHA256 for sqlite source archive
@@ -46,7 +48,9 @@ RUN set -eux \
 
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_SDK_TAG} AS build-stage
 
-ARG MHSERVEREMU_BRANCH=1.0.1
+ARG MHSERVEREMU_REPOSITORY=https://github.com/Crypto137/MHServerEmu.git
+ARG MHSERVEREMU_REF=1.0.1
+ARG MHSERVEREMU_COMMIT=
 ARG TARGETARCH
 
 WORKDIR /tmp/MHServerEmu
@@ -54,7 +58,8 @@ WORKDIR /tmp/MHServerEmu
 COPY --from=sqlinterop-build /out/SQLite.Interop.dll /tmp/SQLite.Interop.dll
 
 # Validate TARGETARCH (amd64/arm64),
-# then clone, inject the source-built native library, build, and test.
+# then fetch the requested source, inject the source-built native library, build,
+# and test.
 #
 # The csproj hard-codes Interop/linux-x64/ as the source path on Linux,
 # so we write to that path regardless of architecture.
@@ -65,14 +70,22 @@ RUN set -eux \
         amd64|arm64) ;; \
         *)     echo "Unsupported architecture: $TARGETARCH" >&2; exit 1 ;; \
         esac \
-    && git clone --depth 1 --branch "${MHSERVEREMU_BRANCH}" \
-        https://github.com/Crypto137/MHServerEmu.git /tmp/MHServerEmu \
+    && git init /tmp/MHServerEmu \
+    && git remote add origin "$MHSERVEREMU_REPOSITORY" \
+    && if [ -n "$MHSERVEREMU_COMMIT" ]; then \
+        git fetch --depth=1 origin "$MHSERVEREMU_COMMIT"; \
+        git checkout --detach FETCH_HEAD; \
+        test "$(git rev-parse HEAD)" = "$MHSERVEREMU_COMMIT"; \
+    else \
+        git fetch --depth=1 origin "$MHSERVEREMU_REF"; \
+        git checkout --detach FETCH_HEAD; \
+    fi \
     && cp /tmp/SQLite.Interop.dll \
         /tmp/MHServerEmu/src/MHServerEmu.DatabaseAccess/Interop/linux-x64/SQLite.Interop.dll \
-    && dotnet restore MHServerEmu.sln \
-    && dotnet build MHServerEmu.sln --no-restore --configuration Release \
+    && dotnet restore /tmp/MHServerEmu/MHServerEmu.sln \
+    && dotnet build /tmp/MHServerEmu/MHServerEmu.sln --no-restore --configuration Release \
     && if [ "$TARGETARCH" = "amd64" ]; then \
-        dotnet test MHServerEmu.sln --no-build --no-restore --configuration Release; \
+        dotnet test /tmp/MHServerEmu/MHServerEmu.sln --no-build --no-restore --configuration Release; \
     else \
         echo "Skipping dotnet test on $TARGETARCH (upstream tests are x64-targeted)."; \
     fi
@@ -83,7 +96,14 @@ COPY ["Calligraphy.sip", "mu_cdata.sip", \
 FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_RUNTIME_TAG}
 
 ARG MHSERVEREMU_VERSION=1.0.1
+ARG MHSERVEREMU_REPOSITORY=https://github.com/Crypto137/MHServerEmu.git
+ARG MHSERVEREMU_REF=1.0.1
+ARG MHSERVEREMU_COMMIT=
 ARG APP_UID=1654
+
+LABEL org.opencontainers.image.source="$MHSERVEREMU_REPOSITORY" \
+      org.opencontainers.image.revision="$MHSERVEREMU_COMMIT" \
+      io.mhserveremu.portal.ref="$MHSERVEREMU_REF"
 
 COPY --from=build-stage --chown=$APP_UID:$APP_UID \
     ["/tmp/MHServerEmu/src/MHServerEmu/bin/x64/Release/net8.0", "/usr/share/mhserveremu"]
