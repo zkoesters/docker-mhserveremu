@@ -81,9 +81,25 @@ for dockerfile in Dockerfile Dockerfile.alpine; do
     [ "$(grep -Fc 'ln -s /run/mhserveremu/config/ConfigOverride.ini /usr/share/mhserveremu/ConfigOverride.ini' "$dockerfile")" -eq 2 ]
 done
 
-grep -Fq -- "--build-arg MHSERVEREMU_REF=\$(call branch,\$1)" Makefile
+workflow=.github/workflows/docker-image-portal.yml
+
+grep -Fq 'portal-master-89b02d6f39c0' "$workflow"
+grep -Fq 'portal-1.0.1-bc4a37ea2e2a' "$workflow"
+# shellcheck disable=SC2016 because literals intentionally include GitHub expression
+grep -Fq 'MHSERVEREMU_COMMIT=${{ matrix.commit }}' .github/workflows/docker-build-push.yml
+grep -Fq 'labels: ${{ steps.meta.outputs.labels }}' .github/workflows/docker-build-push.yml
+
+grep -Fq 'MHSERVEREMU_REPOSITORY ?= https://github.com/Crypto137/MHServerEmu.git' Makefile
+grep -Fq 'MHSERVEREMU_REF ?= $(call branch,$(VERSION))' Makefile
+grep -Fq 'MHSERVEREMU_COMMIT ?=' Makefile
+for build_arg in MHSERVEREMU_REPOSITORY MHSERVEREMU_REF MHSERVEREMU_COMMIT; do
+    [ "$(grep -Fc -- "--build-arg ${build_arg}=" Makefile)" -eq 2 ]
+done
+grep -Fq -- '--build-arg MHSERVEREMU_REF=$(or $(MHSERVEREMU_REF),$(call branch,$1))' Makefile
 # shellcheck disable=SC2016 # Intentional literal GitHub Actions expression.
-grep -Fq 'MHSERVEREMU_REF=${{ matrix.branch }}' .github/workflows/docker-build-push.yml
+grep -Fq 'MHSERVEREMU_REF=${{ matrix.ref }}' .github/workflows/docker-build-push.yml
+! grep -Fq 'matrix.branch' .github/workflows/docker-build-push.yml
+! grep -Eq 'matrix\.version([^_[:alnum:]]|$)' .github/workflows/docker-build-push.yml
 
 for template in 1.0.1/Config.ini.template nightly/Config.ini.template; do
     grep -Fq '[PortalBridge]' "$template"

@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       matrix:
-        description: "JSON matrix of version/branch/dockerfile entries"
+        description: "JSON matrix of repository/ref/commit/version_dir/tag/dockerfile entries"
         required: true
         type: string
     secrets:
@@ -61,13 +61,16 @@ jobs:
           context: .
           file: ${{ matrix.dockerfile }}
           build-args: |
-            MHSERVEREMU_REF=${{ matrix.branch }}
+            MHSERVEREMU_REPOSITORY=${{ matrix.repository }}
+            MHSERVEREMU_REF=${{ matrix.ref }}
+            MHSERVEREMU_COMMIT=${{ matrix.commit }}
             MHSERVEREMU_VERSION=${{ matrix.version_dir }}
           platforms: linux/amd64,linux/arm64
-          cache-from: type=gha,scope=mhserveremu-${{ matrix.version }}-${{ matrix.dockerfile }}
-          cache-to: type=gha,mode=max,scope=mhserveremu-${{ matrix.version }}-${{ matrix.dockerfile }}
+          cache-from: type=gha,scope=mhserveremu-${{ matrix.tag }}-${{ matrix.dockerfile }}
+          cache-to: type=gha,mode=max,scope=mhserveremu-${{ matrix.tag }}-${{ matrix.dockerfile }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          labels: ${{ steps.meta.outputs.labels }}
           sbom: true
           provenance: mode=max
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{ matrix.version }}
+          tags: ${{ env.IMAGE_NAME }}:${{ matrix.tag }}

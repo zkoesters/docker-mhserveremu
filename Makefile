@@ -15,6 +15,9 @@
 
 REPO_NAME  ?= zkoesters
 IMAGE_NAME ?= mhserveremu
+MHSERVEREMU_REPOSITORY ?= https://github.com/Crypto137/MHServerEmu.git
+MHSERVEREMU_REF ?= $(call branch,$(VERSION))
+MHSERVEREMU_COMMIT ?=
 
 LATEST_VERSION=1.0.1
 do_default=true
@@ -73,7 +76,9 @@ define build-version
 build-$1:
 ifeq ($(do_default),true)
 	$(DOCKER) build --pull --no-cache \
-		--build-arg MHSERVEREMU_REF=$(call branch,$1) \
+		--build-arg MHSERVEREMU_REPOSITORY=$(MHSERVEREMU_REPOSITORY) \
+		--build-arg MHSERVEREMU_REF=$(or $(MHSERVEREMU_REF),$(call branch,$1)) \
+		--build-arg MHSERVEREMU_COMMIT=$(MHSERVEREMU_COMMIT) \
 		--build-arg MHSERVEREMU_VERSION=$1 \
 		-t $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1) \
 		-f Dockerfile .
@@ -81,7 +86,9 @@ ifeq ($(do_default),true)
 endif
 ifeq ($(do_alpine),true)
 	$(DOCKER) build --pull --no-cache \
-		--build-arg MHSERVEREMU_REF=$(call branch,$1) \
+		--build-arg MHSERVEREMU_REPOSITORY=$(MHSERVEREMU_REPOSITORY) \
+		--build-arg MHSERVEREMU_REF=$(or $(MHSERVEREMU_REF),$(call branch,$1)) \
+		--build-arg MHSERVEREMU_COMMIT=$(MHSERVEREMU_COMMIT) \
 		--build-arg MHSERVEREMU_VERSION=$1 \
 		-t $(REPO_NAME)/$(IMAGE_NAME):$(shell echo $1)-alpine \
 		-f Dockerfile.alpine .
