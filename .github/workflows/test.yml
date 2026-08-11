@@ -15,6 +15,8 @@ on:
       - ".editorconfig"
       - ".editorconfig-checker.json"
       - ".hadolint.yaml"
+      - ".github/workflows/docker-build-push.yml"
+      - ".github/workflows/docker-image-portal.yml"
       - ".github/workflows/test.yml"
 permissions:
   contents: read
