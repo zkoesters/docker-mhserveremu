@@ -156,7 +156,7 @@ COPY ${MHSERVEREMU_VERSION}/Config.ini.template /usr/share/mhserveremu/Config.in
 COPY ["docker-entrypoint.sh", "start-server", "/usr/local/bin/"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD wget -qO /dev/null http://localhost:8080/ServerStatus || exit 1
+    CMD ["wget", "-qO", "/dev/null", "http://localhost:8080/ServerStatus"]
 
 VOLUME ["/data"]
 

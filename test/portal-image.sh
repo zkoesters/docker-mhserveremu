@@ -128,6 +128,7 @@ for dockerfile in Dockerfile Dockerfile.alpine; do
     grep -Fq "io.mhserveremu.portal.ref=\"\$MHSERVEREMU_REF\"" "$dockerfile"
     [ "$(grep -Fc 'ln -s /run/mhserveremu/config/Config.ini /usr/share/mhserveremu/Config.ini' "$dockerfile")" -eq 2 ]
     [ "$(grep -Fc 'ln -s /run/mhserveremu/config/ConfigOverride.ini /usr/share/mhserveremu/ConfigOverride.ini' "$dockerfile")" -eq 2 ]
+    grep -Fq 'CMD ["wget", "-qO", "/dev/null", "http://localhost:8080/ServerStatus"]' "$dockerfile"
 done
 
 workflow=.github/workflows/docker-image-portal.yml
