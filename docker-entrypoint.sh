@@ -8,7 +8,13 @@
 set -Eeo pipefail
 
 CONFIG_TEMPLATE_PATH="/usr/share/mhserveremu/Config.ini.template"
-CONFIG_OUTPUT_PATH="/usr/share/mhserveremu/Config.ini"
+CONFIG_DIRECTORY="${MHSERVEREMU_CONFIG_DIRECTORY:-/run/mhserveremu/config}"
+RUNTIME_DIRECTORY="${MHSERVEREMU_RUNTIME_DIRECTORY:-/data/runtime}"
+CONFIG_OUTPUT_PATH="${CONFIG_DIRECTORY}/Config.ini"
+CONFIG_OVERRIDE_PATH="${CONFIG_DIRECTORY}/ConfigOverride.ini"
+
+export MHSERVEREMU_CONFIG_DIRECTORY="$CONFIG_DIRECTORY"
+export MHSERVEREMU_RUNTIME_DIRECTORY="$RUNTIME_DIRECTORY"
 
 resolve_env_var() {
     local primary_var="$1"
@@ -90,6 +96,12 @@ MTXSTORE_REAL_MONEY_URL|STORE_REAL_MONEY_URL|https://localhost/MTXStore/AddG
 MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS||true
 MTXSTORE_BUNDLE_INFO_URL||http://localhost/bundles/
 MTXSTORE_BUNDLE_IMAGE_URL||http://localhost/bundles/images/
+PORTALBRIDGE_ENABLED||false
+PORTALBRIDGE_ADDRESS||localhost
+PORTALBRIDGE_PORT||8090
+PORTALBRIDGE_KEY_ID||portal-primary
+PORTALBRIDGE_SECRET_FILE||
+PORTALBRIDGE_SERVER_INSTANCE_ID||
 "
 
 # ── Backward-compatible legacy aliases ─────────────────────────────────────
@@ -187,6 +199,7 @@ MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_STEP|int
 MTXSTORE_GIFTING_OMEGA_LEVEL_REQUIRED|int
 MTXSTORE_GIFTING_INFINITY_LEVEL_REQUIRED|int
 MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS|bool
+PORTALBRIDGE_ENABLED|bool
 "
 
 validation_failed=0
@@ -202,8 +215,37 @@ if [ "$validation_failed" -eq 1 ]; then
     exit 1
 fi
 
+die() {
+    printf 'Error: %s\n' "$1" >&2
+    exit 1
+}
+
+validate_portal_bridge() {
+    if [ "$PORTALBRIDGE_ENABLED" != "true" ]; then
+        return 0
+    fi
+
+    if ! [[ "$PORTALBRIDGE_PORT" =~ ^[0-9]+$ ]] || [ "$PORTALBRIDGE_PORT" -lt 1 ] || [ "$PORTALBRIDGE_PORT" -gt 65535 ]; then
+        die "PORTALBRIDGE_PORT must be a port number (1-65535)"
+    fi
+    if [ "${#PORTALBRIDGE_KEY_ID}" -lt 1 ] || [ "${#PORTALBRIDGE_KEY_ID}" -gt 128 ]; then
+        die "PORTALBRIDGE_KEY_ID must be between 1 and 128 characters"
+    fi
+    if [[ "$PORTALBRIDGE_SECRET_FILE" != /* ]] || [ ! -r "$PORTALBRIDGE_SECRET_FILE" ]; then
+        die "PORTALBRIDGE_SECRET_FILE must reference a readable absolute file"
+    fi
+    if ! [[ "$PORTALBRIDGE_SERVER_INSTANCE_ID" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]] \
+        || [ "$PORTALBRIDGE_SERVER_INSTANCE_ID" = "00000000-0000-0000-0000-000000000000" ]; then
+        die "PORTALBRIDGE_SERVER_INSTANCE_ID must be a non-zero lowercase canonical UUID"
+    fi
+}
+
+validate_portal_bridge
+
 # ── Generate Config.ini ────────────────────────────────────────────────────
 
+install -d -m 0700 "$CONFIG_DIRECTORY" "$RUNTIME_DIRECTORY"
+touch "$CONFIG_OVERRIDE_PATH"
 cp "$CONFIG_TEMPLATE_PATH" "$CONFIG_OUTPUT_PATH"
 
 while IFS='|' read -r primary _ _; do

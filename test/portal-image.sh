@@ -24,3 +24,14 @@ done
 grep -Fq -- "--build-arg MHSERVEREMU_REF=\$(call branch,\$1)" Makefile
 # shellcheck disable=SC2016 # Intentional literal GitHub Actions expression.
 grep -Fq 'MHSERVEREMU_REF=${{ matrix.branch }}' .github/workflows/docker-build-push.yml
+
+for template in 1.0.1/Config.ini.template nightly/Config.ini.template; do
+    grep -Fq '[PortalBridge]' "$template"
+    grep -Fq 'Enabled=%%PORTALBRIDGE_ENABLED%%' "$template"
+    grep -Fq 'SecretFile=%%PORTALBRIDGE_SECRET_FILE%%' "$template"
+done
+
+grep -Fq 'PORTALBRIDGE_ENABLED||false' docker-entrypoint.sh
+grep -Fq 'PORTALBRIDGE_SECRET_FILE||' docker-entrypoint.sh
+grep -Fq 'MHSERVEREMU_CONFIG_DIRECTORY' docker-entrypoint.sh
+grep -Fq 'MHSERVEREMU_RUNTIME_DIRECTORY' docker-entrypoint.sh
