@@ -83,23 +83,58 @@ done
 
 workflow=.github/workflows/docker-image-portal.yml
 
-grep -Fq 'portal-master-89b02d6f39c0' "$workflow"
-grep -Fq 'portal-1.0.1-bc4a37ea2e2a' "$workflow"
-# shellcheck disable=SC2016 because literals intentionally include GitHub expression
+grep -Fq 'workflow_dispatch:' "$workflow"
+if grep -Eq '^[[:space:]]*(push|pull_request|pull_request_target|schedule|workflow_call):' "$workflow"; then
+    exit 1
+fi
+grep -Fq 'secrets: inherit' "$workflow"
+ruby -rjson -ryaml - "$workflow" <<'RUBY'
+workflow = YAML.load_file(ARGV.fetch(0))
+matrix = JSON.parse(workflow.dig("jobs", "build", "with", "matrix"))
+expected = [
+  {"repository" => "https://github.com/zkoesters/MHServerEmu.git", "ref" => "portal-master", "commit" => "89b02d6f39c0b403c581c71cc5e052c0575775fe", "version_dir" => "nightly", "tag" => "portal-master-89b02d6f39c0", "dockerfile" => "Dockerfile"},
+  {"repository" => "https://github.com/zkoesters/MHServerEmu.git", "ref" => "portal-master", "commit" => "89b02d6f39c0b403c581c71cc5e052c0575775fe", "version_dir" => "nightly", "tag" => "portal-master-89b02d6f39c0-alpine", "dockerfile" => "Dockerfile.alpine"},
+  {"repository" => "https://github.com/zkoesters/MHServerEmu.git", "ref" => "portal-1.0.1", "commit" => "bc4a37ea2e2a0e570fcaebc90011c201d6225a7e", "version_dir" => "1.0.1", "tag" => "portal-1.0.1-bc4a37ea2e2a", "dockerfile" => "Dockerfile"},
+  {"repository" => "https://github.com/zkoesters/MHServerEmu.git", "ref" => "portal-1.0.1", "commit" => "bc4a37ea2e2a0e570fcaebc90011c201d6225a7e", "version_dir" => "1.0.1", "tag" => "portal-1.0.1-bc4a37ea2e2a-alpine", "dockerfile" => "Dockerfile.alpine"}
+]
+
+abort "Portal image matrix does not match the pinned source mappings" unless matrix == expected
+RUBY
+# shellcheck disable=SC2016 # Literals intentionally include GitHub expression.
 grep -Fq 'MHSERVEREMU_COMMIT=${{ matrix.commit }}' .github/workflows/docker-build-push.yml
+# shellcheck disable=SC2016 # Literals intentionally include GitHub expression.
 grep -Fq 'labels: ${{ steps.meta.outputs.labels }}' .github/workflows/docker-build-push.yml
 
+ruby -ryaml - .github/workflows/docker-build-push.yml <<'RUBY'
+workflow = YAML.load_file(ARGV.fetch(0))
+metadata = workflow.dig("jobs", "docker", "steps").find { |step| step["id"] == "meta" }
+labels = metadata&.dig("with", "labels")
+expected = [
+  "org.opencontainers.image.source=${{ matrix.repository }}",
+  "org.opencontainers.image.revision=${{ matrix.commit }}",
+  "io.mhserveremu.portal.ref=${{ matrix.ref }}"
+]
+
+abort "Metadata labels are not explicitly derived from the build matrix" unless labels&.lines(chomp: true)&.reject(&:empty?) == expected
+RUBY
+
 grep -Fq 'MHSERVEREMU_REPOSITORY ?= https://github.com/Crypto137/MHServerEmu.git' Makefile
+# shellcheck disable=SC2016 # Make syntax is intentionally literal.
 grep -Fq 'MHSERVEREMU_REF ?= $(call branch,$(VERSION))' Makefile
 grep -Fq 'MHSERVEREMU_COMMIT ?=' Makefile
 for build_arg in MHSERVEREMU_REPOSITORY MHSERVEREMU_REF MHSERVEREMU_COMMIT; do
     [ "$(grep -Fc -- "--build-arg ${build_arg}=" Makefile)" -eq 2 ]
 done
+# shellcheck disable=SC2016 # Make syntax is intentionally literal.
 grep -Fq -- '--build-arg MHSERVEREMU_REF=$(or $(MHSERVEREMU_REF),$(call branch,$1))' Makefile
 # shellcheck disable=SC2016 # Intentional literal GitHub Actions expression.
 grep -Fq 'MHSERVEREMU_REF=${{ matrix.ref }}' .github/workflows/docker-build-push.yml
-! grep -Fq 'matrix.branch' .github/workflows/docker-build-push.yml
-! grep -Eq 'matrix\.version([^_[:alnum:]]|$)' .github/workflows/docker-build-push.yml
+if grep -Fq 'matrix.branch' .github/workflows/docker-build-push.yml; then
+    exit 1
+fi
+if grep -Eq 'matrix\.version([^_[:alnum:]]|$)' .github/workflows/docker-build-push.yml; then
+    exit 1
+fi
 
 for template in 1.0.1/Config.ini.template nightly/Config.ini.template; do
     grep -Fq '[PortalBridge]' "$template"
