@@ -226,7 +226,7 @@ validate_portal_bridge() {
     fi
 
     if ! [[ "$PORTALBRIDGE_PORT" =~ ^[0-9]+$ ]] || [ "$PORTALBRIDGE_PORT" -lt 1 ] || [ "$PORTALBRIDGE_PORT" -gt 65535 ]; then
-        die "PORTALBRIDGE_PORT must be a port number (1-65535)"
+        die "PORTALBRIDGE_PORT must be a port number (1-65535), got: '$PORTALBRIDGE_PORT'"
     fi
     if [ "${#PORTALBRIDGE_KEY_ID}" -lt 1 ] || [ "${#PORTALBRIDGE_KEY_ID}" -gt 128 ]; then
         die "PORTALBRIDGE_KEY_ID must be between 1 and 128 characters"
