@@ -15,7 +15,7 @@ jobs:
         [
           {"repository": "https://github.com/zkoesters/MHServerEmu.git", "ref": "portal-master", "commit": "89b02d6f39c0b403c581c71cc5e052c0575775fe", "version_dir": "nightly", "tag": "portal-master-89b02d6f39c0",        "dockerfile": "Dockerfile"},
           {"repository": "https://github.com/zkoesters/MHServerEmu.git", "ref": "portal-master", "commit": "89b02d6f39c0b403c581c71cc5e052c0575775fe", "version_dir": "nightly", "tag": "portal-master-89b02d6f39c0-alpine", "dockerfile": "Dockerfile.alpine"},
-          {"repository": "https://github.com/zkoesters/MHServerEmu.git", "ref": "portal-1.0.1", "commit": "bc4a37ea2e2a0e570fcaebc90011c201d6225a7e", "version_dir": "1.0.1",   "tag": "portal-1.0.1-bc4a37ea2e2a",        "dockerfile": "Dockerfile"},
-          {"repository": "https://github.com/zkoesters/MHServerEmu.git", "ref": "portal-1.0.1", "commit": "bc4a37ea2e2a0e570fcaebc90011c201d6225a7e", "version_dir": "1.0.1",   "tag": "portal-1.0.1-bc4a37ea2e2a-alpine", "dockerfile": "Dockerfile.alpine"}
+          {"repository": "https://github.com/zkoesters/MHServerEmu.git", "ref": "portal-1.0.1", "commit": "892254fbd587b4e570bfba75ff4a189c04bf6313", "version_dir": "1.0.1",   "tag": "portal-1.0.1-892254fbd587",        "dockerfile": "Dockerfile"},
+          {"repository": "https://github.com/zkoesters/MHServerEmu.git", "ref": "portal-1.0.1", "commit": "892254fbd587b4e570bfba75ff4a189c04bf6313", "version_dir": "1.0.1",   "tag": "portal-1.0.1-892254fbd587-alpine", "dockerfile": "Dockerfile.alpine"}
         ]
     secrets: inherit
