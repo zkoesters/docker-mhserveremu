@@ -43,13 +43,17 @@ docker run --detach \
     --volume "${postgres_volume}:/var/lib/postgresql/data" \
     "$POSTGRES_IMAGE" >/dev/null
 
+database_ready=false
 for _ in $(seq 1 30); do
-    if docker exec "$postgres_name" pg_isready --username mhserveremu --dbname mhserveremu >/dev/null 2>&1; then
+    if docker exec "$postgres_name" pg_isready --username mhserveremu --dbname mhserveremu >/dev/null 2>&1 \
+        && docker exec "$postgres_name" psql --username mhserveremu --dbname mhserveremu \
+            --command 'SELECT 1;' >/dev/null 2>&1; then
+        database_ready=true
         break
     fi
     sleep 1
 done
-docker exec "$postgres_name" pg_isready --username mhserveremu --dbname mhserveremu >/dev/null
+[ "$database_ready" = true ]
 
 docker run --detach --interactive --tty \
     --network "$network_name" \
