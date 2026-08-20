@@ -33,3 +33,9 @@ abort "PostgreSQL port must remain private" unless postgres.fetch("ports", []).e
 abort "PostgreSQL health check is missing" unless postgres.dig("healthcheck", "test")&.join(" ")&.include?("pg_isready")
 abort "PostgreSQL volume is missing" unless postgres.fetch("volumes").any? { |value| value.to_s.include?("/var/lib/postgresql/data") }
 RUBY
+
+grep -Fq 'POSTGRESQL_TEST_VERSIONS=postgresql-preview' Makefile
+# shellcheck disable=SC2016 # Intentional literal Make syntax.
+grep -Fq 'test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1' Makefile
+# shellcheck disable=SC2016 # Intentional literal Make syntax.
+grep -Fq 'test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1-alpine' Makefile
