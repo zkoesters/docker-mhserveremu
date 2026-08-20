@@ -1,0 +1,27 @@
+volumes:
+  mhserveremu-postgresql-data:
+
+services:
+  mhserveremu:
+    image: zkoesters/mhserveremu:postgresql-preview
+    environment:
+      PLAYERMANAGER_DATABASE_TYPE: PostgreSQL
+      POSTGRESQL_CONNECTION_STRING: "${POSTGRESQL_CONNECTION_STRING:-Host=postgresql;Port=5432;Database=mhserveremu;Username=mhserveremu;Password=mhserveremu-localdev}"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+
+  postgresql:
+    image: postgres:16.14-alpine3.23
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-mhserveremu}"
+      POSTGRES_USER: "${POSTGRES_USER:-mhserveremu}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-mhserveremu-localdev}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - mhserveremu-postgresql-data:/var/lib/postgresql/data
+    restart: unless-stopped
