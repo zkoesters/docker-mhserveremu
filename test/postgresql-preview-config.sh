@@ -20,6 +20,7 @@ trap cleanup EXIT
 chmod 0755 "$temporary_directory"
 
 connection_string='Host=postgresql;Port=5432;Database=mhserveremu;Username=mhserveremu;Password=config-contract-secret'
+connection_string_with_token="${connection_string};Application Name=%%FOO%%"
 connection_string_with_carriage_return="${connection_string}"$'\r'
 connection_string_with_line_feed="${connection_string}"$'\n'
 secret_file="${temporary_directory}/connection-string"
@@ -70,6 +71,11 @@ docker run --rm \
     "$preview_image" sh -c 'grep -Fxq "ConnectionString=$POSTGRESQL_CONNECTION_STRING" "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini"'
 
 docker run --rm \
+    -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
+    -e POSTGRESQL_CONNECTION_STRING="$connection_string_with_token" \
+    "$preview_image" sh -c 'grep -Fxq "ConnectionString=$POSTGRESQL_CONNECTION_STRING" "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini"'
+
+docker run --rm \
     --mount "type=bind,source=${secret_file},target=/run/secrets/postgresql,readonly" \
     --mount "type=bind,source=${awk_directory},target=/awk-bin,readonly" \
     -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
@@ -80,6 +86,13 @@ docker run --rm \
             && ! env | grep -Fq "$1" \
             && ! grep -Fq "$1" /tmp/awk-arguments /tmp/awk-environment
     ' sh "$connection_string"
+
+printf '%s\n' "$connection_string_with_token" > "$secret_file"
+docker run --rm \
+    --mount "type=bind,source=${secret_file},target=/run/secrets/postgresql,readonly" \
+    -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
+    -e POSTGRESQL_CONNECTION_STRING_FILE=/run/secrets/postgresql \
+    "$preview_image" sh -c 'grep -Fxq "ConnectionString=$1" "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini"' sh "$connection_string_with_token"
 
 for _ in 1 2; do
     docker run --rm \

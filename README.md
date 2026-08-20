@@ -69,8 +69,13 @@ The preview requires a reachable PostgreSQL database before the server starts.
 The PostgreSQL Compose overlay keeps the database port private and stores its
 data in a named volume; verify the merged Compose configuration before starting
 it. The overlay is not an external-database configuration because it creates a
-local `postgresql` service and uses that service name in its default connection
-string.
+local `postgresql` service. It uses fixed, coordinated local defaults and a
+direct connection string, so it does not provide file-backed secret support or
+custom credentials through `.env`. Use a separate, reviewed Compose override
+for external databases, file secrets, or custom credentials.
+
+Fresh PostgreSQL schemas seed five known test accounts with the password `123`;
+secure or replace those accounts before any public exposure.
 
 ## Build internals: SQLInterop
 
