@@ -1,0 +1,19 @@
+name: PostgreSQL Preview Docker Images
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    uses: ./.github/workflows/docker-build-push.yml
+    permissions:
+      actions: write
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    with:
+      matrix: >-
+        [
+          {"repository": "https://github.com/zkoesters/MHServerEmu.git", "ref": "feat/postgresql-database-support", "commit": "", "version_dir": "postgresql-preview", "tag": "postgresql-preview",        "dockerfile": "Dockerfile"},
+          {"repository": "https://github.com/zkoesters/MHServerEmu.git", "ref": "feat/postgresql-database-support", "commit": "", "version_dir": "postgresql-preview", "tag": "postgresql-preview-alpine", "dockerfile": "Dockerfile.alpine"}
+        ]
+    secrets: inherit
