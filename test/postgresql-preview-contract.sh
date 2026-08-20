@@ -121,7 +121,8 @@ grep -Fq 'not suitable for an external database' deploy/docker/compose/README.md
 grep -Fq "five known test accounts with the password \`123\`" deploy/docker/compose/README.md
 grep -Fq 'secure or replace those accounts before any public exposure' deploy/docker/compose/README.md
 grep -Fq 'fixed, coordinated local defaults' deploy/docker/compose/README.md
-grep -Fq 'separate, reviewed Compose override' deploy/docker/compose/README.md
+grep -Fq 'Use a separate, reviewed' deploy/docker/compose/README.md
+grep -Fq 'Compose override' deploy/docker/compose/README.md
 if grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' deploy/docker/compose/.env.example; then
     printf '%s\n' '.env.example must not imply file-backed PostgreSQL secret support' >&2
     exit 1
