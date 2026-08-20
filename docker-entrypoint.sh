@@ -121,21 +121,22 @@ MAX_BACKUP_NUMBER|DBMANAGER_MAX_BACKUP_NUMBER
 BACKUP_INTERVAL_MINUTES|DBMANAGER_BACKUP_INTERVAL_MINUTES
 "
 
-POSTGRESQL_CONNECTION_STRING="${POSTGRESQL_CONNECTION_STRING:-}"
 POSTGRESQL_CONNECTION_STRING_FILE="${POSTGRESQL_CONNECTION_STRING_FILE:-}"
 
 resolve_secret_file_var() {
     local value_name="$1"
     local file_name="$2"
+    local direct_is_set="${!value_name+x}"
     local direct_value="${!value_name:-}"
     local file_path="${!file_name:-}"
     local file_value=""
     local remaining=""
 
-    if [ -n "$direct_value" ] && [ -n "$file_path" ]; then
+    if [ -n "$direct_is_set" ] && [ -n "$file_path" ]; then
         die "$value_name and $file_name are mutually exclusive"
     fi
     if [ -z "$file_path" ]; then
+        printf -v "$value_name" '%s' "$direct_value"
         return 0
     fi
     if [[ "$file_path" != /* ]] || [ ! -f "$file_path" ] || [ ! -r "$file_path" ]; then
@@ -307,7 +308,6 @@ fi
 install -d -m 0700 "$CONFIG_DIRECTORY" "$RUNTIME_DIRECTORY"
 install -m 0600 /dev/null "$CONFIG_OVERRIDE_PATH"
 cp "$CONFIG_TEMPLATE_PATH" "$CONFIG_OUTPUT_PATH"
-chmod 0600 "$CONFIG_OUTPUT_PATH"
 
 while IFS='|' read -r primary _ _; do
     [ -z "$primary" ] && continue
@@ -321,6 +321,8 @@ while IFS='|' read -r alias_name _; do
     [ -z "$alias_name" ] && continue
     apply_template_substitution "%%${alias_name}%%" "${!alias_name}"
 done <<< "$LEGACY_REEXPORTS"
+
+chmod 0600 "$CONFIG_OUTPUT_PATH"
 
 # ── Validate ───────────────────────────────────────────────────────────────
 
