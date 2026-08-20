@@ -16,6 +16,11 @@ CONFIG_OVERRIDE_PATH="${CONFIG_DIRECTORY}/ConfigOverride.ini"
 export MHSERVEREMU_CONFIG_DIRECTORY="$CONFIG_DIRECTORY"
 export MHSERVEREMU_RUNTIME_DIRECTORY="$RUNTIME_DIRECTORY"
 
+die() {
+    printf 'Error: %s\n' "$1" >&2
+    exit 1
+}
+
 resolve_env_var() {
     local primary_var="$1"
     local legacy_var="$2"
@@ -102,6 +107,7 @@ PORTALBRIDGE_PORT||8090
 PORTALBRIDGE_KEY_ID||portal-primary
 PORTALBRIDGE_SECRET_FILE||
 PORTALBRIDGE_SERVER_INSTANCE_ID||
+PLAYERMANAGER_DATABASE_TYPE||SQLite
 "
 
 # ── Backward-compatible legacy aliases ─────────────────────────────────────
@@ -114,6 +120,44 @@ WEBFRONTEND_ENABLE_LOGING_RATE_LIMIT|WEBFRONTEND_ENABLE_LOGIN_RATE_LIMIT
 MAX_BACKUP_NUMBER|DBMANAGER_MAX_BACKUP_NUMBER
 BACKUP_INTERVAL_MINUTES|DBMANAGER_BACKUP_INTERVAL_MINUTES
 "
+
+POSTGRESQL_CONNECTION_STRING="${POSTGRESQL_CONNECTION_STRING:-}"
+POSTGRESQL_CONNECTION_STRING_FILE="${POSTGRESQL_CONNECTION_STRING_FILE:-}"
+
+resolve_secret_file_var() {
+    local value_name="$1"
+    local file_name="$2"
+    local direct_value="${!value_name:-}"
+    local file_path="${!file_name:-}"
+    local file_value=""
+    local remaining=""
+
+    if [ -n "$direct_value" ] && [ -n "$file_path" ]; then
+        die "$value_name and $file_name are mutually exclusive"
+    fi
+    if [ -z "$file_path" ]; then
+        return 0
+    fi
+    if [[ "$file_path" != /* ]] || [ ! -f "$file_path" ] || [ ! -r "$file_path" ]; then
+        die "$file_name must reference a readable absolute file"
+    fi
+
+    exec 3< "$file_path"
+    IFS= read -r file_value <&3 || true
+    if [ -z "$file_value" ]; then
+        die "$file_name must not be empty"
+    fi
+    if [[ "$file_value" == *$'\r'* ]]; then
+        die "$file_name must contain exactly one line"
+    fi
+    if IFS= read -r remaining <&3 || [ -n "$remaining" ]; then
+        die "$file_name must contain exactly one line"
+    fi
+    exec 3<&-
+
+    # Do not export file-backed secrets into the container environment.
+    printf -v "$value_name" '%s' "$file_value"
+}
 
 # ── Resolve all variables ──────────────────────────────────────────────────
 
@@ -129,9 +173,11 @@ while IFS='|' read -r alias_name source_name; do
     export "$alias_name"
 done <<< "$LEGACY_REEXPORTS"
 
+resolve_secret_file_var POSTGRESQL_CONNECTION_STRING POSTGRESQL_CONNECTION_STRING_FILE
+
 # ── Validate environment variables ─────────────────────────────────────────
 # Format: VAR_NAME|TYPE
-# Supported types: port, bool, int, number, url
+# Supported types: port, bool, int, number, url, database_type
 
 validate_env_var() {
     local name="$1"
@@ -171,6 +217,15 @@ validate_env_var() {
                 echo "Warning: $name doesn't look like a URL: '$value'" >&2
             fi
             ;;
+        database_type)
+            case "${value,,}" in
+                sqlite|postgresql|json) ;;
+                *)
+                    printf 'Error: %s must be SQLite, PostgreSQL, or Json\n' "$name" >&2
+                    return 1
+                    ;;
+            esac
+            ;;
     esac
 }
 
@@ -200,6 +255,7 @@ MTXSTORE_GIFTING_OMEGA_LEVEL_REQUIRED|int
 MTXSTORE_GIFTING_INFINITY_LEVEL_REQUIRED|int
 MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS|bool
 PORTALBRIDGE_ENABLED|bool
+PLAYERMANAGER_DATABASE_TYPE|database_type
 "
 
 validation_failed=0
@@ -214,11 +270,6 @@ if [ "$validation_failed" -eq 1 ]; then
     echo "Error: environment variable validation failed. Fix the values above." >&2
     exit 1
 fi
-
-die() {
-    printf 'Error: %s\n' "$1" >&2
-    exit 1
-}
 
 validate_portal_bridge() {
     if [ "$PORTALBRIDGE_ENABLED" != "true" ]; then
@@ -242,16 +293,28 @@ validate_portal_bridge() {
 
 validate_portal_bridge
 
+if [ "${PLAYERMANAGER_DATABASE_TYPE,,}" = postgresql ]; then
+    if ! grep -Fq '%%POSTGRESQL_CONNECTION_STRING%%' "$CONFIG_TEMPLATE_PATH"; then
+        die "PostgreSQL is not supported by this image version"
+    fi
+    if [ -z "$POSTGRESQL_CONNECTION_STRING" ]; then
+        die "POSTGRESQL_CONNECTION_STRING or POSTGRESQL_CONNECTION_STRING_FILE is required when PostgreSQL is selected"
+    fi
+fi
+
 # ── Generate Config.ini ────────────────────────────────────────────────────
 
 install -d -m 0700 "$CONFIG_DIRECTORY" "$RUNTIME_DIRECTORY"
-touch "$CONFIG_OVERRIDE_PATH"
+install -m 0600 /dev/null "$CONFIG_OVERRIDE_PATH"
 cp "$CONFIG_TEMPLATE_PATH" "$CONFIG_OUTPUT_PATH"
+chmod 0600 "$CONFIG_OUTPUT_PATH"
 
 while IFS='|' read -r primary _ _; do
     [ -z "$primary" ] && continue
     apply_template_substitution "%%${primary}%%" "${!primary}"
 done <<< "$ENV_VARS"
+
+apply_template_substitution '%%POSTGRESQL_CONNECTION_STRING%%' "$POSTGRESQL_CONNECTION_STRING"
 
 # Also substitute legacy-named placeholders that appear in older templates
 while IFS='|' read -r alias_name _; do
