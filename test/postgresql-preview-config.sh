@@ -78,6 +78,11 @@ expect_failure conflicting-inputs "$connection_string" \
     -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
     -e POSTGRESQL_CONNECTION_STRING="$connection_string" \
     -e POSTGRESQL_CONNECTION_STRING_FILE=/run/secrets/postgresql "$preview_image"
+expect_failure conflicting-empty-direct "$connection_string" \
+    --mount "type=bind,source=${secret_file},target=/run/secrets/postgresql,readonly" \
+    -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
+    -e POSTGRESQL_CONNECTION_STRING= \
+    -e POSTGRESQL_CONNECTION_STRING_FILE=/run/secrets/postgresql "$preview_image"
 expect_failure relative-file '' \
     -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
     -e POSTGRESQL_CONNECTION_STRING_FILE=relative/path "$preview_image"
