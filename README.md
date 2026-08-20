@@ -43,6 +43,35 @@ operator-set `read_only: true` and tmpfs entries
 stored in `/run/mhserveremu`, while `/data/runtime` remains writable on the
 `/data` volume.
 
+## PostgreSQL preview images
+
+`zkoesters/mhserveremu:postgresql-preview` and
+`zkoesters/mhserveremu:postgresql-preview-alpine` are manually published,
+mutable preview tags. They are built from
+`https://github.com/zkoesters/MHServerEmu.git` at
+`feat/postgresql-database-support`. They are for evaluation only: do not use
+them for production deployments or assume a tag will continue to refer to the
+same image. Record and deploy an immutable image digest after a supported
+release is available.
+
+Select the backend with `PLAYERMANAGER_DATABASE_TYPE=PostgreSQL`. Supply its
+Npgsql connection string through exactly one of these variables:
+
+- `POSTGRESQL_CONNECTION_STRING` is suitable only for short-lived local
+  testing. Environment values are visible to container inspection tools and
+  can be accidentally retained in shell history, Compose files, or `.env`
+  files.
+- `POSTGRESQL_CONNECTION_STRING_FILE` is the preferred deployment option.
+  Set it to an absolute path for a single-line, non-empty, read-only mounted
+  secret. Do not put credentials in the repository or an `.env` file.
+
+The preview requires a reachable PostgreSQL database before the server starts.
+The PostgreSQL Compose overlay keeps the database port private and stores its
+data in a named volume; verify the merged Compose configuration before starting
+it. The overlay is not an external-database configuration because it creates a
+local `postgresql` service and uses that service name in its default connection
+string.
+
 ## Build internals: SQLInterop
 
 `SQLite.Interop.dll` is built from pinned `System.Data.SQLite` source during image

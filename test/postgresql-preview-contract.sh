@@ -87,3 +87,25 @@ expected = [
 
 abort "PostgreSQL preview image matrix does not match the expected source mappings" unless matrix == expected
 RUBY
+
+grep -Fq 'zkoesters/mhserveremu:postgresql-preview' README.md
+grep -Fq 'zkoesters/mhserveremu:postgresql-preview-alpine' README.md
+grep -Fq 'manually published, mutable preview tags' README.md
+grep -Fq 'https://github.com/zkoesters/MHServerEmu.git' README.md
+grep -Fq 'feat/postgresql-database-support' README.md
+grep -Fq 'POSTGRESQL_CONNECTION_STRING` is suitable only for short-lived local' README.md
+grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' README.md
+grep -Fq 'Do not put credentials in the repository or an `.env` file.' README.md
+grep -Fq 'requires a reachable PostgreSQL database before the server starts' README.md
+grep -Fq 'database port private' README.md
+grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' deploy/docker/compose/README.md
+grep -Fq 'down --volumes' deploy/docker/compose/README.md
+grep -Fq 'not suitable for an external database' deploy/docker/compose/README.md
+grep -Fq '# POSTGRESQL_CONNECTION_STRING=' deploy/docker/compose/.env.example
+grep -Fq '# POSTGRESQL_CONNECTION_STRING_FILE=/run/secrets/postgresql-connection-string' deploy/docker/compose/.env.example
+grep -Fq 'PostgreSQL preview images' CHANGELOG.md
+
+if grep -Eni 'password=[^[:space:]#]+' README.md deploy/docker/compose/README.md deploy/docker/compose/.env.example; then
+    printf '%s\n' 'Error: PostgreSQL documentation must not include a password value' >&2
+    exit 1
+fi
