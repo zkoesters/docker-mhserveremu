@@ -95,6 +95,7 @@ grep -Fq 'https://github.com/zkoesters/MHServerEmu.git' README.md
 grep -Fq 'feat/postgresql-database-support' README.md
 grep -Fq 'POSTGRESQL_CONNECTION_STRING` is suitable only for short-lived local' README.md
 grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' README.md
+# shellcheck disable=SC2016 # Intentional literal GitHub Markdown expression.
 grep -Fq 'Do not put credentials in the repository or an `.env` file.' README.md
 grep -Fq 'requires a reachable PostgreSQL database before the server starts' README.md
 grep -Fq 'database port private' README.md
