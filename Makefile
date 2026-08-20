@@ -20,6 +20,7 @@ MHSERVEREMU_REF ?= $(call branch,$(VERSION))
 MHSERVEREMU_COMMIT ?=
 
 LATEST_VERSION=1.0.1
+POSTGRESQL_TEST_VERSIONS=postgresql-preview
 do_default=true
 do_alpine=true
 
@@ -114,6 +115,10 @@ ifeq ($(do_default),true)
 endif
 ifeq ($(do_alpine),true)
 	$(OFFIMG_LOCAL_CLONE)/test/run.sh -c $(OFFIMG_LOCAL_CLONE)/test/config.sh -c test/mhserveremu-config.sh $(REPO_NAME)/$(IMAGE_NAME):$1-alpine
+endif
+ifneq (,$(filter $1,$(POSTGRESQL_TEST_VERSIONS)))
+	$(if $(filter true,$(do_default)),test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1)
+	$(if $(filter true,$(do_alpine)),test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1-alpine)
 endif
 endef
 $(foreach version,$(VERSIONS),$(eval $(call test-version,$(version))))
