@@ -39,10 +39,13 @@ ALL_VERSIONS := $(sort $(foreach cfg,$(wildcard */Config.ini.template),$(cfg:%/C
 # Versions whose directory name matches the branch are handled by the
 # default value; only add entries here for exceptions (e.g. nightly→dev).
 branch_nightly=dev
+repository_postgresql-preview=https://github.com/zkoesters/MHServerEmu.git
+branch_postgresql-preview=feat/postgresql-database-support
 
 # Resolve the git branch for a given version. Falls back to the version
 # name itself when no explicit mapping exists (e.g. "1.0.0" → "1.0.0").
 branch = $(or $(branch_$(1)),$(1))
+repository = $(or $(repository_$(1)),$(MHSERVEREMU_REPOSITORY))
 
 ifdef VERSION
 ifeq (,$(filter $(VERSION),$(ALL_VERSIONS)))
@@ -76,7 +79,7 @@ define build-version
 build-$1:
 ifeq ($(do_default),true)
 	$(DOCKER) build --pull --no-cache \
-		--build-arg MHSERVEREMU_REPOSITORY=$(MHSERVEREMU_REPOSITORY) \
+		--build-arg MHSERVEREMU_REPOSITORY=$(call repository,$1) \
 		--build-arg MHSERVEREMU_REF=$(or $(MHSERVEREMU_REF),$(call branch,$1)) \
 		--build-arg MHSERVEREMU_COMMIT=$(MHSERVEREMU_COMMIT) \
 		--build-arg MHSERVEREMU_VERSION=$1 \
@@ -86,7 +89,7 @@ ifeq ($(do_default),true)
 endif
 ifeq ($(do_alpine),true)
 	$(DOCKER) build --pull --no-cache \
-		--build-arg MHSERVEREMU_REPOSITORY=$(MHSERVEREMU_REPOSITORY) \
+		--build-arg MHSERVEREMU_REPOSITORY=$(call repository,$1) \
 		--build-arg MHSERVEREMU_REF=$(or $(MHSERVEREMU_REF),$(call branch,$1)) \
 		--build-arg MHSERVEREMU_COMMIT=$(MHSERVEREMU_COMMIT) \
 		--build-arg MHSERVEREMU_VERSION=$1 \
