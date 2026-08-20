@@ -9,24 +9,47 @@ fi
 preview_image="$1"
 stable_image="$2"
 temporary_directory="$(mktemp -d)"
-trap 'rm -rf -- "$temporary_directory"' EXIT
+mounted_config_volume=""
+cleanup() {
+    if [ -n "$mounted_config_volume" ]; then
+        docker volume rm -f "$mounted_config_volume" >/dev/null 2>&1 || true
+    fi
+    rm -rf -- "$temporary_directory"
+}
+trap cleanup EXIT
 chmod 0755 "$temporary_directory"
 
 connection_string='Host=postgresql;Port=5432;Database=mhserveremu;Username=mhserveremu;Password=config-contract-secret'
+connection_string_with_carriage_return="${connection_string}"$'\r'
+connection_string_with_line_feed="${connection_string}"$'\n'
 secret_file="${temporary_directory}/connection-string"
 empty_file="${temporary_directory}/empty"
 multiline_file="${temporary_directory}/multiline"
 carriage_return_file="${temporary_directory}/carriage-return"
 unreadable_file="${temporary_directory}/unreadable"
 directory_file="${temporary_directory}/directory"
+awk_directory="${temporary_directory}/awk"
 printf '%s\n' "$connection_string" > "$secret_file"
 : > "$empty_file"
 printf 'Host=postgresql\nDatabase=mhserveremu\n' > "$multiline_file"
 printf 'Host=postgresql\r' > "$carriage_return_file"
 printf '%s\n' "$connection_string" > "$unreadable_file"
 mkdir "$directory_file"
+mkdir "$awk_directory"
+printf '%s\n' \
+    '#!/usr/bin/env sh' \
+    'printf '\''%s\n'\'' "$@" >> /tmp/awk-arguments' \
+    'env >> /tmp/awk-environment' \
+    'exec /usr/bin/awk "$@"' > "${awk_directory}/awk"
 chmod 0444 "$secret_file" "$empty_file" "$multiline_file" "$carriage_return_file"
 chmod 000 "$unreadable_file"
+chmod 0755 "${awk_directory}/awk"
+
+mounted_config_volume="mhserveremu-config-contract-$(basename "$temporary_directory")"
+docker volume create "$mounted_config_volume" >/dev/null
+docker run --rm --user 0 --entrypoint sh \
+    --mount "type=volume,source=${mounted_config_volume},target=/mounted-config" \
+    "$preview_image" -c 'printf "%s\\n" "PreserveThisOverride=true" > /mounted-config/ConfigOverride.ini && chown -R 1654:1654 /mounted-config && chmod 0755 /mounted-config && chmod 0644 /mounted-config/ConfigOverride.ini'
 
 docker run --rm "$preview_image" sh -c '
     grep -Fxq "DatabaseType=SQLite" "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini" \
@@ -48,12 +71,24 @@ docker run --rm \
 
 docker run --rm \
     --mount "type=bind,source=${secret_file},target=/run/secrets/postgresql,readonly" \
+    --mount "type=bind,source=${awk_directory},target=/awk-bin,readonly" \
     -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
     -e POSTGRESQL_CONNECTION_STRING_FILE=/run/secrets/postgresql \
+    -e PATH=/awk-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     "$preview_image" sh -c '
         grep -Fxq "ConnectionString=$1" "$MHSERVEREMU_CONFIG_DIRECTORY/Config.ini" \
-            && ! env | grep -Fq "$1"
+            && ! env | grep -Fq "$1" \
+            && ! grep -Fq "$1" /tmp/awk-arguments /tmp/awk-environment
     ' sh "$connection_string"
+
+for _ in 1 2; do
+    docker run --rm \
+        --mount "type=volume,source=${mounted_config_volume},target=/run/mhserveremu/config" \
+        "$preview_image" sh -c '
+            grep -Fxq "PreserveThisOverride=true" "$MHSERVEREMU_CONFIG_DIRECTORY/ConfigOverride.ini" \
+                && test "$(stat -c %a "$MHSERVEREMU_CONFIG_DIRECTORY/ConfigOverride.ini")" = 600
+        '
+done
 
 expect_failure() {
     local label="$1"
@@ -73,6 +108,12 @@ expect_failure() {
 
 expect_failure missing-connection '' \
     -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL "$preview_image"
+expect_failure direct-carriage-return "$connection_string" \
+    -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
+    -e POSTGRESQL_CONNECTION_STRING="$connection_string_with_carriage_return" "$preview_image"
+expect_failure direct-line-feed "$connection_string" \
+    -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
+    -e POSTGRESQL_CONNECTION_STRING="$connection_string_with_line_feed" "$preview_image"
 expect_failure conflicting-inputs "$connection_string" \
     --mount "type=bind,source=${secret_file},target=/run/secrets/postgresql,readonly" \
     -e PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \

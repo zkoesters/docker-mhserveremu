@@ -55,6 +55,28 @@ apply_template_substitution() {
         && mv "${CONFIG_OUTPUT_PATH}.tmp" "$CONFIG_OUTPUT_PATH"
 }
 
+apply_file_template_substitution() {
+    local token="$1"
+    local secret_file="$2"
+
+    # Read the secret from its mounted path so it is not exposed in awk's argv or environment.
+    awk -v tok="$token" '
+        NR == FNR {
+            secret = $0
+            next
+        }
+        {
+            line = $0
+            while ((position = index(line, tok)) > 0) {
+                printf "%s%s", substr(line, 1, position - 1), secret
+                line = substr(line, position + length(tok))
+            }
+            print line
+        }
+    ' "$secret_file" "$CONFIG_OUTPUT_PATH" > "${CONFIG_OUTPUT_PATH}.tmp" \
+        && mv "${CONFIG_OUTPUT_PATH}.tmp" "$CONFIG_OUTPUT_PATH"
+}
+
 # ── Variable definition table ──────────────────────────────────────────────
 # Format: PRIMARY_VAR|LEGACY_VAR|DEFAULT_VALUE
 #
@@ -136,6 +158,9 @@ resolve_secret_file_var() {
         die "$value_name and $file_name are mutually exclusive"
     fi
     if [ -z "$file_path" ]; then
+        if [[ "$direct_value" == *$'\n'* || "$direct_value" == *$'\r'* ]]; then
+            die "$value_name must contain exactly one line"
+        fi
         printf -v "$value_name" '%s' "$direct_value"
         return 0
     fi
@@ -306,7 +331,13 @@ fi
 # ── Generate Config.ini ────────────────────────────────────────────────────
 
 install -d -m 0700 "$CONFIG_DIRECTORY" "$RUNTIME_DIRECTORY"
-install -m 0600 /dev/null "$CONFIG_OVERRIDE_PATH"
+if [ -e "$CONFIG_OVERRIDE_PATH" ]; then
+    if ! chmod 0600 "$CONFIG_OVERRIDE_PATH"; then
+        die "ConfigOverride.ini must allow owner-only permissions"
+    fi
+else
+    install -m 0600 /dev/null "$CONFIG_OVERRIDE_PATH"
+fi
 cp "$CONFIG_TEMPLATE_PATH" "$CONFIG_OUTPUT_PATH"
 
 while IFS='|' read -r primary _ _; do
@@ -314,7 +345,11 @@ while IFS='|' read -r primary _ _; do
     apply_template_substitution "%%${primary}%%" "${!primary}"
 done <<< "$ENV_VARS"
 
-apply_template_substitution '%%POSTGRESQL_CONNECTION_STRING%%' "$POSTGRESQL_CONNECTION_STRING"
+if [ -n "$POSTGRESQL_CONNECTION_STRING_FILE" ]; then
+    apply_file_template_substitution '%%POSTGRESQL_CONNECTION_STRING%%' "$POSTGRESQL_CONNECTION_STRING_FILE"
+else
+    apply_template_substitution '%%POSTGRESQL_CONNECTION_STRING%%' "$POSTGRESQL_CONNECTION_STRING"
+fi
 
 # Also substitute legacy-named placeholders that appear in older templates
 while IFS='|' read -r alias_name _; do
