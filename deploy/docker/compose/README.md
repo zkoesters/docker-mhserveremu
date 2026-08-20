@@ -76,6 +76,39 @@ internal CA to issue a local certificate automatically.
 
 ---
 
+## PostgreSQL preview
+
+The PostgreSQL overlay is for evaluating the manually published,
+mutable `postgresql-preview` image. It starts a local PostgreSQL service and
+stores its data in the `mhserveremu-postgresql-data` named volume. It does not
+publish the database port.
+
+```bash
+docker compose \
+  -f deploy/docker/compose/docker-compose.yaml \
+  -f deploy/docker/compose/docker-compose.postgresql.yaml up -d
+```
+
+Use `docker compose ... down` to stop the stack while preserving the database.
+Use `docker compose ... down --volumes` only when the local database data can
+be destroyed. Confirm the final configuration, including that PostgreSQL has no
+published port, before starting the stack:
+
+```bash
+docker compose \
+  -f deploy/docker/compose/docker-compose.yaml \
+  -f deploy/docker/compose/docker-compose.postgresql.yaml config
+```
+
+The supplied overlay is not suitable for an external database: it creates the
+`postgresql` service and defaults the server connection to that internal host.
+Use a separate, reviewed Compose override for an external database. For
+credentials, prefer a read-only secret mounted at the absolute path named by
+`POSTGRESQL_CONNECTION_STRING_FILE`; avoid committing a direct connection
+string to `.env` or Compose files.
+
+---
+
 ## Caddy
 
 Provided files:
