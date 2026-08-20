@@ -12,6 +12,7 @@ CONFIG_DIRECTORY="${MHSERVEREMU_CONFIG_DIRECTORY:-/run/mhserveremu/config}"
 RUNTIME_DIRECTORY="${MHSERVEREMU_RUNTIME_DIRECTORY:-/data/runtime}"
 CONFIG_OUTPUT_PATH="${CONFIG_DIRECTORY}/Config.ini"
 CONFIG_OVERRIDE_PATH="${CONFIG_DIRECTORY}/ConfigOverride.ini"
+POSTGRESQL_CONNECTION_STRING_MARKER='__MHSERVEREMU_POSTGRESQL_CONNECTION_STRING__'
 
 export MHSERVEREMU_CONFIG_DIRECTORY="$CONFIG_DIRECTORY"
 export MHSERVEREMU_RUNTIME_DIRECTORY="$RUNTIME_DIRECTORY"
@@ -345,11 +346,8 @@ while IFS='|' read -r primary _ _; do
     apply_template_substitution "%%${primary}%%" "${!primary}"
 done <<< "$ENV_VARS"
 
-if [ -n "$POSTGRESQL_CONNECTION_STRING_FILE" ]; then
-    apply_file_template_substitution '%%POSTGRESQL_CONNECTION_STRING%%' "$POSTGRESQL_CONNECTION_STRING_FILE"
-else
-    apply_template_substitution '%%POSTGRESQL_CONNECTION_STRING%%' "$POSTGRESQL_CONNECTION_STRING"
-fi
+# Delay secret insertion until unresolved template placeholders are validated.
+apply_template_substitution '%%POSTGRESQL_CONNECTION_STRING%%' "$POSTGRESQL_CONNECTION_STRING_MARKER"
 
 # Also substitute legacy-named placeholders that appear in older templates
 while IFS='|' read -r alias_name _; do
@@ -365,6 +363,12 @@ if grep -qE '%%[A-Z0-9_]+%%' "$CONFIG_OUTPUT_PATH"; then
     echo "Error: unresolved Config.ini template placeholders detected:" >&2
     grep -nE '%%[A-Z0-9_]+%%' "$CONFIG_OUTPUT_PATH" >&2
     exit 1
+fi
+
+if [ -n "$POSTGRESQL_CONNECTION_STRING_FILE" ]; then
+    apply_file_template_substitution "$POSTGRESQL_CONNECTION_STRING_MARKER" "$POSTGRESQL_CONNECTION_STRING_FILE"
+else
+    apply_template_substitution "$POSTGRESQL_CONNECTION_STRING_MARKER" "$POSTGRESQL_CONNECTION_STRING"
 fi
 
 exec "$@"

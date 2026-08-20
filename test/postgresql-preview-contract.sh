@@ -27,12 +27,21 @@ postgres = compose.dig("services", "postgresql")
 abort "Preview image is not selected" unless app["image"] == "zkoesters/mhserveremu:postgresql-preview"
 abort "PostgreSQL backend is not selected" unless app.dig("environment", "PLAYERMANAGER_DATABASE_TYPE") == "PostgreSQL"
 abort "Connection string is missing" unless app.dig("environment", "POSTGRESQL_CONNECTION_STRING").include?("Host=postgresql")
+abort "Connection string must use fixed local defaults" unless app.dig("environment", "POSTGRESQL_CONNECTION_STRING") == "Host=postgresql;Port=5432;Database=mhserveremu;Username=mhserveremu;Password=mhserveremu-localdev"
 abort "App does not wait for database health" unless app.dig("depends_on", "postgresql", "condition") == "service_healthy"
 abort "Unexpected PostgreSQL image" unless postgres["image"] == "postgres:16.14-alpine3.23"
+abort "PostgreSQL database must use fixed local defaults" unless postgres.dig("environment", "POSTGRES_DB") == "mhserveremu"
+abort "PostgreSQL user must use fixed local defaults" unless postgres.dig("environment", "POSTGRES_USER") == "mhserveremu"
+abort "PostgreSQL password must use fixed local defaults" unless postgres.dig("environment", "POSTGRES_PASSWORD") == "mhserveremu-localdev"
 abort "PostgreSQL port must remain private" unless postgres.fetch("ports", []).empty?
 abort "PostgreSQL health check is missing" unless postgres.dig("healthcheck", "test")&.join(" ")&.include?("pg_isready")
 abort "PostgreSQL volume is missing" unless postgres.fetch("volumes").any? { |value| value.to_s.include?("/var/lib/postgresql/data") }
 RUBY
+
+if grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' "$compose"; then
+    printf '%s\n' 'Error: PostgreSQL overlay must not imply file-backed secret support' >&2
+    exit 1
+fi
 
 grep -Fq 'POSTGRESQL_TEST_VERSIONS=postgresql-preview' Makefile
 # shellcheck disable=SC2016 # Intentional literal Make syntax.
@@ -48,6 +57,9 @@ trigger = workflow.key?(true) ? workflow.fetch(true) : workflow.fetch("on")
 paths = trigger.fetch("pull_request").fetch("paths")
 expected_paths = [
   "deploy/docker/compose/docker-compose.postgresql.yaml",
+  "deploy/docker/compose/README.md",
+  "deploy/docker/compose/.env.example",
+  "CHANGELOG.md",
   ".github/workflows/docker-image-postgresql-preview.yml"
 ]
 abort "Test workflow does not run for PostgreSQL preview changes" unless (expected_paths - paths).empty?
@@ -100,11 +112,24 @@ grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' README.md
 grep -Fq 'Do not put credentials in the repository or an `.env` file.' README.md
 grep -Fq 'requires a reachable PostgreSQL database before the server starts' README.md
 grep -Fq 'database port private' README.md
-grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' deploy/docker/compose/README.md
+grep -Fq "five known test accounts with the password \`123\`" README.md
+grep -Fq 'secure or replace those accounts before any public exposure' README.md
+grep -Fq 'fixed, coordinated local defaults' README.md
+grep -Fq 'separate, reviewed Compose override' README.md
 grep -Fq 'down --volumes' deploy/docker/compose/README.md
 grep -Fq 'not suitable for an external database' deploy/docker/compose/README.md
-grep -Fq '# POSTGRESQL_CONNECTION_STRING=' deploy/docker/compose/.env.example
-grep -Fq '# POSTGRESQL_CONNECTION_STRING_FILE=/run/secrets/postgresql-connection-string' deploy/docker/compose/.env.example
+grep -Fq "five known test accounts with the password \`123\`" deploy/docker/compose/README.md
+grep -Fq 'secure or replace those accounts before any public exposure' deploy/docker/compose/README.md
+grep -Fq 'fixed, coordinated local defaults' deploy/docker/compose/README.md
+grep -Fq 'separate, reviewed Compose override' deploy/docker/compose/README.md
+if grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' deploy/docker/compose/.env.example; then
+    printf '%s\n' '.env.example must not imply file-backed PostgreSQL secret support' >&2
+    exit 1
+fi
+if grep -Eq '^# POSTGRES_(DB|USER)=' deploy/docker/compose/.env.example; then
+    printf '%s\n' '.env.example must not expose independently overridable PostgreSQL defaults' >&2
+    exit 1
+fi
 grep -Fq 'PostgreSQL preview images' CHANGELOG.md
 
 if grep -Eni 'password=[^[:space:]#]+' README.md deploy/docker/compose/README.md deploy/docker/compose/.env.example; then

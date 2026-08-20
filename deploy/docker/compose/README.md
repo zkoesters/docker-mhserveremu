@@ -101,11 +101,13 @@ docker compose \
 ```
 
 The supplied overlay is not suitable for an external database: it creates the
-`postgresql` service and defaults the server connection to that internal host.
-Use a separate, reviewed Compose override for an external database. For
-credentials, prefer a read-only secret mounted at the absolute path named by
-`POSTGRESQL_CONNECTION_STRING_FILE`; avoid committing a direct connection
-string to `.env` or Compose files.
+`postgresql` service and uses fixed, coordinated local defaults for both the
+database and its direct connection string. It does not provide file-backed
+secret support or custom credentials through `.env`. Use a separate, reviewed
+Compose override for external databases, file secrets, or custom credentials.
+
+Fresh PostgreSQL schemas seed five known test accounts with the password `123`;
+secure or replace those accounts before any public exposure.
 
 ---
 
