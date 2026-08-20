@@ -12,11 +12,13 @@ on:
       - "**/*.sh"
       - "README.md"
       - "deploy/docker/compose/docker-compose.yaml"
+      - "deploy/docker/compose/docker-compose.postgresql.yaml"
       - ".editorconfig"
       - ".editorconfig-checker.json"
       - ".hadolint.yaml"
       - ".github/workflows/docker-build-push.yml"
       - ".github/workflows/docker-image-portal.yml"
+      - ".github/workflows/docker-image-postgresql-preview.yml"
       - ".github/workflows/test.yml"
 permissions:
   contents: read
@@ -30,6 +32,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Portal image contract
         run: test/portal-image.sh
+      - name: PostgreSQL preview image contract
+        run: test/postgresql-preview-contract.sh
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # v2.0.0
         with:
@@ -59,6 +63,7 @@ jobs:
           - version: '1.0.0'
           - version: '1.0.1'
           - version: 'nightly'
+          - version: 'postgresql-preview'
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -91,7 +96,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Build config test image
+      - name: Build config test images
         run: docker build --target config-test --build-arg MHSERVEREMU_VERSION=nightly --tag ${{ matrix.image }} --file ${{ matrix.dockerfile }} .
+      - name: Build PostgreSQL preview config test image
+        run: docker build --target config-test --build-arg MHSERVEREMU_VERSION=postgresql-preview --tag ${{ matrix.image }}-postgresql-preview --file ${{ matrix.dockerfile }} .
       - name: Run config test contract
         run: test/portal-image.sh ${{ matrix.image }}
+      - name: Run PostgreSQL preview config test contract
+        run: test/postgresql-preview-config.sh ${{ matrix.image }}-postgresql-preview ${{ matrix.image }}

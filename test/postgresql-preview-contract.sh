@@ -39,3 +39,51 @@ grep -Fq 'POSTGRESQL_TEST_VERSIONS=postgresql-preview' Makefile
 grep -Fq 'test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1' Makefile
 # shellcheck disable=SC2016 # Intentional literal Make syntax.
 grep -Fq 'test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1-alpine' Makefile
+
+workflow=.github/workflows/test.yml
+
+ruby -ryaml - "$workflow" <<'RUBY'
+workflow = YAML.load_file(ARGV.fetch(0))
+trigger = workflow.key?(true) ? workflow.fetch(true) : workflow.fetch("on")
+paths = trigger.fetch("pull_request").fetch("paths")
+expected_paths = [
+  "deploy/docker/compose/docker-compose.postgresql.yaml",
+  ".github/workflows/docker-image-postgresql-preview.yml"
+]
+abort "Test workflow does not run for PostgreSQL preview changes" unless (expected_paths - paths).empty?
+
+jobs = workflow.fetch("jobs")
+lint_steps = jobs.dig("lint", "steps")
+abort "PostgreSQL preview static contract is not linted" unless lint_steps.any? { |step| step["run"] == "test/postgresql-preview-contract.sh" }
+
+image_versions = jobs.dig("test", "strategy", "matrix", "include").map { |entry| entry["version"] }
+abort "PostgreSQL preview image is not tested" unless image_versions.include?("postgresql-preview")
+RUBY
+
+grep -Fq 'MHSERVEREMU_VERSION=nightly' "$workflow"
+grep -Fq 'MHSERVEREMU_VERSION=postgresql-preview' "$workflow"
+# shellcheck disable=SC2016 # Intentional literal GitHub Actions expression.
+grep -Fq 'test/portal-image.sh ${{ matrix.image }}' "$workflow"
+# shellcheck disable=SC2016 # Intentional literal GitHub Actions expression.
+grep -Fq 'test/postgresql-preview-config.sh ${{ matrix.image }}-postgresql-preview ${{ matrix.image }}' "$workflow"
+
+workflow=.github/workflows/docker-image-postgresql-preview.yml
+
+test -f "$workflow"
+grep -Fq 'workflow_dispatch:' "$workflow"
+if grep -Eq '^[[:space:]]*(push|pull_request|pull_request_target|schedule|workflow_call):' "$workflow"; then
+    exit 1
+fi
+grep -Fq 'uses: ./.github/workflows/docker-build-push.yml' "$workflow"
+grep -Fq 'secrets: inherit' "$workflow"
+
+ruby -rjson -ryaml - "$workflow" <<'RUBY'
+workflow = YAML.load_file(ARGV.fetch(0))
+matrix = JSON.parse(workflow.dig("jobs", "build", "with", "matrix"))
+expected = [
+  {"repository" => "https://github.com/zkoesters/MHServerEmu.git", "ref" => "feat/postgresql-database-support", "commit" => "", "version_dir" => "postgresql-preview", "tag" => "postgresql-preview", "dockerfile" => "Dockerfile"},
+  {"repository" => "https://github.com/zkoesters/MHServerEmu.git", "ref" => "feat/postgresql-database-support", "commit" => "", "version_dir" => "postgresql-preview", "tag" => "postgresql-preview-alpine", "dockerfile" => "Dockerfile.alpine"}
+]
+
+abort "PostgreSQL preview image matrix does not match the expected source mappings" unless matrix == expected
+RUBY
