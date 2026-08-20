@@ -90,7 +90,8 @@ RUBY
 
 grep -Fq 'zkoesters/mhserveremu:postgresql-preview' README.md
 grep -Fq 'zkoesters/mhserveremu:postgresql-preview-alpine' README.md
-grep -Fq 'manually published, mutable preview tags' README.md
+grep -Fq 'manually published,' README.md
+grep -Fq 'mutable preview tags' README.md
 grep -Fq 'https://github.com/zkoesters/MHServerEmu.git' README.md
 grep -Fq 'feat/postgresql-database-support' README.md
 grep -Fq 'POSTGRESQL_CONNECTION_STRING` is suitable only for short-lived local' README.md
