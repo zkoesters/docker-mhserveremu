@@ -87,6 +87,7 @@ docker run --rm \
             && ! grep -Fq "$1" /tmp/awk-arguments /tmp/awk-environment
     ' sh "$connection_string"
 
+chmod u+w "$secret_file"
 printf '%s\n' "$connection_string_with_token" > "$secret_file"
 docker run --rm \
     --mount "type=bind,source=${secret_file},target=/run/secrets/postgresql,readonly" \

@@ -355,8 +355,6 @@ while IFS='|' read -r alias_name _; do
     apply_template_substitution "%%${alias_name}%%" "${!alias_name}"
 done <<< "$LEGACY_REEXPORTS"
 
-chmod 0600 "$CONFIG_OUTPUT_PATH"
-
 # ── Validate ───────────────────────────────────────────────────────────────
 
 if grep -qE '%%[A-Z0-9_]+%%' "$CONFIG_OUTPUT_PATH"; then
@@ -370,5 +368,7 @@ if [ -n "$POSTGRESQL_CONNECTION_STRING_FILE" ]; then
 else
     apply_template_substitution "$POSTGRESQL_CONNECTION_STRING_MARKER" "$POSTGRESQL_CONNECTION_STRING"
 fi
+
+chmod 0600 "$CONFIG_OUTPUT_PATH"
 
 exec "$@"
