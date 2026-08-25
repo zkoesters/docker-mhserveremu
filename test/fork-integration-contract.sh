@@ -179,7 +179,7 @@ grep -Fq 'POSTGRESQL_CONNECTION_STRING` is suitable only for short-lived local' 
 grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' README.md
 # shellcheck disable=SC2016 # Intentional literal GitHub Markdown expression.
 grep -Fq 'Do not put credentials in the repository or an `.env` file.' README.md
-grep -Fq 'Either PostgreSQL selection requires the shared connection string' README.md
+ruby -e 'contents = File.read(ARGV.fetch(0)); abort "README must document the shared PostgreSQL connection string" unless contents.match?(/Either PostgreSQL\s+selection requires the shared connection string/)' README.md
 grep -Fq 'database port private' README.md
 grep -Fq "five known test accounts with the password \`123\`" README.md
 grep -Fq 'secure or replace those accounts before any public exposure' README.md
