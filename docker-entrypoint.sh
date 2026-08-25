@@ -124,12 +124,6 @@ MTXSTORE_REAL_MONEY_URL|STORE_REAL_MONEY_URL|https://localhost/MTXStore/AddG
 MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS||true
 MTXSTORE_BUNDLE_INFO_URL||http://localhost/bundles/
 MTXSTORE_BUNDLE_IMAGE_URL||http://localhost/bundles/images/
-PORTALBRIDGE_ENABLED||false
-PORTALBRIDGE_ADDRESS||localhost
-PORTALBRIDGE_PORT||8090
-PORTALBRIDGE_KEY_ID||portal-primary
-PORTALBRIDGE_SECRET_FILE||
-PORTALBRIDGE_SERVER_INSTANCE_ID||
 PLAYERMANAGER_DATABASE_TYPE||SQLite
 GAMEOPTIONS_LEADERBOARDS_ENABLED||false
 LEADERBOARDS_DATABASE_TYPE||SQLite
@@ -292,7 +286,6 @@ MTXSTORE_ES_TO_GAZILLIONITE_CONVERSION_STEP|int
 MTXSTORE_GIFTING_OMEGA_LEVEL_REQUIRED|int
 MTXSTORE_GIFTING_INFINITY_LEVEL_REQUIRED|int
 MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS|bool
-PORTALBRIDGE_ENABLED|bool
 PLAYERMANAGER_DATABASE_TYPE|database_type
 GAMEOPTIONS_LEADERBOARDS_ENABLED|bool
 LEADERBOARDS_DATABASE_TYPE|leaderboard_database_type
@@ -310,28 +303,6 @@ if [ "$validation_failed" -eq 1 ]; then
     echo "Error: environment variable validation failed. Fix the values above." >&2
     exit 1
 fi
-
-validate_portal_bridge() {
-    if [ "$PORTALBRIDGE_ENABLED" != "true" ]; then
-        return 0
-    fi
-
-    if ! [[ "$PORTALBRIDGE_PORT" =~ ^[0-9]+$ ]] || [ "$PORTALBRIDGE_PORT" -lt 1 ] || [ "$PORTALBRIDGE_PORT" -gt 65535 ]; then
-        die "PORTALBRIDGE_PORT must be a port number (1-65535), got: '$PORTALBRIDGE_PORT'"
-    fi
-    if [ "${#PORTALBRIDGE_KEY_ID}" -lt 1 ] || [ "${#PORTALBRIDGE_KEY_ID}" -gt 128 ]; then
-        die "PORTALBRIDGE_KEY_ID must be between 1 and 128 characters"
-    fi
-    if [[ "$PORTALBRIDGE_SECRET_FILE" != /* ]] || [ ! -f "$PORTALBRIDGE_SECRET_FILE" ] || [ ! -r "$PORTALBRIDGE_SECRET_FILE" ]; then
-        die "PORTALBRIDGE_SECRET_FILE must reference a readable absolute file"
-    fi
-    if ! [[ "$PORTALBRIDGE_SERVER_INSTANCE_ID" =~ ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$ ]] \
-        || [ "$PORTALBRIDGE_SERVER_INSTANCE_ID" = "00000000-0000-0000-0000-000000000000" ]; then
-        die "PORTALBRIDGE_SERVER_INSTANCE_ID must be a non-zero lowercase canonical UUID"
-    fi
-}
-
-validate_portal_bridge
 
 if [ "${PLAYERMANAGER_DATABASE_TYPE,,}" = postgresql ] || [ "${LEADERBOARDS_DATABASE_TYPE,,}" = postgresql ]; then
     if ! grep -Fq '%%POSTGRESQL_CONNECTION_STRING%%' "$CONFIG_TEMPLATE_PATH"; then
