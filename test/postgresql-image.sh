@@ -61,6 +61,8 @@ docker run --detach --interactive --tty \
     --env FRONTEND_BIND_IP=0.0.0.0 \
     --env WEBFRONTEND_ADDRESS='*' \
     --env PLAYERMANAGER_DATABASE_TYPE=PostgreSQL \
+    --env GAMEOPTIONS_LEADERBOARDS_ENABLED=true \
+    --env LEADERBOARDS_DATABASE_TYPE=PostgreSQL \
     --env POSTGRESQL_CONNECTION_STRING_FILE=/run/secrets/postgresql \
     --mount "type=bind,source=${connection_file},target=/run/secrets/postgresql,readonly" \
     --volume "${app_volume}:/data" \
@@ -82,3 +84,5 @@ status="$(docker run --rm --network "$network_name" --entrypoint curl "$CURL_IMA
     --command 'SELECT version FROM mhserveremu_schema WHERE id = 1;')" = 7 ]
 [ "$(docker exec "$postgres_name" psql --username mhserveremu --dbname mhserveremu --tuples-only --no-align \
     --command 'SELECT count(*) FROM account;')" = 5 ]
+[ "$(docker exec "$postgres_name" psql --username mhserveremu --dbname mhserveremu --tuples-only --no-align \
+    --command 'SELECT version FROM mhserveremu_leaderboards_schema WHERE id = 1;')" = 1 ]

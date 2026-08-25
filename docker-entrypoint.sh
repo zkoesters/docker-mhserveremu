@@ -131,6 +131,8 @@ PORTALBRIDGE_KEY_ID||portal-primary
 PORTALBRIDGE_SECRET_FILE||
 PORTALBRIDGE_SERVER_INSTANCE_ID||
 PLAYERMANAGER_DATABASE_TYPE||SQLite
+GAMEOPTIONS_LEADERBOARDS_ENABLED||false
+LEADERBOARDS_DATABASE_TYPE||SQLite
 "
 
 # ── Backward-compatible legacy aliases ─────────────────────────────────────
@@ -204,7 +206,7 @@ resolve_secret_file_var POSTGRESQL_CONNECTION_STRING POSTGRESQL_CONNECTION_STRIN
 
 # ── Validate environment variables ─────────────────────────────────────────
 # Format: VAR_NAME|TYPE
-# Supported types: port, bool, int, number, url, database_type
+# Supported types: port, bool, int, number, url, database_type, leaderboard_database_type
 
 validate_env_var() {
     local name="$1"
@@ -253,6 +255,15 @@ validate_env_var() {
                     ;;
             esac
             ;;
+        leaderboard_database_type)
+            case "${value,,}" in
+                sqlite|postgresql) ;;
+                *)
+                    printf 'Error: %s must be SQLite or PostgreSQL\n' "$name" >&2
+                    return 1
+                    ;;
+            esac
+            ;;
     esac
 }
 
@@ -283,6 +294,8 @@ MTXSTORE_GIFTING_INFINITY_LEVEL_REQUIRED|int
 MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS|bool
 PORTALBRIDGE_ENABLED|bool
 PLAYERMANAGER_DATABASE_TYPE|database_type
+GAMEOPTIONS_LEADERBOARDS_ENABLED|bool
+LEADERBOARDS_DATABASE_TYPE|leaderboard_database_type
 "
 
 validation_failed=0
@@ -320,9 +333,15 @@ validate_portal_bridge() {
 
 validate_portal_bridge
 
-if [ "${PLAYERMANAGER_DATABASE_TYPE,,}" = postgresql ]; then
+if [ "${PLAYERMANAGER_DATABASE_TYPE,,}" = postgresql ] || [ "${LEADERBOARDS_DATABASE_TYPE,,}" = postgresql ]; then
     if ! grep -Fq '%%POSTGRESQL_CONNECTION_STRING%%' "$CONFIG_TEMPLATE_PATH"; then
         die "PostgreSQL is not supported by this image version"
+    fi
+    if [ "${PLAYERMANAGER_DATABASE_TYPE,,}" = postgresql ] && ! grep -Fq '%%PLAYERMANAGER_DATABASE_TYPE%%' "$CONFIG_TEMPLATE_PATH"; then
+        die "PostgreSQL account/player persistence is not supported by this image version"
+    fi
+    if [ "${LEADERBOARDS_DATABASE_TYPE,,}" = postgresql ] && ! grep -Fq '%%LEADERBOARDS_DATABASE_TYPE%%' "$CONFIG_TEMPLATE_PATH"; then
+        die "PostgreSQL leaderboard persistence is not supported by this image version"
     fi
     if [ -z "$POSTGRESQL_CONNECTION_STRING" ]; then
         die "POSTGRESQL_CONNECTION_STRING or POSTGRESQL_CONNECTION_STRING_FILE is required when PostgreSQL is selected"

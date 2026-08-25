@@ -3,9 +3,11 @@ volumes:
 
 services:
   mhserveremu:
-    image: zkoesters/mhserveremu:postgresql-preview
+    image: zkoesters/mhserveremu:integration-master
     environment:
       PLAYERMANAGER_DATABASE_TYPE: PostgreSQL
+      GAMEOPTIONS_LEADERBOARDS_ENABLED: true
+      LEADERBOARDS_DATABASE_TYPE: PostgreSQL
       POSTGRESQL_CONNECTION_STRING: Host=postgresql;Port=5432;Database=mhserveremu;Username=mhserveremu;Password=mhserveremu-localdev
     depends_on:
       postgresql:

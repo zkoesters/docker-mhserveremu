@@ -1,0 +1,19 @@
+name: 1.0.1 Fork Docker Images
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    uses: ./.github/workflows/docker-build-push.yml
+    permissions:
+      actions: write
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    with:
+      matrix: >-
+        [
+          {"repository":"https://github.com/zkoesters/MHServerEmu.git","ref":"1.0.1-fork.2","commit":"738b0881fdfa9dc9983301f4fddd727dd34bceaa","version_dir":"1.0.1-fork","tag":"1.0.1-fork.2","dockerfile":"Dockerfile"},
+          {"repository":"https://github.com/zkoesters/MHServerEmu.git","ref":"1.0.1-fork.2","commit":"738b0881fdfa9dc9983301f4fddd727dd34bceaa","version_dir":"1.0.1-fork","tag":"1.0.1-fork.2-alpine","dockerfile":"Dockerfile.alpine"}
+        ]
+    secrets: inherit

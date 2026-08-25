@@ -20,7 +20,7 @@ MHSERVEREMU_REF ?= $(call branch,$(VERSION))
 MHSERVEREMU_COMMIT ?=
 
 LATEST_VERSION=1.0.1
-POSTGRESQL_TEST_VERSIONS=postgresql-preview
+POSTGRESQL_TEST_VERSIONS=integration-master
 do_default=true
 do_alpine=true
 
@@ -40,8 +40,10 @@ ALL_VERSIONS := $(sort $(foreach cfg,$(wildcard */Config.ini.template),$(cfg:%/C
 # Versions whose directory name matches the branch are handled by the
 # default value; only add entries here for exceptions (e.g. nightly→dev).
 branch_nightly=dev
-repository_postgresql-preview=https://github.com/zkoesters/MHServerEmu.git
-branch_postgresql-preview=feat/postgresql-database-support
+repository_1.0.1-fork=https://github.com/zkoesters/MHServerEmu.git
+branch_1.0.1-fork=1.0.1-fork.2
+repository_integration-master=https://github.com/zkoesters/MHServerEmu.git
+branch_integration-master=integration/master
 
 # Resolve the git branch for a given version. Falls back to the version
 # name itself when no explicit mapping exists (e.g. "1.0.0" → "1.0.0").

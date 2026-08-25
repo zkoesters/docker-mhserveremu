@@ -67,14 +67,6 @@ EnableDashboard=true
 DashboardFileDirectory=Dashboard
 DashboardUrlPath=/Dashboard/
 
-[PortalBridge]
-Enabled=%%PORTALBRIDGE_ENABLED%%
-Address=%%PORTALBRIDGE_ADDRESS%%
-Port=%%PORTALBRIDGE_PORT%%
-KeyId=%%PORTALBRIDGE_KEY_ID%%
-SecretFile=%%PORTALBRIDGE_SECRET_FILE%%
-ServerInstanceId=%%PORTALBRIDGE_SERVER_INSTANCE_ID%%
-
 [PlayerManager]
 ;          EnablePersistence: Allows player data to be saved.
 ;              DatabaseType: Database backend to use: Json, SQLite, or PostgreSQL.
@@ -196,7 +188,7 @@ MultiSpecRewardsEnabled=true
 GiftingEnabled=true
 CharacterSelectV2Enabled=true
 CommunityNewsV2Enabled=true
-LeaderboardsEnabled=false
+LeaderboardsEnabled=%%GAMEOPTIONS_LEADERBOARDS_ENABLED%%
 NewPlayerExperienceEnabled=true
 MissionTrackerV2Enabled=true
 GiftingAccountAgeInDaysRequired=7
@@ -284,10 +276,12 @@ BundleInfoUrl=%%MTXSTORE_BUNDLE_INFO_URL%%
 BundleImageUrl=%%MTXSTORE_BUNDLE_IMAGE_URL%%
 
 [Leaderboards]
-;            DatabaseFile: Name of the SQLite database file to use relative to the server's Data/Leaderboards directory.
+;            DatabaseType: Leaderboard database backend: SQLite or PostgreSQL. Selected independently from PlayerManager.DatabaseType.
+;            DatabaseFile: Name of the SQLite database file to use relative to the server's Data/Leaderboards directory. Ignored when DatabaseType=PostgreSQL.
 ;            ScheduleFile: Name of the JSON schedule file to use relative to the server's Data/Leaderboards directory
 ; AutoSaveIntervalMinutes: The minimum interval in minutes between leaderboard entry autosaves to the database.
 
+DatabaseType=%%LEADERBOARDS_DATABASE_TYPE%%
 DatabaseFile=/data/Leaderboards.db
 ScheduleFile=/data/LeaderboardSchedule.json
 AutoSaveIntervalMinutes=10
