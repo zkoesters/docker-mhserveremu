@@ -67,14 +67,6 @@ EnableDashboard=true
 DashboardFileDirectory=Dashboard
 DashboardUrlPath=/Dashboard/
 
-[PortalBridge]
-Enabled=%%PORTALBRIDGE_ENABLED%%
-Address=%%PORTALBRIDGE_ADDRESS%%
-Port=%%PORTALBRIDGE_PORT%%
-KeyId=%%PORTALBRIDGE_KEY_ID%%
-SecretFile=%%PORTALBRIDGE_SECRET_FILE%%
-ServerInstanceId=%%PORTALBRIDGE_SERVER_INSTANCE_ID%%
-
 [PlayerManager]
 ;          EnablePersistence: Allows player data to be saved.
 ;           UseJsonDBManager: Switches to JSON-based backend for saving player data.

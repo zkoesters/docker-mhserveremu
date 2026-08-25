@@ -15,6 +15,10 @@ done
 
 grep -Fq 'LoadLocaleFiles=false' "$integration_template"
 test ! -e postgresql-preview/Config.ini.template
+if grep -Fq 'PORTALBRIDGE_' docker-entrypoint.sh 1.0.1/Config.ini.template nightly/Config.ini.template; then
+    printf '%s\n' 'Error: PortalBridge support must not remain in image templates or entrypoint' >&2
+    exit 1
+fi
 
 dry_run="$(make --dry-run build-1.0.1-fork)"
 [ "$(grep -Fc 'MHSERVEREMU_REPOSITORY=https://github.com/zkoesters/MHServerEmu.git' <<< "$dry_run")" -eq 2 ]
