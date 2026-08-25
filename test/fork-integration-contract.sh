@@ -64,6 +64,8 @@ if grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' "$compose"; then
 fi
 
 grep -Fxq 'POSTGRESQL_TEST_VERSIONS=1.0.1-fork integration-master' Makefile
+grep -Fxq 'postgresql_schema_version_1.0.1-fork=6' Makefile
+grep -Fxq 'postgresql_schema_version_integration-master=7' Makefile
 grep -Fxq 'repository_1.0.1-fork=https://github.com/zkoesters/MHServerEmu.git' Makefile
 grep -Fxq 'branch_1.0.1-fork=1.0.1-fork.2' Makefile
 grep -Fxq 'repository_integration-master=https://github.com/zkoesters/MHServerEmu.git' Makefile
@@ -76,6 +78,8 @@ fi
 grep -Fq 'test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1' Makefile
 # shellcheck disable=SC2016 # Intentional literal Make syntax.
 grep -Fq 'test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1-alpine' Makefile
+# shellcheck disable=SC2016 # Intentional literal Make syntax.
+grep -Fq '$(call postgresql_schema_version,$1)' Makefile
 
 workflow=.github/workflows/test.yml
 
