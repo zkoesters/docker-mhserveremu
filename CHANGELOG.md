@@ -8,9 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Portal image deployment and read-only PortalBridge configuration guidance.
-- PostgreSQL preview images and Compose deployment guidance, including mutable
-  tag, secret-handling, lifecycle, and external-database limitations.
+- 1.0.1 fork release images and integration images for Debian and Alpine.
+- independent PostgreSQL account/player and leaderboard persistence, including
+  Compose deployment guidance, secret handling, lifecycle, and
+  external-database limitations.
 
 ## [1.0.1] - 2026-04-13
 

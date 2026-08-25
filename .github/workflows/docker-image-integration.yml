@@ -1,0 +1,19 @@
+name: Integration Docker Images
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    uses: ./.github/workflows/docker-build-push.yml
+    permissions:
+      actions: write
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    with:
+      matrix: >-
+        [
+          {"repository":"https://github.com/zkoesters/MHServerEmu.git","ref":"integration/master","commit":"","version_dir":"integration-master","tag":"integration-master","dockerfile":"Dockerfile"},
+          {"repository":"https://github.com/zkoesters/MHServerEmu.git","ref":"integration/master","commit":"","version_dir":"integration-master","tag":"integration-master-alpine","dockerfile":"Dockerfile.alpine"}
+        ]
+    secrets: inherit

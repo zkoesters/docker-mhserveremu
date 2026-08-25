@@ -20,8 +20,8 @@ on:
       - ".editorconfig-checker.json"
       - ".hadolint.yaml"
       - ".github/workflows/docker-build-push.yml"
-      - ".github/workflows/docker-image-portal.yml"
-      - ".github/workflows/docker-image-postgresql-preview.yml"
+      - ".github/workflows/docker-image-1.0.1-fork.yml"
+      - ".github/workflows/docker-image-integration.yml"
       - ".github/workflows/test.yml"
 permissions:
   contents: read
@@ -33,10 +33,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Portal image contract
-        run: test/portal-image.sh
-      - name: PostgreSQL preview image contract
-        run: test/postgresql-preview-contract.sh
+      - name: Fork and integration image contract
+        run: test/fork-integration-contract.sh
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # v2.0.0
         with:
@@ -66,7 +64,8 @@ jobs:
           - version: '1.0.0'
           - version: '1.0.1'
           - version: 'nightly'
-          - version: 'postgresql-preview'
+          - version: '1.0.1-fork'
+          - version: 'integration-master'
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -99,11 +98,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Build config test images
-        run: docker build --target config-test --build-arg MHSERVEREMU_VERSION=nightly --tag ${{ matrix.image }} --file ${{ matrix.dockerfile }} .
-      - name: Build PostgreSQL preview config test image
-        run: docker build --target config-test --build-arg MHSERVEREMU_VERSION=postgresql-preview --tag ${{ matrix.image }}-postgresql-preview --file ${{ matrix.dockerfile }} .
-      - name: Run config test contract
-        run: test/portal-image.sh ${{ matrix.image }}
-      - name: Run PostgreSQL preview config test contract
-        run: test/postgresql-preview-config.sh ${{ matrix.image }}-postgresql-preview ${{ matrix.image }}
+      - name: Build fork config test image
+        run: docker build --target config-test --build-arg MHSERVEREMU_VERSION=1.0.1-fork --tag ${{ matrix.image }}-1.0.1-fork --file ${{ matrix.dockerfile }} .
+      - name: Build integration config test image
+        run: docker build --target config-test --build-arg MHSERVEREMU_VERSION=integration-master --tag ${{ matrix.image }}-integration-master --file ${{ matrix.dockerfile }} .
+      - name: Run fork and integration config test contract
+        run: test/fork-integration-config.sh ${{ matrix.image }}-1.0.1-fork ${{ matrix.image }}-integration-master

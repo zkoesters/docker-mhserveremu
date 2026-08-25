@@ -2,7 +2,7 @@
 
 The `zkoesters/mhserveremu` image provides tags for running [MHServerEmu](https://github.com/Crypto137/MHServerEmu).
 
-# Versions ( 2026-04-13 )
+# Versions (2026-08-25)
 
 Recommended version for the new users: `zkoesters/mhserveremu:1.0.1`
 
@@ -13,6 +13,8 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.1`
 | [zkoesters/mhserveremu:1.0.0](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.29 | 1.0.0       |
 | [zkoesters/mhserveremu:1.0.1](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.1)     | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.29 | 1.0.1       |
 | [zkoesters/mhserveremu:nightly](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile)         | debian:bookworm | 8.0.29 | dev         |
+| [zkoesters/mhserveremu:1.0.1-fork.2](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.1-fork.2) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile) | debian:bookworm | 8.0.29 | 1.0.1-fork.2 |
+| [zkoesters/mhserveremu:integration-master](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=integration-master) | [Dockerfile](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile) | debian:bookworm | 8.0.29 | integration/master |
 
 ### Alpine based:
 
@@ -21,41 +23,29 @@ Recommended version for the new users: `zkoesters/mhserveremu:1.0.1`
 | [zkoesters/mhserveremu:1.0.0-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.0-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.29 | 1.0.0       |
 | [zkoesters/mhserveremu:1.0.1-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.1-alpine)     | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.29 | 1.0.1       |
 | [zkoesters/mhserveremu:nightly-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=nightly-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.29 | dev         |
+| [zkoesters/mhserveremu:1.0.1-fork.2-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=1.0.1-fork.2-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.29 | 1.0.1-fork.2 |
+| [zkoesters/mhserveremu:integration-master-alpine](https://registry.hub.docker.com/r/zkoesters/mhserveremu/tags?page=1&name=integration-master-alpine) | [Dockerfile.alpine](https://github.com/zkoesters/docker-mhserveremu/blob/main/Dockerfile.alpine) | alpine:3.23 | 8.0.29 | integration/master |
 
-## PortalBridge portal images
+## 1.0.1 fork release images
 
-Use `zkoesters/mhserveremu:portal-master-89b02d6f39c0` only to locate the
-release. Deployments must use the recorded immutable image reference
-`zkoesters/mhserveremu@sha256:<published-manifest-digest>`; this document does
-not assert that a manifest digest is currently published.
+`zkoesters/mhserveremu:1.0.1-fork.2` and
+`zkoesters/mhserveremu:1.0.1-fork.2-alpine` are pinned to the published fork release
+from `https://github.com/zkoesters/MHServerEmu.git` at
+`1.0.1-fork.2` (commit `738b0881fdfa9dc9983301f4fddd727dd34bceaa`).
 
-Configure PortalBridge with `PORTALBRIDGE_ENABLED`, `PORTALBRIDGE_ADDRESS`,
-`PORTALBRIDGE_PORT`, `PORTALBRIDGE_KEY_ID`, `PORTALBRIDGE_SECRET_FILE`, and
-`PORTALBRIDGE_SERVER_INSTANCE_ID`. Mount the secret file at the
-`PORTALBRIDGE_SECRET_FILE` path as read-only. Port 8090 is an internal bridge
-port and must not be published.
+## Integration images
 
-Portal images support a read-only root filesystem, but do not inherently run
-read-only. Operators deploying an immutable portal image require an
-operator-set `read_only: true` and tmpfs entries
-`/tmp:uid=1654,gid=1654,mode=1777` and
-`/run/mhserveremu:uid=1654,gid=1654,mode=0700`. Generated configuration is
-stored in `/run/mhserveremu`, while `/data/runtime` remains writable on the
-`/data` volume.
+`zkoesters/mhserveremu:integration-master` and
+`zkoesters/mhserveremu:integration-master-alpine` track
+`https://github.com/zkoesters/MHServerEmu.git` at `integration/master`.
+`integration-master` is mutable and follows the current integration tip; record
+and deploy an immutable image digest for a reproducible deployment.
 
-## PostgreSQL preview images
-
-`zkoesters/mhserveremu:postgresql-preview` and
-`zkoesters/mhserveremu:postgresql-preview-alpine` are manually published,
-mutable preview tags. They are built from
-`https://github.com/zkoesters/MHServerEmu.git` at
-`feat/postgresql-database-support`. They are for evaluation only: do not use
-them for production deployments or assume a tag will continue to refer to the
-same image. Record and deploy an immutable image digest after a supported
-release is available.
-
-Select the backend with `PLAYERMANAGER_DATABASE_TYPE=PostgreSQL`. Supply its
-Npgsql connection string through exactly one of these variables:
+Both image lines expose independent `PLAYERMANAGER_DATABASE_TYPE` and `LEADERBOARDS_DATABASE_TYPE` selectors.
+Select `SQLite` or `PostgreSQL` for each store, and use
+`GAMEOPTIONS_LEADERBOARDS_ENABLED=true` to enable leaderboards. Either PostgreSQL
+selection requires the shared connection string. Supply its Npgsql value through
+exactly one of these variables:
 
 - `POSTGRESQL_CONNECTION_STRING` is suitable only for short-lived local
   testing. Environment values are visible to container inspection tools and
@@ -65,8 +55,8 @@ Npgsql connection string through exactly one of these variables:
   Set it to an absolute path for a single-line, non-empty, read-only mounted
   secret. Do not put credentials in the repository or an `.env` file.
 
-The preview requires a reachable PostgreSQL database before the server starts.
-The PostgreSQL Compose overlay keeps the database port private and stores its
+PostgreSQL requires a reachable database before the server starts. The
+PostgreSQL integration overlay keeps the database port private and stores its
 data in a named volume; verify the merged Compose configuration before starting
 it. The overlay is not an external-database configuration because it creates a
 local `postgresql` service. It uses fixed, coordinated local defaults and a
@@ -158,6 +148,16 @@ Supported variable set (`1.0.0`, `1.0.1`, and `nightly`):
 | `MTXSTORE_REWRITE_ORIGINAL_BUNDLE_URLS`               | `true`                                     | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `MTXSTORE_BUNDLE_INFO_URL`                            | `http://localhost/bundles/`                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | `MTXSTORE_BUNDLE_IMAGE_URL`                           | `http://localhost/bundles/images/`         | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+
+PostgreSQL backend selectors (`1.0.1-fork.2` and `integration-master`):
+
+| Environment Variable                | Default  | 1.0.1 Fork | Integration |
+|-------------------------------------|----------|------------|-------------|
+| `PLAYERMANAGER_DATABASE_TYPE`       | `SQLite` | :white_check_mark: | :white_check_mark: |
+| `GAMEOPTIONS_LEADERBOARDS_ENABLED`  | `false`  | :white_check_mark: | :white_check_mark: |
+| `LEADERBOARDS_DATABASE_TYPE`        | `SQLite` | :white_check_mark: | :white_check_mark: |
+| `POSTGRESQL_CONNECTION_STRING`      |          | :white_check_mark: | :white_check_mark: |
+| `POSTGRESQL_CONNECTION_STRING_FILE` |          | :white_check_mark: | :white_check_mark: |
 
 Temporary compatibility aliases (accepted by `1.0.0`, `1.0.1`, and `nightly`, but use the preferred names above in new deployments):
 

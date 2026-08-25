@@ -76,12 +76,12 @@ internal CA to issue a local certificate automatically.
 
 ---
 
-## PostgreSQL preview
+## PostgreSQL integration
 
-The PostgreSQL overlay is for evaluating the manually published,
-mutable `postgresql-preview` image. It starts a local PostgreSQL service and
-stores its data in the `mhserveremu-postgresql-data` named volume. It does not
-publish the database port.
+The PostgreSQL integration overlay uses the mutable `integration-master` image
+and enables both account/player and leaderboard persistence. It starts a local
+PostgreSQL service and stores its data in the `mhserveremu-postgresql-data`
+named volume. It does not publish the database port.
 
 ```bash
 docker compose \
