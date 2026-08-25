@@ -20,7 +20,7 @@ MHSERVEREMU_REF ?= $(call branch,$(VERSION))
 MHSERVEREMU_COMMIT ?=
 
 LATEST_VERSION=1.0.1
-POSTGRESQL_TEST_VERSIONS=integration-master
+POSTGRESQL_TEST_VERSIONS=1.0.1-fork integration-master
 do_default=true
 do_alpine=true
 

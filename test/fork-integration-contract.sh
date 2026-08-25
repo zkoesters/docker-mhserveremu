@@ -63,7 +63,7 @@ if grep -Fq 'POSTGRESQL_CONNECTION_STRING_FILE' "$compose"; then
     exit 1
 fi
 
-grep -Fxq 'POSTGRESQL_TEST_VERSIONS=integration-master' Makefile
+grep -Fxq 'POSTGRESQL_TEST_VERSIONS=1.0.1-fork integration-master' Makefile
 grep -Fxq 'repository_1.0.1-fork=https://github.com/zkoesters/MHServerEmu.git' Makefile
 grep -Fxq 'branch_1.0.1-fork=1.0.1-fork.2' Makefile
 grep -Fxq 'repository_integration-master=https://github.com/zkoesters/MHServerEmu.git' Makefile
@@ -206,7 +206,7 @@ if grep -Eq '^# POSTGRES_(DB|USER)=' deploy/docker/compose/.env.example; then
 fi
 grep -Fq '1.0.1 fork release images' CHANGELOG.md
 grep -Fq 'integration images' CHANGELOG.md
-grep -Fq 'independent PostgreSQL account/player and leaderboard persistence' CHANGELOG.md
+grep -Fq 'Independent PostgreSQL account/player and leaderboard persistence' CHANGELOG.md
 
 if grep -Eni 'password=[^[:space:]#]+' README.md deploy/docker/compose/README.md deploy/docker/compose/.env.example; then
     printf '%s\n' 'Error: PostgreSQL documentation must not include a password value' >&2
