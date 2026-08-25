@@ -21,6 +21,8 @@ MHSERVEREMU_COMMIT ?=
 
 LATEST_VERSION=1.0.1
 POSTGRESQL_TEST_VERSIONS=1.0.1-fork integration-master
+postgresql_schema_version_1.0.1-fork=6
+postgresql_schema_version_integration-master=7
 do_default=true
 do_alpine=true
 
@@ -49,6 +51,7 @@ branch_integration-master=integration/master
 # name itself when no explicit mapping exists (e.g. "1.0.0" → "1.0.0").
 branch = $(or $(branch_$(1)),$(1))
 repository = $(or $(repository_$(1)),$(MHSERVEREMU_REPOSITORY))
+postgresql_schema_version = $(postgresql_schema_version_$(1))
 
 ifdef VERSION
 ifeq (,$(filter $(VERSION),$(ALL_VERSIONS)))
@@ -119,8 +122,8 @@ ifeq ($(do_alpine),true)
 	$(OFFIMG_LOCAL_CLONE)/test/run.sh -c $(OFFIMG_LOCAL_CLONE)/test/config.sh -c test/mhserveremu-config.sh $(REPO_NAME)/$(IMAGE_NAME):$1-alpine
 endif
 ifneq (,$(filter $1,$(POSTGRESQL_TEST_VERSIONS)))
-	$(if $(filter true,$(do_default)),test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1)
-	$(if $(filter true,$(do_alpine)),test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1-alpine)
+	$(if $(filter true,$(do_default)),test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1 $(call postgresql_schema_version,$1))
+	$(if $(filter true,$(do_alpine)),test/postgresql-image.sh $(REPO_NAME)/$(IMAGE_NAME):$1-alpine $(call postgresql_schema_version,$1))
 endif
 endef
 $(foreach version,$(VERSIONS),$(eval $(call test-version,$(version))))

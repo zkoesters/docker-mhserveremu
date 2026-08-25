@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-if [ "$#" -ne 1 ]; then
-    printf '%s\n' 'Usage: test/postgresql-image.sh <mhserveremu-image>' >&2
+if [ "$#" -ne 2 ]; then
+    printf '%s\n' 'Usage: test/postgresql-image.sh <mhserveremu-image> <expected-account-schema-version>' >&2
     exit 2
 fi
 
 MHSERVEREMU_IMAGE="$1"
+EXPECTED_ACCOUNT_SCHEMA_VERSION="$2"
 POSTGRES_IMAGE="postgres:16.14-alpine3.23"
 CURL_IMAGE="curlimages/curl:8.17.0"
 suffix="$RANDOM-$RANDOM"
@@ -81,7 +82,7 @@ status="$(docker run --rm --network "$network_name" --entrypoint curl "$CURL_IMA
     "http://${app_name}:8080/ServerStatus")"
 [ "$status" = 200 ]
 [ "$(docker exec "$postgres_name" psql --username mhserveremu --dbname mhserveremu --tuples-only --no-align \
-    --command 'SELECT version FROM mhserveremu_schema WHERE id = 1;')" = 7 ]
+    --command 'SELECT version FROM mhserveremu_schema WHERE id = 1;')" = "$EXPECTED_ACCOUNT_SCHEMA_VERSION" ]
 [ "$(docker exec "$postgres_name" psql --username mhserveremu --dbname mhserveremu --tuples-only --no-align \
     --command 'SELECT count(*) FROM account;')" = 5 ]
 [ "$(docker exec "$postgres_name" psql --username mhserveremu --dbname mhserveremu --tuples-only --no-align \
