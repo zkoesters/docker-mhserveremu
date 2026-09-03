@@ -14,7 +14,7 @@ services:
         condition: service_healthy
 
   postgresql:
-    image: postgres:16.14-alpine3.23
+    image: postgres:16.15-alpine3.23
     environment:
       POSTGRES_DB: mhserveremu
       POSTGRES_USER: mhserveremu
